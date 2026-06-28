@@ -106,7 +106,7 @@ function CoverPage() {
             </div>
 
             {/* Metrics */}
-            <div className="mt-16 grid max-w-2xl grid-cols-3 gap-6 border-t border-white/10 pt-8">
+            <div className="mt-16 grid max-w-2xl grid-cols-1 gap-8 border-t border-white/10 pt-8 sm:grid-cols-3">
               {metrics.map((m) => (
                 <div key={m.label}>
                   <div className="font-display text-3xl font-bold text-white md:text-4xl">
