@@ -18,15 +18,15 @@ export const Route = createFileRoute("/")({
 });
 
 const metrics = [
-  { label: "Global uptime", value: "99.999%" },
-  { label: "Markets served", value: "40+" },
-  { label: "Workloads managed", value: "2M+" },
+  { label: "গ্লোবাল আপটাইম", value: "৯৯.৯৯৯%" },
+  { label: "সেবিত বাজার", value: "৪০+" },
+  { label: "পরিচালিত ওয়ার্কলোড", value: "২০ লক্ষ+" },
 ];
 
 const pillars = [
-  { icon: Layers, title: "Modular architecture", description: "Composable stacks that grow with your business." },
-  { icon: Zap, title: "High-performance edge", description: "Low-latency delivery across distributed networks." },
-  { icon: Globe, title: "Worldwide resilience", description: "Multi-region failover designed for continuity." },
+  { icon: Layers, title: "মডুলার আর্কিটেকচার", description: "আপনার ব্যবসার সাথে বেড়ে ওঠা কম্পোজেবল স্ট্যাক।" },
+  { icon: Zap, title: "হাই-পারফরম্যান্স এজ", description: "বিতরণকৃত নেটওয়ার্ক জুড়ে কম-লেটেন্সি ডেলিভারি।" },
+  { icon: Globe, title: "বিশ্বব্যাপী রেজিলিয়েন্স", description: "ধারাবাহিকতার জন্য নকশাকৃত মাল্টি-রিজিয়ন ফেইলওভার।" },
 ];
 
 function CoverPage() {
