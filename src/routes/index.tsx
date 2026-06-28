@@ -5,10 +5,10 @@ import coverHero from "@/assets/cover-hero.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "NextScale | IT Cover" },
-      { name: "description", content: "Enterprise IT infrastructure, scaled with precision." },
-      { property: "og:title", content: "NextScale | IT Cover" },
-      { property: "og:description", content: "Enterprise IT infrastructure, scaled with precision." },
+      { title: "নেক্সটস্কেল | আইটি কভার" },
+      { name: "description", content: "এন্টারপ্রাইজ আইটি অবকাঠামো — নিখুঁতভাবে স্কেল করা।" },
+      { property: "og:title", content: "নেক্সটস্কেল | আইটি কভার" },
+      { property: "og:description", content: "এন্টারপ্রাইজ আইটি অবকাঠামো — নিখুঁতভাবে স্কেল করা।" },
       { property: "og:image", content: coverHero },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: coverHero },
@@ -18,15 +18,15 @@ export const Route = createFileRoute("/")({
 });
 
 const metrics = [
-  { label: "Global uptime", value: "99.999%" },
-  { label: "Markets served", value: "40+" },
-  { label: "Workloads managed", value: "2M+" },
+  { label: "গ্লোবাল আপটাইম", value: "৯৯.৯৯৯%" },
+  { label: "সেবিত বাজার", value: "৪০+" },
+  { label: "পরিচালিত ওয়ার্কলোড", value: "২০ লক্ষ+" },
 ];
 
 const pillars = [
-  { icon: Layers, title: "Modular architecture", description: "Composable stacks that grow with your business." },
-  { icon: Zap, title: "High-performance edge", description: "Low-latency delivery across distributed networks." },
-  { icon: Globe, title: "Worldwide resilience", description: "Multi-region failover designed for continuity." },
+  { icon: Layers, title: "মডুলার আর্কিটেকচার", description: "আপনার ব্যবসার সাথে বেড়ে ওঠা কম্পোজেবল স্ট্যাক।" },
+  { icon: Zap, title: "হাই-পারফরম্যান্স এজ", description: "বিতরণকৃত নেটওয়ার্ক জুড়ে কম-লেটেন্সি ডেলিভারি।" },
+  { icon: Globe, title: "বিশ্বব্যাপী রেজিলিয়েন্স", description: "ধারাবাহিকতার জন্য নকশাকৃত মাল্টি-রিজিয়ন ফেইলওভার।" },
 ];
 
 function CoverPage() {
@@ -47,16 +47,16 @@ function CoverPage() {
 
         <nav className="relative z-10 flex items-center justify-between px-6 py-6 md:px-12 lg:px-20">
           <div className="font-display text-2xl font-bold tracking-tight text-white">
-            next<span className="text-cyan">scale</span>
+            নেক্সট<span className="text-cyan">স্কেল</span>
           </div>
           <div className="hidden items-center gap-8 text-sm font-medium text-white/70 md:flex">
-            <span className="hover:text-white">Solutions</span>
-            <span className="hover:text-white">Platform</span>
-            <span className="hover:text-white">Insights</span>
-            <span className="hover:text-white">Contact</span>
+            <span className="hover:text-white">সমাধান</span>
+            <span className="hover:text-white">প্ল্যাটফর্ম</span>
+            <span className="hover:text-white">ইনসাইট</span>
+            <span className="hover:text-white">যোগাযোগ</span>
           </div>
           <button className="inline-flex items-center gap-2 rounded-full border border-white/20 px-5 py-2 text-sm font-medium text-white transition-colors hover:border-cyan hover:bg-cyan/10 hover:text-cyan">
-            Get in touch
+            যোগাযোগ করুন
             <ArrowRight className="h-4 w-4" />
           </button>
         </nav>
@@ -64,25 +64,25 @@ function CoverPage() {
         <section className="relative z-10 flex min-h-[calc(100vh-88px)] flex-col justify-center px-6 md:px-12 lg:px-20">
           <div className="max-w-3xl">
             <p className="mb-5 text-xs font-semibold uppercase tracking-[0.2em] text-cyan">
-              Enterprise IT · 2026
+              এন্টারপ্রাইজ আইটি · ২০২৬
             </p>
-            <h1 className="font-display text-6xl font-bold leading-[1.05] tracking-tight text-white md:text-7xl lg:text-8xl">
-              Scale the
+            <h1 className="font-display text-5xl font-bold leading-[1.15] tracking-tight text-white md:text-6xl lg:text-7xl">
+              অদৃশ্যকে
               <br />
-              invisible.
+              স্কেল করুন।
             </h1>
             <p className="mt-8 max-w-xl text-lg leading-relaxed text-white/70 md:text-xl">
-              Infrastructure that moves as fast as your ambition. We design, deploy, and operate
-              the systems that power tomorrow's enterprises.
+              এমন অবকাঠামো যা আপনার উচ্চাকাঙ্ক্ষার মতো দ্রুত চলে। আগামী দিনের এন্টারপ্রাইজকে
+              শক্তি জোগানো সিস্টেম আমরা ডিজাইন, ডিপ্লয় ও পরিচালনা করি।
             </p>
 
             <div className="mt-10 flex flex-wrap gap-4">
               <button className="inline-flex items-center gap-2 rounded-full bg-cyan px-7 py-3.5 text-sm font-semibold text-cyan-foreground transition-transform hover:scale-105">
-                Start the conversation
+                আলোচনা শুরু করুন
                 <ArrowRight className="h-4 w-4" />
               </button>
               <button className="inline-flex items-center gap-2 rounded-full border border-white/20 px-7 py-3.5 text-sm font-semibold text-white transition-colors hover:border-white/40 hover:bg-white/5">
-                View capabilities
+                সক্ষমতা দেখুন
               </button>
             </div>
 
@@ -110,8 +110,8 @@ function CoverPage() {
         </section>
 
         <footer className="relative z-10 flex items-center justify-between border-t border-white/10 px-6 py-6 text-xs text-white/40 md:px-12 lg:px-20">
-          <span>© 2026 NextScale. All rights reserved.</span>
-          <span className="hidden md:inline">Editorial cover · Issue 01</span>
+          <span>© ২০২৬ নেক্সটস্কেল। সর্বস্বত্ব সংরক্ষিত।</span>
+          <span className="hidden md:inline">এডিটোরিয়াল কভার · সংখ্যা ০১</span>
         </footer>
       </main>
     </div>
