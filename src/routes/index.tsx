@@ -5,10 +5,10 @@ import coverHero from "@/assets/cover-hero.jpg";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "NextScale | IT Cover" },
-      { name: "description", content: "Enterprise IT infrastructure, scaled with precision." },
-      { property: "og:title", content: "NextScale | IT Cover" },
-      { property: "og:description", content: "Enterprise IT infrastructure, scaled with precision." },
+      { title: "নেক্সটস্কেল | আইটি কভার" },
+      { name: "description", content: "এন্টারপ্রাইজ আইটি অবকাঠামো — নিখুঁতভাবে স্কেল করা।" },
+      { property: "og:title", content: "নেক্সটস্কেল | আইটি কভার" },
+      { property: "og:description", content: "এন্টারপ্রাইজ আইটি অবকাঠামো — নিখুঁতভাবে স্কেল করা।" },
       { property: "og:image", content: coverHero },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:image", content: coverHero },
