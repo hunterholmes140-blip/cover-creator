@@ -168,8 +168,10 @@ function HomePage() {
 
       {/* CATEGORIES */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <h2 className="text-2xl md:text-3xl font-bold">জনপ্রিয় ক্যাটেগরি</h2>
-        <p className="mt-2 text-muted-foreground">আপনার পছন্দের বিষয় বেছে নিন</p>
+        <div className="text-center max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold">জনপ্রিয় ক্যাটেগরি</h2>
+          <p className="mt-2 text-muted-foreground">আপনার পছন্দের বিষয় বেছে নিন</p>
+        </div>
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
           {cats.categories.map((c) => (
             <Link
@@ -187,17 +189,17 @@ function HomePage() {
 
       {/* FEATURED COURSES */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-end justify-between">
-          <div>
-            <h2 className="text-2xl md:text-3xl font-bold">ফিচার্ড কোর্স</h2>
-            <p className="mt-2 text-muted-foreground">সবচেয়ে জনপ্রিয় কোর্সগুলো</p>
-          </div>
-          <Link to="/courses" className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-            সব দেখুন <ArrowRight className="h-4 w-4" />
-          </Link>
+        <div className="text-center max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold">ফিচার্ড কোর্স</h2>
+          <p className="mt-2 text-muted-foreground">সবচেয়ে জনপ্রিয় কোর্সগুলো</p>
         </div>
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {featured.courses.map((c) => <CourseCard key={c.id} course={c} />)}
+        </div>
+        <div className="mt-8 text-center">
+          <Link to="/courses" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+            সব দেখুন <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
@@ -421,14 +423,9 @@ function HomePage() {
       {/* BLOG */}
       <section className="bg-muted/30 border-y border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-          <div className="flex items-end justify-between">
-            <div>
-              <h2 className="text-2xl md:text-3xl font-bold">সাম্প্রতিক আর্টিকেল</h2>
-              <p className="mt-2 text-muted-foreground">শিক্ষা ও ক্যারিয়ার সংক্রান্ত লেখা</p>
-            </div>
-            <Link to="/blog" className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              সব আর্টিকেল <ArrowRight className="h-4 w-4" />
-            </Link>
+          <div className="text-center max-w-2xl mx-auto">
+            <h2 className="text-2xl md:text-3xl font-bold">সাম্প্রতিক আর্টিকেল</h2>
+            <p className="mt-2 text-muted-foreground">শিক্ষা ও ক্যারিয়ার সংক্রান্ত লেখা</p>
           </div>
           <div className="mt-6 grid md:grid-cols-3 gap-5">
             {posts.posts.slice(0, 3).map((p) => (
@@ -451,6 +448,11 @@ function HomePage() {
                 </div>
               </Link>
             ))}
+          </div>
+          <div className="mt-8 text-center">
+            <Link to="/blog" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              সব আর্টিকেল <ArrowRight className="h-4 w-4" />
+            </Link>
           </div>
         </div>
       </section>
