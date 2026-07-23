@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Plus, Search, Star, Trash2, Pencil, Eye, EyeOff } from "lucide-react";
-import { useCourses } from "@/lib/admin-store";
+import { useLiveCourses } from "@/lib/live-store";
 import { taka } from "@/lib/format";
 import { resolveBadge, BADGE_STYLES } from "@/lib/course-badges";
 import { PageHeader, Card, Input, Button, ConfirmDialog, useToast, Empty, Badge } from "@/components/admin/ui";
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/admin/courses")({
 });
 
 function CoursesList() {
-  const { items, update, remove } = useCourses();
+  const { items, update, remove, loading, error } = useLiveCourses();
   const toast = useToast();
   const [q, setQ] = useState("");
   const [confirmId, setConfirmId] = useState<any>(null);
