@@ -468,6 +468,7 @@ function HomePage() {
 
       {/* VIDEO GALLERY */}
       <section className="relative overflow-hidden border-y border-border bg-gradient-to-b from-background via-muted/40 to-background">
+        {/* dotted pattern */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 opacity-[0.05]"
@@ -477,22 +478,62 @@ function HomePage() {
             backgroundSize: "22px 22px",
           }}
         />
-        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-semibold">
+        {/* floating 3D blobs */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 -left-16 h-72 w-72 rounded-full bg-primary/20 blur-3xl animate-pulse"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-24 -right-16 h-80 w-80 rounded-full bg-accent/40 blur-3xl animate-pulse"
+          style={{ animationDelay: "1.2s" }}
+        />
+        {/* rotated 3D frame accent */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute top-1/3 left-1/2 -translate-x-1/2 h-64 w-[90%] max-w-4xl rounded-3xl border border-primary/10"
+          style={{
+            transform: "perspective(1000px) rotateX(35deg) translateY(-40px)",
+            background:
+              "linear-gradient(180deg, color-mix(in oklab, var(--primary) 8%, transparent), transparent)",
+          }}
+        />
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+          <div
+            className="text-center max-w-2xl mx-auto"
+            style={{ perspective: "800px" }}
+          >
+            <span
+              className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-semibold shadow-sm animate-fade-in"
+              style={{ transform: "translateZ(30px)" }}
+            >
               <PlayCircle className="h-3.5 w-3.5" /> ভিডিও গ্যালারি
             </span>
-            <h2 className="mt-3 text-2xl md:text-3xl font-bold">আমাদের ভিডিও লাইব্রেরি</h2>
-            <p className="mt-2 text-muted-foreground">
+            <h2
+              className="mt-3 text-3xl md:text-4xl font-bold tracking-tight animate-fade-in"
+              style={{
+                transform: "translateZ(20px)",
+                textShadow: "0 6px 24px color-mix(in oklab, var(--primary) 15%, transparent)",
+                animationDelay: "80ms",
+                animationFillMode: "both",
+              }}
+            >
+              আমাদের ভিডিও লাইব্রেরি
+            </h2>
+            <p
+              className="mt-2 text-muted-foreground animate-fade-in"
+              style={{ animationDelay: "160ms", animationFillMode: "both" }}
+            >
               কোর্স পরিচিতি, শিক্ষার্থীদের গল্প ও দরকারি টিপস — এক জায়গায়
             </p>
           </div>
 
-          <div className="mt-10">
+          <div className="mt-12">
             <VideoGallery videos={MOCK_VIDEO_GALLERY} />
           </div>
 
-          <div className="mt-10 text-center">
+          <div className="mt-12 text-center">
             <a
               href="https://www.youtube.com"
               target="_blank"
@@ -505,6 +546,7 @@ function HomePage() {
           </div>
         </div>
       </section>
+
 
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
