@@ -114,6 +114,7 @@ export const MOCK_COURSES = [
     level: "beginner",
     is_published: 1,
     is_featured: 1,
+    badge: { text: "বেস্টসেলার", variant: "bestseller" },
     lessons: [
       { id: 1, title: "কোর্স ইন্ট্রোডাকশন", is_preview: 1, sort_order: 1, video_url: null },
       { id: 2, title: "HTML বেসিক", is_preview: 1, sort_order: 2, video_url: null },
