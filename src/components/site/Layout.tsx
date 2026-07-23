@@ -3,6 +3,8 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Menu, X, User, LogOut, Facebook, Youtube, Instagram, Linkedin, MessageCircle } from "lucide-react";
 import { clearAuth, getStoredUser } from "@/lib/api";
 import { useSiteSettings, whatsappLink } from "@/lib/site-settings";
+import paymentsStrip from "@/assets/payments-strip.png.asset.json";
+
 
 
 const NAV = [
@@ -227,18 +229,16 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
           {/* Payment strip */}
           <div className="mt-12 pt-8 border-t border-white/15">
-            <p className="text-center text-xs uppercase tracking-widest text-white/60 mb-4">Payments Accepted</p>
-            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              {["Visa","Mastercard","Amex","bKash","Nagad","Rocket","Upay","Tap","DBBL","City","EBL","BRAC","MTB","IFIC","SSL","PayPal"].map((p) => (
-                <span
-                  key={p}
-                  className="inline-flex items-center justify-center h-9 min-w-[52px] px-3 rounded-md bg-white text-[11px] font-semibold text-slate-700 shadow-sm"
-                >
-                  {p}
-                </span>
-              ))}
+            <div className="rounded-xl bg-white p-3 sm:p-4 shadow-sm overflow-hidden">
+              <img
+                src={paymentsStrip.url}
+                alt="Accepted payment methods — Visa, Mastercard, bKash, Nagad, Rocket, DBBL, MTB, SSLCommerz সহ"
+                className="w-full h-auto object-contain"
+                loading="lazy"
+              />
             </div>
           </div>
+
 
           {/* Bottom bar */}
           <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/60">
