@@ -1,10 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Star, Users, BookOpen, Facebook, Linkedin, Youtube, ArrowLeft } from "lucide-react";
+import { Star, Users, BookOpen, Facebook, Linkedin, Youtube, ArrowLeft, Crown } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
 import { toBn } from "@/lib/format";
+import trainer1 from "@/assets/trainer-1.png";
+import trainer2 from "@/assets/trainer-2.png";
+import trainer3 from "@/assets/trainer-3.png";
+import trainer4 from "@/assets/trainer-4.png";
+
+const TRAINER_IMAGES: Record<string, string> = {
+  "trainer-1": trainer1,
+  "trainer-2": trainer2,
+  "trainer-3": trainer3,
+  "trainer-4": trainer4,
+};
+
 
 const trainerQuery = (slug: string) =>
   queryOptions({
