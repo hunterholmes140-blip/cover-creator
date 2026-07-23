@@ -6,10 +6,11 @@ import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
 import { toBn } from "@/lib/format";
-import trainer1 from "@/assets/trainer-1.jpg";
-import trainer2 from "@/assets/trainer-2.jpg";
-import trainer3 from "@/assets/trainer-3.jpg";
-import trainer4 from "@/assets/trainer-4.jpg";
+import trainer1 from "@/assets/trainer-1.png";
+import trainer2 from "@/assets/trainer-2.png";
+import trainer3 from "@/assets/trainer-3.png";
+import trainer4 from "@/assets/trainer-4.png";
+
 
 const TRAINER_IMAGES: Record<string, string> = {
   "trainer-1": trainer1,
