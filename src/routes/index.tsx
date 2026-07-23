@@ -292,13 +292,22 @@ function HomePage() {
                   </div>
 
 
-                  {/* Script name */}
-                  <h4
-                    className="relative -mt-2 z-10 text-3xl md:text-[2.1rem] leading-none text-foreground transition-colors group-hover:text-primary"
-                    style={{ fontFamily: "var(--font-script)" }}
+                  {/* Name with background pill */}
+                  <div
+                    className={`relative -mt-3 z-10 inline-flex items-center rounded-lg px-4 py-1.5 shadow-md ring-1 ${
+                      isMentor
+                        ? "bg-gradient-to-r from-amber-50 to-orange-50 ring-amber-200"
+                        : "bg-white ring-primary/15"
+                    }`}
                   >
-                    {t.name}
-                  </h4>
+                    <h4
+                      className="text-base md:text-lg font-bold leading-tight text-foreground transition-colors group-hover:text-primary"
+                      style={{ fontFamily: '"Hind Siliguri", var(--font-sans)' }}
+                    >
+                      {t.name}
+                    </h4>
+                  </div>
+
 
                   {/* Title pill */}
                   <div
