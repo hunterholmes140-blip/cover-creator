@@ -73,6 +73,139 @@ export const Route = createFileRoute("/")({
   errorComponent: ({ error }) => <SiteLayout><div className="p-8 text-center text-destructive">ত্রুটি: {error.message}</div></SiteLayout>,
 });
 
+function parseBengaliOrEnglishNumber(str: string): { target: number; suffix: string; prefix: string; hasComma: boolean; isBn: boolean } {
+  if (!str) return { target: 0, suffix: "", prefix: "", hasComma: false, isBn: false };
+
+  const bnToEnMap: Record<string, string> = {
+    "০": "0", "১": "1", "২": "2", "৩": "3", "৪": "4",
+    "৫": "5", "৬": "6", "৭": "7", "৮": "8", "৯": "9",
+  };
+
+  let cleanStr = "";
+  let isBn = false;
+  let prefix = "";
+  let suffix = "";
+  const hasComma = str.includes(",") || str.includes("،");
+
+  const digitRegex = /[0-9০-৯]/;
+  const firstDigitIdx = str.search(digitRegex);
+  let lastDigitIdx = -1;
+
+  for (let i = str.length - 1; i >= 0; i--) {
+    if (digitRegex.test(str[i])) {
+      lastDigitIdx = i;
+      break;
+    }
+  }
+
+  if (firstDigitIdx !== -1 && lastDigitIdx !== -1) {
+    prefix = str.slice(0, firstDigitIdx);
+    suffix = str.slice(lastDigitIdx + 1);
+
+    const digitPart = str.slice(firstDigitIdx, lastDigitIdx + 1);
+    for (const char of digitPart) {
+      if (bnToEnMap[char] !== undefined) {
+        cleanStr += bnToEnMap[char];
+        isBn = true;
+      } else if (/[0-9]/.test(char)) {
+        cleanStr += char;
+      }
+    }
+  }
+
+  const target = parseInt(cleanStr, 10) || 0;
+
+  return { target, suffix, prefix, hasComma, isBn };
+}
+
+function AnimatedStatCard({ icon: Icon, value, label, delay = 0 }: { icon: any; value: string; label: string; delay?: number }) {
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
+  const cardRef = useRef<HTMLDivElement>(null);
+
+  const { target, suffix, prefix, hasComma, isBn } = parseBengaliOrEnglishNumber(value);
+
+  useEffect(() => {
+    const el = cardRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    observer.observe(el);
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!isVisible || target === 0) return;
+
+    let animationFrameId: number;
+    let startTime: number | null = null;
+    const duration = 1800;
+
+    const animate = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime - delay;
+
+      if (elapsed < 0) {
+        animationFrameId = requestAnimationFrame(animate);
+        return;
+      }
+
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const currentCount = Math.floor(easedProgress * target);
+
+      setCount(currentCount);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        setCount(target);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isVisible, target, delay]);
+
+  let numStr = count.toLocaleString("en-US");
+  if (!hasComma) {
+    numStr = count.toString();
+  }
+
+  if (isBn) {
+    numStr = toBn(numStr);
+  }
+
+  const displayString = target === 0 ? value : `${prefix}${numStr}${suffix}`;
+
+  return (
+    <div
+      ref={cardRef}
+      className={`text-center transition-all duration-700 ease-out transform ${
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`}
+      style={{ transitionDelay: `${delay}ms` }}
+    >
+      <div className="mx-auto h-12 w-12 rounded-xl bg-primary/10 text-primary grid place-items-center">
+        <Icon className="h-6 w-6" />
+      </div>
+      <div className="mt-3 text-2xl md:text-3xl font-bold tracking-tight">{displayString}</div>
+      <div className="text-sm text-muted-foreground mt-1">{label}</div>
+    </div>
+  );
+}
+
 function CategoryAutoScroll({ categories }: { categories: any[] }) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
@@ -205,21 +338,21 @@ function HomePage() {
       </section>
 
       {/* STATS */}
-      <section className="border-b border-border bg-muted/30">
+      <section className="border-b border-border bg-muted/30 overflow-hidden">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { icon: UserCheck, n: c.stat1, l: c.stat1Label },
             { icon: BookOpen, n: c.stat2, l: c.stat2Label },
             { icon: GradIcon, n: c.stat3, l: c.stat3Label },
             { icon: TrendingUp, n: c.stat4, l: c.stat4Label },
-          ].map((s) => (
-            <div key={s.l} className="text-center">
-              <div className="mx-auto h-12 w-12 rounded-xl bg-primary/10 text-primary grid place-items-center">
-                <s.icon className="h-6 w-6" />
-              </div>
-              <div className="mt-3 text-2xl md:text-3xl font-bold">{s.n}</div>
-              <div className="text-sm text-muted-foreground mt-1">{s.l}</div>
-            </div>
+          ].map((s, idx) => (
+            <AnimatedStatCard
+              key={s.l}
+              icon={s.icon}
+              value={s.n}
+              label={s.l}
+              delay={idx * 120}
+            />
           ))}
         </div>
       </section>
