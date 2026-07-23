@@ -183,15 +183,51 @@ export default function VideoGallery({ videos }: { videos: GalleryVideo[] }) {
     };
   }, [active]);
 
+  const scrollerRef = useRef<HTMLDivElement>(null);
+  const scrollBy = (dir: 1 | -1) => {
+    const el = scrollerRef.current;
+    if (!el) return;
+    const card = el.querySelector<HTMLElement>("[data-video-card]");
+    const step = card ? card.offsetWidth + 32 : el.clientWidth * 0.9;
+    el.scrollBy({ left: dir * step, behavior: "smooth" });
+  };
+
   return (
     <>
-      <div
-        className="grid gap-8 sm:grid-cols-2 lg:grid-cols-3"
-        style={{ perspective: "1400px" }}
-      >
-        {videos.map((v, i) => (
-          <TiltCard key={v.id} video={v} index={i} onOpen={() => setOpenId(v.id)} />
-        ))}
+      <div className="relative">
+        <div
+          ref={scrollerRef}
+          className="flex gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 -mx-4 px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+          style={{ perspective: "1400px" }}
+        >
+          {videos.map((v, i) => (
+            <div
+              key={v.id}
+              data-video-card
+              className="snap-start shrink-0 w-[85%] sm:w-[46%] lg:w-[31%]"
+            >
+              <TiltCard video={v} index={i} onOpen={() => setOpenId(v.id)} />
+            </div>
+          ))}
+        </div>
+
+        {/* Nav arrows */}
+        <button
+          type="button"
+          onClick={() => scrollBy(-1)}
+          aria-label="আগের ভিডিও"
+          className="hidden md:grid absolute -left-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 place-items-center rounded-full bg-background border border-border shadow-xl hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+        >
+          <ChevronLeft className="h-6 w-6" />
+        </button>
+        <button
+          type="button"
+          onClick={() => scrollBy(1)}
+          aria-label="পরের ভিডিও"
+          className="hidden md:grid absolute -right-4 top-1/2 -translate-y-1/2 z-10 h-12 w-12 place-items-center rounded-full bg-background border border-border shadow-xl hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all"
+        >
+          <ChevronRight className="h-6 w-6" />
+        </button>
       </div>
 
       {/* Modal */}
