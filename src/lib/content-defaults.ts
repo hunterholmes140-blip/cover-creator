@@ -113,6 +113,17 @@ export const FOOTER_CONTENT_DEFAULTS: FooterContent = {
   madeInText: "Made with ❤️ in Bangladesh",
 };
 
+export type RegisterFieldType = "text" | "email" | "tel" | "number" | "textarea" | "select" | "checkbox";
+
+export type RegisterField = {
+  id: string;              // unique key, saved into extra payload
+  label: string;
+  type: RegisterFieldType;
+  placeholder?: string;
+  required?: boolean;
+  options?: string; // comma-separated for select
+};
+
 export type AuthContent = {
   loginTitle: string;
   loginSubtitle: string;
@@ -135,6 +146,13 @@ export type AuthContent = {
   registerFooterText: string;
   registerFooterLinkLabel: string;
   registerExtraHtml: string;
+
+  // Toggle built-in fields
+  showName: boolean;
+  showPhone: boolean;
+
+  // Custom extra fields — admin can add/remove
+  registerFields: RegisterField[];
 };
 
 export const AUTH_CONTENT_DEFAULTS: AuthContent = {
@@ -159,6 +177,11 @@ export const AUTH_CONTENT_DEFAULTS: AuthContent = {
   registerFooterText: "ইতিমধ্যে অ্যাকাউন্ট আছে?",
   registerFooterLinkLabel: "লগইন",
   registerExtraHtml: "",
+
+  showName: true,
+  showPhone: true,
+
+  registerFields: [],
 };
 
 export const CONTENT_KEYS = {
@@ -166,3 +189,4 @@ export const CONTENT_KEYS = {
   FOOTER: "footer",
   AUTH: "auth",
 } as const;
+
