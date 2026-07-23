@@ -10,24 +10,40 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as TrainersRouteImport } from './routes/trainers'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as LoginRouteImport } from './routes/login'
+import { Route as FreeCoursesRouteImport } from './routes/free-courses'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as AffiliateRouteImport } from './routes/affiliate'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrainersIndexRouteImport } from './routes/trainers.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TrainersSlugRouteImport } from './routes/trainers.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AdminTrainersRouteImport } from './routes/admin.trainers'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminCoursesRouteImport } from './routes/admin.courses'
 
 const TrainersRoute = TrainersRouteImport.update({
   id: '/trainers',
   path: '/trainers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegisterRoute = RegisterRouteImport.update({
@@ -35,9 +51,24 @@ const RegisterRoute = RegisterRouteImport.update({
   path: '/register',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RefundPolicyRoute = RefundPolicyRouteImport.update({
+  id: '/refund-policy',
+  path: '/refund-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreeCoursesRoute = FreeCoursesRouteImport.update({
+  id: '/free-courses',
+  path: '/free-courses',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -65,6 +96,16 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AffiliateRoute = AffiliateRouteImport.update({
+  id: '/affiliate',
+  path: '/affiliate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AboutRoute = AboutRouteImport.update({
   id: '/about',
   path: '/about',
@@ -79,6 +120,11 @@ const TrainersIndexRoute = TrainersIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => TrainersRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const TrainersSlugRoute = TrainersSlugRouteImport.update({
   id: '/$slug',
@@ -100,56 +146,108 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   path: '/$slug',
   getParentRoute: () => BlogRoute,
 } as any)
+const AdminTrainersRoute = AdminTrainersRouteImport.update({
+  id: '/trainers',
+  path: '/trainers',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCoursesRoute = AdminCoursesRouteImport.update({
+  id: '/courses',
+  path: '/courses',
+  getParentRoute: () => AdminRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/faq': typeof FaqRoute
+  '/free-courses': typeof FreeCoursesRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/trainers': typeof TrainersRouteWithChildren
+  '/admin/courses': typeof AdminCoursesRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/trainers': typeof AdminTrainersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/trainers/': typeof TrainersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/faq': typeof FaqRoute
+  '/free-courses': typeof FreeCoursesRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
+  '/admin/courses': typeof AdminCoursesRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/trainers': typeof AdminTrainersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/admin': typeof AdminIndexRoute
   '/trainers': typeof TrainersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/admin': typeof AdminRouteWithChildren
+  '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/courses': typeof CoursesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/faq': typeof FaqRoute
+  '/free-courses': typeof FreeCoursesRoute
   '/login': typeof LoginRoute
+  '/privacy-policy': typeof PrivacyPolicyRoute
+  '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/terms': typeof TermsRoute
   '/trainers': typeof TrainersRouteWithChildren
+  '/admin/courses': typeof AdminCoursesRoute
+  '/admin/orders': typeof AdminOrdersRoute
+  '/admin/settings': typeof AdminSettingsRoute
+  '/admin/trainers': typeof AdminTrainersRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/admin/': typeof AdminIndexRoute
   '/trainers/': typeof TrainersIndexRoute
 }
 export interface FileRouteTypes {
@@ -157,64 +255,102 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/admin'
+    | '/affiliate'
     | '/blog'
     | '/contact'
     | '/courses'
     | '/dashboard'
     | '/faq'
+    | '/free-courses'
     | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/register'
+    | '/terms'
     | '/trainers'
+    | '/admin/courses'
+    | '/admin/orders'
+    | '/admin/settings'
+    | '/admin/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/admin/'
     | '/trainers/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
+    | '/affiliate'
     | '/blog'
     | '/contact'
     | '/courses'
     | '/dashboard'
     | '/faq'
+    | '/free-courses'
     | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/register'
+    | '/terms'
+    | '/admin/courses'
+    | '/admin/orders'
+    | '/admin/settings'
+    | '/admin/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/admin'
     | '/trainers'
   id:
     | '__root__'
     | '/'
     | '/about'
+    | '/admin'
+    | '/affiliate'
     | '/blog'
     | '/contact'
     | '/courses'
     | '/dashboard'
     | '/faq'
+    | '/free-courses'
     | '/login'
+    | '/privacy-policy'
+    | '/refund-policy'
     | '/register'
+    | '/terms'
     | '/trainers'
+    | '/admin/courses'
+    | '/admin/orders'
+    | '/admin/settings'
+    | '/admin/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/admin/'
     | '/trainers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminRoute: typeof AdminRouteWithChildren
+  AffiliateRoute: typeof AffiliateRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
   CoursesRoute: typeof CoursesRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   FaqRoute: typeof FaqRoute
+  FreeCoursesRoute: typeof FreeCoursesRoute
   LoginRoute: typeof LoginRoute
+  PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RefundPolicyRoute: typeof RefundPolicyRoute
   RegisterRoute: typeof RegisterRoute
+  TermsRoute: typeof TermsRoute
   TrainersRoute: typeof TrainersRouteWithChildren
   CheckoutSlugRoute: typeof CheckoutSlugRoute
 }
@@ -228,6 +364,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -235,11 +378,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RegisterRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/refund-policy': {
+      id: '/refund-policy'
+      path: '/refund-policy'
+      fullPath: '/refund-policy'
+      preLoaderRoute: typeof RefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
       fullPath: '/login'
       preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free-courses': {
+      id: '/free-courses'
+      path: '/free-courses'
+      fullPath: '/free-courses'
+      preLoaderRoute: typeof FreeCoursesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -277,6 +441,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/affiliate': {
+      id: '/affiliate'
+      path: '/affiliate'
+      fullPath: '/affiliate'
+      preLoaderRoute: typeof AffiliateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -297,6 +475,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/trainers/'
       preLoaderRoute: typeof TrainersIndexRouteImport
       parentRoute: typeof TrainersRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/trainers/$slug': {
       id: '/trainers/$slug'
@@ -326,8 +511,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/admin/trainers': {
+      id: '/admin/trainers'
+      path: '/trainers'
+      fullPath: '/admin/trainers'
+      preLoaderRoute: typeof AdminTrainersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/courses': {
+      id: '/admin/courses'
+      path: '/courses'
+      fullPath: '/admin/courses'
+      preLoaderRoute: typeof AdminCoursesRouteImport
+      parentRoute: typeof AdminRoute
+    }
   }
 }
+
+interface AdminRouteChildren {
+  AdminCoursesRoute: typeof AdminCoursesRoute
+  AdminOrdersRoute: typeof AdminOrdersRoute
+  AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTrainersRoute: typeof AdminTrainersRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCoursesRoute: AdminCoursesRoute,
+  AdminOrdersRoute: AdminOrdersRoute,
+  AdminSettingsRoute: AdminSettingsRoute,
+  AdminTrainersRoute: AdminTrainersRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
@@ -367,13 +598,19 @@ const TrainersRouteWithChildren = TrainersRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminRoute: AdminRouteWithChildren,
+  AffiliateRoute: AffiliateRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
   CoursesRoute: CoursesRouteWithChildren,
   DashboardRoute: DashboardRoute,
   FaqRoute: FaqRoute,
+  FreeCoursesRoute: FreeCoursesRoute,
   LoginRoute: LoginRoute,
+  PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RefundPolicyRoute: RefundPolicyRoute,
   RegisterRoute: RegisterRoute,
+  TermsRoute: TermsRoute,
   TrainersRoute: TrainersRouteWithChildren,
   CheckoutSlugRoute: CheckoutSlugRoute,
 }

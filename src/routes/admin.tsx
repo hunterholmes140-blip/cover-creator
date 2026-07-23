@@ -11,7 +11,7 @@ const NAV = [
   { to: "/admin/courses", label: "কোর্স", Icon: BookOpen },
   { to: "/admin/trainers", label: "ট্রেনার", Icon: Users },
   { to: "/admin/orders", label: "অর্ডার", Icon: ShoppingCart },
-] as const;
+] as const satisfies ReadonlyArray<{ to: string; label: string; Icon: typeof Settings; exact?: boolean }>;
 
 function AdminLayout() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
