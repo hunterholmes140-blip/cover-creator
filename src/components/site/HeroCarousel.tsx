@@ -100,6 +100,43 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         </div>
       </button>
 
+      {/* Prev / Next OUTSIDE the frame + dots */}
+      {total > 1 && (
+        <div className="mt-4 flex items-center justify-center gap-4">
+          <button
+            type="button"
+            onClick={() => setIdx((i) => (i - 1 + total) % total)}
+            aria-label="আগের ভিডিও"
+            className="h-10 w-10 rounded-full border border-border bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary text-foreground grid place-items-center shadow-sm transition"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+
+          <div className="flex items-center gap-1.5">
+            {slides.map((s, i) => (
+              <button
+                key={s.id}
+                type="button"
+                onClick={() => setIdx(i)}
+                aria-label={`স্লাইড ${i + 1}`}
+                className={`h-2 rounded-full transition-all ${
+                  i === idx ? "w-8 bg-primary" : "w-2 bg-border hover:bg-primary/50"
+                }`}
+              />
+            ))}
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIdx((i) => (i + 1) % total)}
+            aria-label="পরের ভিডিও"
+            className="h-10 w-10 rounded-full border border-border bg-background hover:bg-primary hover:text-primary-foreground hover:border-primary text-foreground grid place-items-center shadow-sm transition"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+        </div>
+      )}
+
       {/* Enlarged modal */}
       {open && (
         <div
