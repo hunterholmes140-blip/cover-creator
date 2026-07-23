@@ -5,6 +5,8 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
+import { MOCK_HERO_VIDEOS } from "@/lib/mock-data";
+import { HeroCarousel } from "@/components/site/HeroCarousel";
 import { toBn } from "@/lib/format";
 import trainer1 from "@/assets/trainer-1.png";
 import trainer2 from "@/assets/trainer-2.png";
