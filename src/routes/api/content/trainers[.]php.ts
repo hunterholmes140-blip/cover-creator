@@ -12,7 +12,7 @@ async function readKey(key: string): Promise<any> {
   try { return JSON.parse(row.content_json); } catch { return null; }
 }
 
-export const Route = createFileRoute("/api/content/trainers[.]php")({
+export const Route = createFileRoute("/api/content/trainers.php")({
   server: {
     handlers: {
       GET: async ({ request }) =>

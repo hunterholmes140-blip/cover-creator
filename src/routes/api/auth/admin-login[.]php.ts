@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { qOne } from "@/lib/db.server";
 import { handle, ok, fail, verifyPassword, signToken } from "@/lib/auth.server";
 
-export const Route = createFileRoute("/api/auth/admin-login[.]php")({
+export const Route = createFileRoute("/api/auth/admin-login.php")({
   server: {
     handlers: {
       POST: async ({ request }) =>

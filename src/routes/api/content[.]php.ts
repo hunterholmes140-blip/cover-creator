@@ -3,7 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { qOne, exec } from "@/lib/db.server";
 import { handle, ok, fail } from "@/lib/auth.server";
 
-export const Route = createFileRoute("/api/content[.]php")({
+export const Route = createFileRoute("/api/content.php")({
   server: {
     handlers: {
       GET: async ({ request }) =>
