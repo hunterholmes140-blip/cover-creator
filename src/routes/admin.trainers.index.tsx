@@ -9,18 +9,21 @@ export const Route = createFileRoute("/admin/trainers/")({
 });
 
 function TrainersList() {
-  const { items, update, remove } = useTrainers();
+  const { items, replaceAll, remove, saveNow } = useTrainers();
   const toast = useToast();
   const [confirmId, setConfirmId] = useState<any>(null);
 
-  const setAsMentor = (id: any, on: boolean) => {
-    // Ensure only one head mentor at a time.
-    items.forEach((t: any) => {
-      if (t.id === id) update(t.id, { is_mentor: on });
-      else if (on && t.is_mentor) update(t.id, { is_mentor: false });
-    });
-    toast.show(on ? "প্রধান মেন্টর সেট হয়েছে" : "মেন্টর সরানো হয়েছে");
+  const setAsMentor = async (id: any, on: boolean) => {
+    // Rebuild list in a single atomic write so only one head mentor stays.
+    const next = items.map((t: any) => ({
+      ...t,
+      is_mentor: t.id === id ? (on ? 1 : 0) : 0,
+    }));
+    replaceAll(next);
+    await saveNow(); // push to server immediately, no debounce race
+    toast.show(on ? "প্রধান মেন্টর সেট হয়েছে (সাইটে রিফ্রেশ দিলে দেখা যাবে)" : "মেন্টর সরানো হয়েছে");
   };
+
 
 
   return (
