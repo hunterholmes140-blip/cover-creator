@@ -436,6 +436,7 @@ export const MOCK_POSTS = [
     category: "ভিডিও",
     published_at: "১০ জুলাই, ২০২৬",
     read_time: "৭ মিনিট",
+    cover_image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=900&auto=format&fit=crop&q=70",
     cover_gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
   },
 ];
