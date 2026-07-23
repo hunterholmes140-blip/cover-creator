@@ -3,6 +3,7 @@ import { useEffect, useState, type ReactNode } from "react";
 import { Menu, X, User, LogOut, Facebook, Youtube, Instagram, Linkedin, MessageCircle } from "lucide-react";
 import { clearAuth, getStoredUser } from "@/lib/api";
 import { useSiteSettings, whatsappLink } from "@/lib/site-settings";
+import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import paymentsStrip from "@/assets/payments-strip.png.asset.json";
 import brandLogo from "@/assets/brand-logo.png.asset.json";
 
