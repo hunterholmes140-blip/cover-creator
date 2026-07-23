@@ -45,7 +45,10 @@ function BlogPage() {
             params={{ slug: p.slug }}
             className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all"
           >
-            <div className={`aspect-video bg-gradient-to-br ${p.cover_gradient} relative`}>
+            <div className={`aspect-video bg-gradient-to-br ${p.cover_gradient} relative overflow-hidden`}>
+              {p.cover_image && (
+                <img src={p.cover_image} alt={p.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+              )}
               <span className="absolute top-3 left-3 rounded-full bg-background/90 backdrop-blur px-2.5 py-1 text-xs font-medium">
                 {p.category}
               </span>
