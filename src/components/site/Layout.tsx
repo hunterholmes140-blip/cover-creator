@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Menu, X, User, LogOut, ShoppingBag } from "lucide-react";
+import { Menu, X, User, LogOut, ShoppingBag, Facebook, Youtube, Instagram, Linkedin } from "lucide-react";
 import { clearAuth, getStoredUser } from "@/lib/api";
 
 const NAV = [
