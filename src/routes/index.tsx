@@ -5,8 +5,9 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
-import { MOCK_HERO_VIDEOS } from "@/lib/mock-data";
+import { MOCK_HERO_VIDEOS, MOCK_VIDEO_GALLERY } from "@/lib/mock-data";
 import { HeroCarousel } from "@/components/site/HeroCarousel";
+import VideoGallery from "@/components/site/VideoGallery";
 import { toBn } from "@/lib/format";
 import trainer1 from "@/assets/trainer-1.png";
 import trainer2 from "@/assets/trainer-2.png";
@@ -461,6 +462,46 @@ function HomePage() {
               সব আর্টিকেল দেখুন
               <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* VIDEO GALLERY */}
+      <section className="relative overflow-hidden border-y border-border bg-gradient-to-b from-background via-muted/40 to-background">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.05]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle at 1px 1px, currentColor 1px, transparent 0)",
+            backgroundSize: "22px 22px",
+          }}
+        />
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+          <div className="text-center max-w-2xl mx-auto">
+            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-semibold">
+              <PlayCircle className="h-3.5 w-3.5" /> ভিডিও গ্যালারি
+            </span>
+            <h2 className="mt-3 text-2xl md:text-3xl font-bold">আমাদের ভিডিও লাইব্রেরি</h2>
+            <p className="mt-2 text-muted-foreground">
+              কোর্স পরিচিতি, শিক্ষার্থীদের গল্প ও দরকারি টিপস — এক জায়গায়
+            </p>
+          </div>
+
+          <div className="mt-10">
+            <VideoGallery videos={MOCK_VIDEO_GALLERY} />
+          </div>
+
+          <div className="mt-10 text-center">
+            <a
+              href="https://www.youtube.com"
+              target="_blank"
+              rel="noreferrer"
+              className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-8 py-4 text-base md:text-lg font-semibold shadow-lg shadow-primary/25 ring-1 ring-primary/20 hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 transition-all duration-200"
+            >
+              সব ভিডিও দেখুন
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
+            </a>
           </div>
         </div>
       </section>
