@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { Play, X, Clock } from "lucide-react";
+import { Play, X, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 
 export type GalleryVideo = {
   id: number | string;
