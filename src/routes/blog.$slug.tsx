@@ -45,7 +45,9 @@ function PostPage() {
           <span className="inline-flex items-center gap-1"><Calendar className="h-4 w-4" /> {p.published_at}</span>
           <span className="inline-flex items-center gap-1"><Clock className="h-4 w-4" /> {p.read_time}</span>
         </div>
-        <div className={`mt-8 aspect-video rounded-2xl bg-gradient-to-br ${p.cover_gradient}`} />
+        <div className={`mt-8 aspect-video rounded-2xl bg-gradient-to-br ${p.cover_gradient} overflow-hidden`}>
+          {p.cover_image && <img src={p.cover_image} alt={p.title} className="h-full w-full object-cover" />}
+        </div>
         <div className="mt-8 text-base leading-relaxed whitespace-pre-line text-foreground/90">{p.content}</div>
       </article>
     </SiteLayout>

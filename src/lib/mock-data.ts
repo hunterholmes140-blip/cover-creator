@@ -28,7 +28,8 @@ export const MOCK_COURSES = [
     short_description: "HTML, CSS, JavaScript, React ও Node.js — জিরো থেকে প্রফেশনাল লেভেল পর্যন্ত।",
     description:
       "এই কোর্সে আপনি শিখবেন আধুনিক ওয়েব ডেভেলপমেন্টের সম্পূর্ণ স্ট্যাক। ৫০+ ঘণ্টার ভিডিও কনটেন্ট, ১০টি রিয়েল-ওয়ার্ল্ড প্রজেক্ট এবং লাইফটাইম access পাবেন। কোর্স শেষে আপনি নিজে থেকেই যেকোনো ওয়েবসাইট বানাতে পারবেন এবং freelance কাজ শুরু করতে পারবেন।",
-    thumbnail: "",
+    thumbnail: "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800&auto=format&fit=crop&q=70",
+    preview_video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4",
     price: 5000,
     discount_price: 3500,
     category_id: 1,
@@ -54,7 +55,8 @@ export const MOCK_COURSES = [
     short_description: "Adobe Photoshop, Illustrator ও Figma — লোগো, পোস্টার, ব্র্যান্ডিং সব শিখুন।",
     description:
       "গ্রাফিক ডিজাইনের সব টুল এক কোর্সে। ৩০+ প্রজেক্টের মাধ্যমে শিখুন logo design, brand identity, social media graphics এবং UI/UX-এর বেসিক।",
-    thumbnail: "",
+    thumbnail: "https://images.unsplash.com/photo-1626785774573-4b799315345d?w=800&auto=format&fit=crop&q=70",
+    preview_video: null,
     price: 4500,
     discount_price: 2999,
     category_id: 2,
@@ -74,7 +76,8 @@ export const MOCK_COURSES = [
     short_description: "Facebook Ads, Google Ads, SEO, Content Marketing — সব একসাথে।",
     description:
       "ডিজিটাল মার্কেটিংয়ের প্রতিটি চ্যানেল হাতে-কলমে শিখুন। রিয়েল ক্যাম্পেইন চালিয়ে ROI generate করার কৌশল।",
-    thumbnail: "",
+    thumbnail: "https://images.unsplash.com/photo-1533750349088-cd871a92f312?w=800&auto=format&fit=crop&q=70",
+    preview_video: null,
     price: 6000,
     discount_price: 4500,
     category_id: 3,
@@ -93,7 +96,8 @@ export const MOCK_COURSES = [
     slug: "video-editing-premiere-pro",
     short_description: "YouTube, সিনেমাটিক ভিডিও, কালার গ্রেডিং — সব শিখুন প্রফেশনালভাবে।",
     description: "Adobe Premiere Pro দিয়ে প্রফেশনাল ভিডিও এডিটিং শিখুন জিরো থেকে।",
-    thumbnail: "",
+    thumbnail: "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=800&auto=format&fit=crop&q=70",
+    preview_video: null,
     price: 4000,
     discount_price: null,
     category_id: 4,
@@ -112,7 +116,8 @@ export const MOCK_COURSES = [
     slug: "advanced-react-nextjs",
     short_description: "সিনিয়র লেভেল React প্যাটার্ন, Next.js, SSR ও ডেপ্লয়মেন্ট।",
     description: "যারা React বেসিক জানেন তাদের জন্য নেক্সট লেভেল কোর্স।",
-    thumbnail: "",
+    thumbnail: "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&auto=format&fit=crop&q=70",
+    preview_video: null,
     price: 7000,
     discount_price: 5500,
     category_id: 1,
@@ -131,7 +136,8 @@ export const MOCK_COURSES = [
     slug: "ui-ux-figma",
     short_description: "মোবাইল ও ওয়েব অ্যাপের জন্য মডার্ন UI/UX ডিজাইন করুন।",
     description: "Figma দিয়ে প্রফেশনাল UI/UX ডিজাইন — user research থেকে prototype পর্যন্ত।",
-    thumbnail: "",
+    thumbnail: "https://images.unsplash.com/photo-1587440871875-191322ee64b0?w=800&auto=format&fit=crop&q=70",
+    preview_video: null,
     price: 5500,
     discount_price: 3999,
     category_id: 2,
@@ -288,6 +294,7 @@ export const MOCK_TESTIMONIALS = [
     course: "সম্পূর্ণ ওয়েব ডেভেলপমেন্ট বুটক্যাম্প",
     rating: 5,
     comment: "কোর্স শেষ করার ৩ মাসের মধ্যেই Upwork-এ প্রথম কাজ পাই। এখন মাসে ৫০ হাজার+ টাকা আয় করি। NextScale-এর প্রতিটি টাকা wisely spent!",
+    avatar_image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-blue-500 to-cyan-500",
   },
   {
@@ -297,6 +304,7 @@ export const MOCK_TESTIMONIALS = [
     course: "প্রফেশনাল গ্রাফিক ডিজাইন মাস্টারক্লাস",
     rating: 5,
     comment: "সাদিয়া আপার পড়ানোর স্টাইল অসাধারণ। প্রতিটি concept বাংলায় বুঝিয়ে দেন। এখন নিজে ক্লায়েন্ট নিয়ে কাজ করছি।",
+    avatar_image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-pink-500 to-rose-500",
   },
   {
@@ -306,6 +314,7 @@ export const MOCK_TESTIMONIALS = [
     course: "ডিজিটাল মার্কেটিং সম্পূর্ণ গাইড",
     rating: 5,
     comment: "নিজের ব্যবসার Facebook Ads নিজেই চালাচ্ছি এখন। ROI ৩ গুণ বেড়েছে। কোর্সে দেখানো strategy real-life-এ কাজ করে।",
+    avatar_image: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-emerald-500 to-teal-500",
   },
   {
@@ -315,6 +324,7 @@ export const MOCK_TESTIMONIALS = [
     course: "ভিডিও এডিটিং প্রো — Premiere Pro",
     rating: 4,
     comment: "কোর্সের প্রজেক্টগুলো দারুণ। আরিফ ভাইয়ের কালার গ্রেডিং সেকশনটা best ছিল। আমার ইউটিউব চ্যানেল এখন monetized!",
+    avatar_image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-amber-500 to-orange-500",
   },
   {
@@ -324,6 +334,7 @@ export const MOCK_TESTIMONIALS = [
     course: "Advanced React ও Next.js",
     rating: 5,
     comment: "University-র পাশাপাশি এই কোর্স করে internship পেয়েছি একটা top tech company-তে। Practical projects-গুলো interview-তে দারুণ কাজে দিয়েছে।",
+    avatar_image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-violet-500 to-purple-500",
   },
   {
@@ -333,6 +344,7 @@ export const MOCK_TESTIMONIALS = [
     course: "UI/UX ডিজাইন উইথ Figma",
     rating: 5,
     comment: "Zero থেকে শুরু করে আজ আমি একটি startup-এ full-time Product Designer। NextScale-এর কারণেই এটা সম্ভব হয়েছে।",
+    avatar_image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-indigo-500 to-blue-500",
   },
 ];
@@ -385,6 +397,7 @@ export const MOCK_POSTS = [
     category: "ক্যারিয়ার",
     published_at: "২৫ জুলাই, ২০২৬",
     read_time: "৬ মিনিট",
+    cover_image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&auto=format&fit=crop&q=70",
     cover_gradient: "from-blue-500 via-cyan-500 to-teal-500",
   },
   {
@@ -397,6 +410,7 @@ export const MOCK_POSTS = [
     category: "ডিজাইন",
     published_at: "২০ জুলাই, ২০২৬",
     read_time: "৪ মিনিট",
+    cover_image: "https://images.unsplash.com/photo-1609921212029-bb5a28e60960?w=900&auto=format&fit=crop&q=70",
     cover_gradient: "from-pink-500 via-rose-500 to-red-500",
   },
   {
@@ -409,6 +423,7 @@ export const MOCK_POSTS = [
     category: "মার্কেটিং",
     published_at: "১৫ জুলাই, ২০২৬",
     read_time: "৫ মিনিট",
+    cover_image: "https://images.unsplash.com/photo-1611926653458-09294b3142bf?w=900&auto=format&fit=crop&q=70",
     cover_gradient: "from-emerald-500 via-green-500 to-lime-500",
   },
   {
@@ -421,6 +436,7 @@ export const MOCK_POSTS = [
     category: "ভিডিও",
     published_at: "১০ জুলাই, ২০২৬",
     read_time: "৭ মিনিট",
+    cover_image: "https://images.unsplash.com/photo-1536240478700-b869070f9279?w=900&auto=format&fit=crop&q=70",
     cover_gradient: "from-violet-500 via-purple-500 to-fuchsia-500",
   },
 ];

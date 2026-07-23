@@ -103,15 +103,25 @@ function HomePage() {
           </div>
 
           <div className="relative">
-            <div className="aspect-square max-w-md mx-auto rounded-3xl bg-gradient-to-br from-primary to-primary/60 p-8 shadow-2xl relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_50%)]" />
-              <div className="relative h-full flex flex-col justify-between text-primary-foreground">
-                <PlayCircle className="h-16 w-16 opacity-90" />
+            <div className="relative aspect-video max-w-lg mx-auto rounded-3xl overflow-hidden shadow-2xl ring-1 ring-primary/20 bg-black">
+              <video
+                src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                poster="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=70"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="h-full w-full object-cover"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
                 <div>
-                  <div className="text-sm opacity-80">চলছে</div>
-                  <div className="text-2xl font-bold mt-1">লাইভ ক্লাস</div>
-                  <div className="text-sm opacity-80 mt-2">{toBn(featured.courses.length)}টি প্রিমিয়াম কোর্স</div>
+                  <div className="text-xs opacity-80">চলছে</div>
+                  <div className="text-xl font-bold leading-tight">লাইভ ক্লাস প্রিভিউ</div>
                 </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-3 py-1.5 text-xs font-semibold shadow-lg">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" /> {toBn(featured.courses.length)}টি কোর্স
+                </span>
               </div>
             </div>
           </div>
@@ -392,9 +402,13 @@ function HomePage() {
               </div>
               <p className="mt-4 text-sm text-foreground/90 leading-relaxed flex-1">"{t.comment}"</p>
               <div className="mt-5 pt-4 border-t border-border flex items-center gap-3">
-                <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.avatar_color} grid place-items-center text-white font-bold`}>
-                  {t.name.charAt(0)}
-                </div>
+                {t.avatar_image ? (
+                  <img src={t.avatar_image} alt={t.name} loading="lazy" className="h-10 w-10 rounded-full object-cover" />
+                ) : (
+                  <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.avatar_color} grid place-items-center text-white font-bold`}>
+                    {t.name.charAt(0)}
+                  </div>
+                )}
                 <div>
                   <div className="font-semibold text-sm">{t.name}</div>
                   <div className="text-xs text-muted-foreground">{t.role}</div>
@@ -420,7 +434,10 @@ function HomePage() {
           <div className="mt-6 grid md:grid-cols-3 gap-5">
             {posts.posts.slice(0, 3).map((p) => (
               <Link key={p.id} to="/blog/$slug" params={{ slug: p.slug }} className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all">
-                <div className={`aspect-video bg-gradient-to-br ${p.cover_gradient} relative`}>
+                <div className={`aspect-video bg-gradient-to-br ${p.cover_gradient} relative overflow-hidden`}>
+                  {p.cover_image && (
+                    <img src={p.cover_image} alt={p.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                  )}
                   <span className="absolute top-3 left-3 rounded-full bg-background/90 backdrop-blur px-2.5 py-1 text-xs font-medium">
                     {p.category}
                   </span>
