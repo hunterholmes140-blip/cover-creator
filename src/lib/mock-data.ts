@@ -423,6 +423,7 @@ export const MOCK_POSTS = [
     category: "মার্কেটিং",
     published_at: "১৫ জুলাই, ২০২৬",
     read_time: "৫ মিনিট",
+    cover_image: "https://images.unsplash.com/photo-1611926653458-09294b3142bf?w=900&auto=format&fit=crop&q=70",
     cover_gradient: "from-emerald-500 via-green-500 to-lime-500",
   },
   {
