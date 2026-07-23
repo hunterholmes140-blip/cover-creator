@@ -20,7 +20,7 @@ const trainersQuery = queryOptions({
   queryFn: () => api<{ trainers: any[] }>("content/trainers.php"),
 });
 
-export const Route = createFileRoute("/trainers")({
+export const Route = createFileRoute("/trainers/")({
   head: () => ({
     meta: [
       { title: "আমাদের ট্রেনার — NextScale Academy" },

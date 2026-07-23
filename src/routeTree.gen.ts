@@ -9,7 +9,6 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TrainersRouteImport } from './routes/trainers'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -19,16 +18,12 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrainersIndexRouteImport } from './routes/trainers.index'
 import { Route as TrainersSlugRouteImport } from './routes/trainers.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
-const TrainersRoute = TrainersRouteImport.update({
-  id: '/trainers',
-  path: '/trainers',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -74,10 +69,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrainersIndexRoute = TrainersIndexRouteImport.update({
+  id: '/trainers/',
+  path: '/trainers/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TrainersSlugRoute = TrainersSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => TrainersRoute,
+  id: '/trainers/$slug',
+  path: '/trainers/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
   id: '/$slug',
@@ -105,11 +105,11 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/trainers': typeof TrainersRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/trainers/': typeof TrainersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -121,11 +121,11 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/trainers': typeof TrainersRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/trainers': typeof TrainersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -138,11 +138,11 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/trainers': typeof TrainersRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/trainers/': typeof TrainersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -156,11 +156,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/login'
     | '/register'
-    | '/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/trainers/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -172,11 +172,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/login'
     | '/register'
-    | '/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/trainers'
   id:
     | '__root__'
     | '/'
@@ -188,11 +188,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/login'
     | '/register'
-    | '/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/trainers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -205,19 +205,13 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
-  TrainersRoute: typeof TrainersRouteWithChildren
   CheckoutSlugRoute: typeof CheckoutSlugRoute
+  TrainersSlugRoute: typeof TrainersSlugRoute
+  TrainersIndexRoute: typeof TrainersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/trainers': {
-      id: '/trainers'
-      path: '/trainers'
-      fullPath: '/trainers'
-      preLoaderRoute: typeof TrainersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -281,12 +275,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trainers/': {
+      id: '/trainers/'
+      path: '/trainers'
+      fullPath: '/trainers/'
+      preLoaderRoute: typeof TrainersIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trainers/$slug': {
       id: '/trainers/$slug'
-      path: '/$slug'
+      path: '/trainers/$slug'
       fullPath: '/trainers/$slug'
       preLoaderRoute: typeof TrainersSlugRouteImport
-      parentRoute: typeof TrainersRoute
+      parentRoute: typeof rootRouteImport
     }
     '/courses/$slug': {
       id: '/courses/$slug'
@@ -333,18 +334,6 @@ const CoursesRouteChildren: CoursesRouteChildren = {
 const CoursesRouteWithChildren =
   CoursesRoute._addFileChildren(CoursesRouteChildren)
 
-interface TrainersRouteChildren {
-  TrainersSlugRoute: typeof TrainersSlugRoute
-}
-
-const TrainersRouteChildren: TrainersRouteChildren = {
-  TrainersSlugRoute: TrainersSlugRoute,
-}
-
-const TrainersRouteWithChildren = TrainersRoute._addFileChildren(
-  TrainersRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -355,8 +344,9 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
-  TrainersRoute: TrainersRouteWithChildren,
   CheckoutSlugRoute: CheckoutSlugRoute,
+  TrainersSlugRoute: TrainersSlugRoute,
+  TrainersIndexRoute: TrainersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
