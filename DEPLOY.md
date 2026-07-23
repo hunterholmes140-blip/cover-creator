@@ -1,108 +1,101 @@
 # NextScale Academy — Deployment Guide (Hostinger)
 
+**আপনার সাইট এখন Node (TanStack Start) হিসেবে চলছে।** কোনো PHP লাগবে না।
+সব API আছে `src/routes/api/**/*.php.ts` ফাইলগুলোর ভিতরে।
+
+---
+
 ## ধাপ ১ — ডাটাবেজ তৈরি
 
-1. Hostinger cPanel → **MySQL Databases** → নতুন database তৈরি করুন
-   (যেমন: `u123456_nextscale`), user + password তৈরি করে database-এ assign করুন।
-2. **phpMyAdmin** খুলুন → নতুন database সিলেক্ট করুন → **Import** ট্যাব।
-3. `database/schema.sql` ফাইল আপলোড করে **Go** চাপুন।
+1. hPanel → **Databases → MySQL** থেকে database তৈরি করুন
+   (যেমন: `u399219073_course`) এবং user + password তৈরি করে database-এ assign করুন।
+2. **phpMyAdmin** খুলুন → database সিলেক্ট করে **Import** ট্যাবে `database/schema.sql`
+   আপলোড করে **Go** চাপুন।
 
-## ধাপ ২ — PHP API আপলোড
+## ধাপ ২ — Environment variables সেট করুন
 
-1. `php-api/config.php` খুলে আপনার DB credentials বসান:
-   ```php
-   define('DB_HOST', 'localhost');
-   define('DB_NAME', 'u123456_nextscale');
-   define('DB_USER', 'u123456_admin');
-   define('DB_PASS', 'your-strong-password');
-   define('ALLOWED_ORIGIN', 'https://yourdomain.com');
-   ```
-2. File Manager / FTP দিয়ে `php-api/` ফোল্ডারের সব ফাইল Hostinger-এর
-   `public_html/api/` ফোল্ডারে আপলোড করুন।
-3. `public_html/uploads/` ফোল্ডার তৈরি করে permission `755` দিন।
+hPanel → Websites → vencon.com.bd → **Environment variables** থেকে নিচের ৫টা
+value যোগ করুন:
 
-## ধাপ ৩ — React ফ্রন্টএন্ড বিল্ড ও আপলোড
+| Name         | Value                                    |
+| ------------ | ---------------------------------------- |
+| `DB_HOST`    | `127.0.0.1`                              |
+| `DB_NAME`    | `u399219073_course`                      |
+| `DB_USER`    | `u399219073_course`                      |
+| `DB_PASS`    | আপনার MySQL পাসওয়ার্ড                    |
+| `JWT_SECRET` | ৩২+ ক্যারেক্টারের একটা random string     |
 
-1. লোকাল মেশিনে (বা Lovable থেকে ডাউনলোড করে):
-   ```bash
-   # .env ফাইল তৈরি করুন:
-   echo "VITE_API_URL=https://yourdomain.com/api" > .env
+`JWT_SECRET` বানানোর সহজ উপায়: `openssl rand -hex 32` অথবা পাসওয়ার্ড ম্যানেজার।
 
-   npm install
-   npm run build
-   ```
-2. `dist/` ফোল্ডারের **ভেতরের সব কিছু** (index.html, assets/, ইত্যাদি)
-   Hostinger-এর `public_html/` ফোল্ডারে আপলোড করুন।
-3. `public/.htaccess` ফাইলটাও `public_html/` এ যাবে (SPA routing এর জন্য)।
+> **VITE_API_URL সেট করার দরকার নেই** — কোড অটোমেটিক same-origin `/api` ব্যবহার করবে।
 
-> **গুরুত্বপূর্ণ — এডমিন প্যানেল অটো-গ্লোবাল হয়ে যাবে:**
-> `VITE_API_URL` সেট থাকলে এডমিন প্যানেলের সব সেভ (হোমপেজ টেক্সট, ফুটার,
-> টেস্টিমোনিয়াল, FAQ, সেটিংস) MySQL-এর `site_content` টেবিল ও অন্যান্য
-> টেবিলে যাবে — সব ভিজিটর সাথে সাথে দেখবে। Lovable প্রিভিউতে `VITE_API_URL`
-> সেট নেই বলে ওখানে শুধু ব্রাউজারের `localStorage`-এ সেভ হয়। কোনো কোড
-> পরিবর্তন লাগে না — শুধু `.env` + `bun run build`।
+## ধাপ ৩ — GitHub থেকে ডিপ্লয়
 
-## ধাপ ৪ — এডমিন লগইন
+GitHub push করলেই Hostinger automatic redeploy করবে। Deployment complete হলে
+`https://vencon.com.bd/api/courses/list.php` এ ভিজিট করে JSON রেসপন্স দেখুন।
 
-- URL: `https://yourdomain.com/admin/login`
-- Email: `admin@nextscale.com`
-- Password: `admin123`
-- **প্রথম লগইনের পর পাসওয়ার্ড অবশ্যই পাল্টান** (এডমিন সেটিংস → পাসওয়ার্ড পরিবর্তন)।
+## ধাপ ৪ — Admin এ লগইন
 
-## ধাপ ৫ — সেটিংস কনফিগ
+- URL: `https://vencon.com.bd/admin/login`
+- ইমেইল: `admin@nextscale.com`
+- পাসওয়ার্ড: `admin123`
 
-এডমিন প্যানেল → **Settings** এ গিয়ে সেট করুন:
-- সাইট নাম, লোগো
-- bKash / Nagad / Rocket নম্বর (checkout-এ দেখাবে)
-- কন্ট্যাক্ট ইমেইল/ফোন
+লগইন করেই **অবশ্যই পাসওয়ার্ড বদলান** (Admin → Settings)।
 
-## ফাইল স্ট্রাকচার (Hostinger public_html/)
+---
 
-```
-public_html/
-├── index.html              (React build)
-├── assets/                 (React JS/CSS)
-├── .htaccess               (SPA routing)
-├── api/                    (PHP API)
-│   ├── config.php
-│   ├── auth/
-│   ├── courses/
-│   ├── orders/
-│   └── admin/
-└── uploads/                (থাম্বনেইল upload)
-```
+## API Endpoints
 
-## API Endpoints (সংক্ষেপে)
+সব endpoint same-origin, prefix `/api/`।
 
-| Method | Endpoint                       | কাজ                            |
-| ------ | ------------------------------ | ------------------------------ |
-| POST   | /api/auth/register.php         | ইউজার সাইনআপ                   |
-| POST   | /api/auth/login.php            | ইউজার লগইন                     |
-| POST   | /api/auth/admin-login.php      | এডমিন লগইন                     |
-| GET    | /api/auth/me.php               | current user                   |
-| GET    | /api/courses/list.php          | সব কোর্স                       |
-| GET    | /api/courses/detail.php?slug=  | single কোর্স                   |
-| GET    | /api/courses/categories.php    | ক্যাটেগরি লিস্ট                |
-| GET    | /api/courses/my-courses.php    | আমার এনরোল্ড কোর্স             |
-| POST   | /api/orders/create.php         | নতুন অর্ডার                    |
-| GET    | /api/orders/my-orders.php      | আমার অর্ডার                    |
-| GET/POST/PUT/DELETE | /api/admin/courses.php  | কোর্স CRUD             |
-| GET/POST/PUT/DELETE | /api/admin/lessons.php  | lesson CRUD            |
-| GET/POST/PUT/DELETE | /api/admin/categories.php | ক্যাটেগরি CRUD       |
-| GET/PUT/DELETE      | /api/admin/orders.php    | অর্ডার approve/reject |
-| GET/DELETE          | /api/admin/users.php     | ইউজার লিস্ট           |
-| GET/PUT             | /api/admin/settings.php  | সাইট সেটিংস           |
-| POST                | /api/admin/upload.php    | ইমেজ আপলোড            |
-| GET                 | /api/admin/stats.php     | dashboard stats       |
+**Public**
+| Method | Path                              |
+| ------ | --------------------------------- |
+| GET    | `/api/courses/list.php`           |
+| GET    | `/api/courses/detail.php?slug=`   |
+| GET    | `/api/courses/categories.php`     |
+| GET    | `/api/content.php?key=`           |
+| GET    | `/api/content/trainers.php`       |
+| GET    | `/api/content/testimonials.php`   |
+| GET    | `/api/content/faqs.php`           |
+| GET    | `/api/content/posts.php`          |
 
-## Auth কীভাবে কাজ করে
+**Auth**
+| Method | Path                          |
+| ------ | ----------------------------- |
+| POST   | `/api/auth/register.php`      |
+| POST   | `/api/auth/login.php`         |
+| POST   | `/api/auth/admin-login.php`   |
+| GET    | `/api/auth/me.php`            |
 
-- Login/Register response-এ `token` আসে।
-- Frontend সেই token localStorage-এ রাখবে।
-- Protected request-এ header: `Authorization: Bearer <token>`।
+**User (Bearer token লাগবে)**
+| Method | Path                          |
+| ------ | ----------------------------- |
+| GET    | `/api/courses/my-courses.php` |
+| GET    | `/api/orders/my-orders.php`   |
+| POST   | `/api/orders/create.php`      |
 
-## সমস্যা?
+**Admin (Bearer token লাগবে, role=admin)**
+| Method            | Path                          |
+| ----------------- | ----------------------------- |
+| GET               | `/api/admin/stats.php`        |
+| GET/POST/PUT/DEL  | `/api/admin/courses.php`      |
+| GET/POST/PUT/DEL  | `/api/admin/categories.php`   |
+| GET/POST/PUT/DEL  | `/api/admin/lessons.php`      |
+| GET/PUT/DEL       | `/api/admin/orders.php`       |
+| GET/DEL           | `/api/admin/users.php`        |
+| GET/PUT           | `/api/admin/settings.php`     |
+| PUT               | `/api/admin/content.php`      |
 
-- **CORS error:** `config.php`-এ `ALLOWED_ORIGIN` আপনার ডোমেইনে সেট করুন।
-- **500 error:** Hostinger error log চেক করুন। সাধারণত DB credentials ভুল।
-- **404 on refresh:** `.htaccess` ঠিকমতো আপলোড হয়নি।
+---
+
+## Troubleshooting
+
+- **500 error / "DB_USER missing"** — Environment variables সঠিকভাবে সেট
+  হয়েছে কিনা চেক করুন; সেট করার পর redeploy দিন।
+- **"এই ইমেইল আগেই ব্যবহৃত"** কিন্তু কোনো user নেই — phpMyAdmin এ `users`
+  টেবিল চেক করুন।
+- **Admin পাসওয়ার্ড কাজ করছে না** — schema.sql এ ডিফল্ট hash আছে (`admin123`)।
+  বদলাতে চাইলে bcrypt hash generate করে UPDATE করুন।
+- **404 on `/api/*`** — deployment logs চেক করুন, রুট ফাইল build এ ঢুকেছে
+  কিনা দেখুন।
