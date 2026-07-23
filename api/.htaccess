@@ -1,7 +1,0 @@
-# API ফোল্ডারের জন্য — কিছু hide করি
-<Files "config.php">
-    Require all denied
-</Files>
-
-# PHP execution allow
-Options -Indexes
