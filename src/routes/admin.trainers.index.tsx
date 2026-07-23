@@ -4,7 +4,7 @@ import { Plus, Pencil, Trash2, Star } from "lucide-react";
 import { useTrainers } from "@/lib/admin-store";
 import { PageHeader, Card, Button, ConfirmDialog, useToast, Empty, Badge } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/admin/trainers")({
+export const Route = createFileRoute("/admin/trainers/")({
   component: TrainersList,
 });
 
