@@ -1,10 +1,26 @@
 import { Link } from "@tanstack/react-router";
 import { Clock, User } from "lucide-react";
+import { useEffect, useState } from "react";
 import { taka } from "@/lib/format";
+import { resolveBadge, BADGE_STYLES, type CourseBadge } from "@/lib/course-badges";
 
 export function CourseCard({ course }: { course: any }) {
   const price = course.discount_price ?? course.price;
   const hasDiscount = course.discount_price && course.discount_price < course.price;
+
+  const [badge, setBadge] = useState<CourseBadge | null>(() => resolveBadge(course));
+  useEffect(() => {
+    const update = () => setBadge(resolveBadge(course));
+    update();
+    window.addEventListener("course-badges-changed", update);
+    window.addEventListener("storage", update);
+    return () => {
+      window.removeEventListener("course-badges-changed", update);
+      window.removeEventListener("storage", update);
+    };
+  }, [course]);
+
+  const style = badge ? BADGE_STYLES[badge.variant] : null;
 
   return (
     <Link
@@ -24,6 +40,15 @@ export function CourseCard({ course }: { course: any }) {
           <span className="absolute top-3 left-3 rounded-full bg-background/90 backdrop-blur px-2.5 py-1 text-xs font-medium">
             {course.category_name}
           </span>
+        )}
+        {badge && style && (
+          <div
+            className={`absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r ${style.gradient} px-3 py-1.5 text-xs font-bold text-white ring-2 ${style.ring} shadow-lg ${style.glow} backdrop-blur-sm`}
+            style={{ fontFamily: '"Hind Siliguri", sans-serif' }}
+          >
+            <span className="text-sm leading-none">{style.icon}</span>
+            <span className="leading-none">{badge.text}</span>
+          </div>
         )}
       </div>
       <div className="p-4">
