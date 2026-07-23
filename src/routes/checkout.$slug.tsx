@@ -1,0 +1,164 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { CheckCircle2 } from "lucide-react";
+import { SiteLayout } from "@/components/site/Layout";
+import { api, getStoredUser } from "@/lib/api";
+import { taka } from "@/lib/format";
+
+export const Route = createFileRoute("/checkout/$slug")({
+  head: () => ({
+    meta: [
+      { title: "চেকআউট — NextScale" },
+      { name: "description", content: "কোর্স এনরোলমেন্ট সম্পন্ন করুন।" },
+    ],
+  }),
+  loader: async ({ params }) => {
+    const res = await api<{ course: any }>("courses/detail.php", { query: { slug: params.slug } });
+    return res;
+  },
+  component: CheckoutPage,
+  errorComponent: ({ error }) => <SiteLayout><div className="p-8 text-center text-destructive">{error.message}</div></SiteLayout>,
+});
+
+function CheckoutPage() {
+  const { course } = Route.useLoaderData();
+  const nav = useNavigate();
+  const [user, setUser] = useState<any>(null);
+  const [method, setMethod] = useState<"bkash" | "nagad" | "rocket">("bkash");
+  const [f, setF] = useState({ sender_number: "", transaction_id: "", note: "" });
+  const [loading, setLoading] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+  const [err, setErr] = useState<string | null>(null);
+
+  useEffect(() => {
+    setUser(getStoredUser());
+  }, []);
+
+  const amount = course.discount_price ?? course.price;
+  const numbers: Record<string, string> = {
+    bkash: "01700-000000",
+    nagad: "01700-000000",
+    rocket: "01700-000000",
+  };
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErr(null);
+    if (!user) {
+      nav({ to: "/login" });
+      return;
+    }
+    setLoading(true);
+    try {
+      await api("orders/create.php", {
+        method: "POST",
+        auth: true,
+        body: { course_id: course.id, payment_method: method, ...f },
+      });
+      setMsg("অর্ডার সাবমিট হয়েছে! এডমিন verify করার পর কোর্স access পাবেন।");
+    } catch (e: any) {
+      setErr(e.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (msg) {
+    return (
+      <SiteLayout>
+        <div className="mx-auto max-w-lg px-4 py-16 text-center">
+          <CheckCircle2 className="mx-auto h-16 w-16 text-green-600" />
+          <h1 className="mt-4 text-2xl font-bold">ধন্যবাদ!</h1>
+          <p className="mt-3 text-muted-foreground">{msg}</p>
+          <Link to="/dashboard" className="mt-6 inline-flex rounded-lg bg-primary text-primary-foreground px-6 py-3 font-semibold">
+            ড্যাশবোর্ডে যান
+          </Link>
+        </div>
+      </SiteLayout>
+    );
+  }
+
+  return (
+    <SiteLayout>
+      <div className="mx-auto max-w-4xl px-4 py-10 grid lg:grid-cols-[1fr_320px] gap-8">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold">চেকআউট</h1>
+          <p className="mt-2 text-muted-foreground">নিচের যেকোনো নম্বরে পেমেন্ট পাঠিয়ে transaction ID সাবমিট করুন।</p>
+
+          <div className="mt-6 rounded-xl border border-border bg-card p-5">
+            <h2 className="font-semibold mb-4">পেমেন্ট মেথড</h2>
+            <div className="grid grid-cols-3 gap-3">
+              {(["bkash", "nagad", "rocket"] as const).map((m) => (
+                <button
+                  key={m}
+                  type="button"
+                  onClick={() => setMethod(m)}
+                  className={`rounded-lg border-2 py-3 text-sm font-semibold uppercase ${method === m ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary/40"}`}
+                >
+                  {m === "bkash" ? "bKash" : m === "nagad" ? "Nagad" : "Rocket"}
+                </button>
+              ))}
+            </div>
+            <div className="mt-4 rounded-lg bg-muted p-4 text-sm">
+              <div className="text-muted-foreground">Send Money নম্বর:</div>
+              <div className="mt-1 text-2xl font-bold tracking-wide">{numbers[method]}</div>
+              <div className="mt-2 text-xs text-muted-foreground">পরিমাণ: <span className="font-bold text-foreground">{taka(amount)}</span></div>
+            </div>
+          </div>
+
+          <form onSubmit={submit} className="mt-6 rounded-xl border border-border bg-card p-5 space-y-4">
+            <h2 className="font-semibold">পেমেন্ট তথ্য</h2>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">যে নম্বর থেকে পাঠিয়েছেন</label>
+              <input required value={f.sender_number} onChange={(e) => setF({ ...f, sender_number: e.target.value })}
+                placeholder="01XXXXXXXXX"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">Transaction ID</label>
+              <input required value={f.transaction_id} onChange={(e) => setF({ ...f, transaction_id: e.target.value })}
+                placeholder="যেমন: 8N7A5B2K1"
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1.5">নোট (ঐচ্ছিক)</label>
+              <textarea rows={2} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })}
+                className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
+            </div>
+            {err && <div className="rounded-md bg-destructive/10 text-destructive text-sm p-3">{err}</div>}
+            {!user && (
+              <div className="rounded-md bg-yellow-500/10 text-yellow-700 dark:text-yellow-500 text-sm p-3">
+                অর্ডার সাবমিট করতে আগে <Link to="/login" className="underline font-semibold">লগইন</Link> করুন।
+              </div>
+            )}
+            <button disabled={loading} className="w-full rounded-lg bg-primary text-primary-foreground py-3 font-semibold hover:bg-primary/90 disabled:opacity-60">
+              {loading ? "সাবমিট হচ্ছে..." : "অর্ডার সাবমিট করুন"}
+            </button>
+          </form>
+        </div>
+
+        <aside className="lg:sticky lg:top-24 self-start">
+          <div className="rounded-xl border border-border bg-card p-5">
+            <h3 className="font-semibold mb-4">অর্ডার সামারি</h3>
+            <div className="text-sm font-medium">{course.title}</div>
+            {course.instructor && <div className="text-xs text-muted-foreground mt-1">ইন্সট্রাক্টর: {course.instructor}</div>}
+            <div className="mt-4 pt-4 border-t border-border flex justify-between text-sm">
+              <span className="text-muted-foreground">কোর্স মূল্য</span>
+              <span>{taka(course.price)}</span>
+            </div>
+            {course.discount_price && (
+              <div className="flex justify-between text-sm text-green-600">
+                <span>ছাড়</span>
+                <span>-{taka(course.price - course.discount_price)}</span>
+              </div>
+            )}
+            <div className="mt-3 pt-3 border-t border-border flex justify-between font-bold text-lg">
+              <span>মোট</span>
+              <span className="text-primary">{taka(amount)}</span>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </SiteLayout>
+  );
+}
