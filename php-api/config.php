@@ -4,14 +4,27 @@
 // এই ফাইলে আপনার Hostinger DB credentials বসান
 // ============================================================
 
-// -------- Database Credentials (Hostinger) --------
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'u399219073_course');
-define('DB_USER', 'u399219073_course');
-define('DB_PASS', 'Foyej2022@#');
+// -------- Load .env from project root (one level above /api) --------
+$__envPath = __DIR__ . '/../.env';
+if (is_file($__envPath)) {
+    foreach (file($__envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES) as $__line) {
+        if (str_starts_with(trim($__line), '#')) continue;
+        if (!str_contains($__line, '=')) continue;
+        [$__k, $__v] = explode('=', $__line, 2);
+        $__k = trim($__k); $__v = trim($__v, " \t\n\r\0\x0B\"'");
+        if ($__k !== '' && getenv($__k) === false) { putenv("$__k=$__v"); $_ENV[$__k] = $__v; }
+    }
+}
+function env_val($k, $default = '') { $v = getenv($k); return $v === false ? $default : $v; }
+
+// -------- Database Credentials (from .env) --------
+define('DB_HOST', env_val('DB_HOST', 'localhost'));
+define('DB_NAME', env_val('DB_NAME', 'u399219073_course'));
+define('DB_USER', env_val('DB_USER', 'u399219073_course'));
+define('DB_PASS', env_val('DB_PASS', ''));
 
 // -------- Frontend URL (CORS) --------
-define('ALLOWED_ORIGIN', 'https://vencon.com.bd');
+define('ALLOWED_ORIGIN', env_val('ALLOWED_ORIGIN', 'https://vencon.com.bd'));
 
 // -------- Upload directory --------
 define('UPLOAD_DIR', __DIR__ . '/../uploads/');
