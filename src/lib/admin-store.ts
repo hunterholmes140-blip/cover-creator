@@ -158,6 +158,7 @@ function useCollection<T extends { id: any }>(c: Collection<T>) {
     remove: (id: any) => c.remove(id),
     replaceAll: (next: T[]) => c.replaceAll(next),
     reset: () => c.reset(),
+    saveNow: () => c.saveNow(),
   };
 }
 
