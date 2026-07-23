@@ -156,8 +156,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             {/* Brand */}
             <div className="lg:pr-4">
               <div className="flex items-center gap-2">
-                <div className="h-10 w-10 rounded-lg bg-white text-primary grid place-items-center font-bold shadow-md">
-                  {settings.brandName.charAt(0)}
+                <div className="h-11 w-11 rounded-lg bg-white grid place-items-center shadow-md p-1.5">
+                  <img src={brandLogo.url} alt={settings.brandName} className="h-full w-full object-contain" />
                 </div>
                 <span className="text-2xl font-extrabold tracking-tight">{settings.brandName}</span>
               </div>
