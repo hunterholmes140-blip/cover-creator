@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { makeSlug } from "@/lib/admin-store";
 import { Field, Input, Textarea, Button } from "@/components/admin/ui";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+
 
 export type TrainerFormValue = {
   name: string;
@@ -129,12 +131,15 @@ export function TrainerForm({
           <Field label="বায়ো">
             <Textarea rows={4} value={v.bio} onChange={(e) => set("bio", e.target.value)} />
           </Field>
-          <Field label="ছবির URL">
-            <Input value={v.avatar_url} onChange={(e) => set("avatar_url", e.target.value)} />
-            {v.avatar_url && (
-              <img src={v.avatar_url} alt="" className="mt-2 h-16 w-16 rounded-full object-cover" />
-            )}
+          <Field label="প্রোফাইল ছবি">
+            <ImageUpload
+              value={v.avatar_url}
+              onChange={(url) => set("avatar_url", url)}
+              aspect="square"
+              maxDim={600}
+            />
           </Field>
+
         </div>
         <label className="inline-flex items-center gap-2 text-sm">
           <input type="checkbox" checked={v.is_mentor} onChange={(e) => set("is_mentor", e.target.checked)} />

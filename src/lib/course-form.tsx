@@ -100,12 +100,10 @@ export function CourseForm({
           <Field label="বিস্তারিত বিবরণ">
             <Textarea rows={5} value={v.description} onChange={(e) => set("description", e.target.value)} />
           </Field>
-          <Field label="Thumbnail URL">
-            <Input value={v.thumbnail} onChange={(e) => set("thumbnail", e.target.value)} placeholder="https://..." />
-            {v.thumbnail && (
-              <img src={v.thumbnail} alt="" className="mt-2 h-24 w-40 rounded object-cover border border-border" />
-            )}
+          <Field label="Thumbnail">
+            <ImageUpload value={v.thumbnail} onChange={(url) => set("thumbnail", url)} />
           </Field>
+
         </div>
       </section>
 

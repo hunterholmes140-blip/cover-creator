@@ -55,10 +55,10 @@ export function BlogForm({
           <Field label="ক্যাটাগরি"><Input value={v.category} onChange={(e) => set("category", e.target.value)} /></Field>
           <Field label="প্রকাশের তারিখ"><Input value={v.published_at} onChange={(e) => set("published_at", e.target.value)} /></Field>
           <Field label="পড়ার সময়"><Input value={v.read_time} onChange={(e) => set("read_time", e.target.value)} /></Field>
-          <Field label="Cover Image URL">
-            <Input value={v.cover_image} onChange={(e) => set("cover_image", e.target.value)} />
-            {v.cover_image && <img src={v.cover_image} alt="" className="mt-2 h-24 w-40 rounded object-cover border border-border" />}
+          <Field label="Cover Image">
+            <ImageUpload value={v.cover_image} onChange={(url) => set("cover_image", url)} />
           </Field>
+
           <Field label="Cover Gradient" hint='যেমন: "from-blue-500 via-cyan-500 to-teal-500"'>
             <Input value={v.cover_gradient} onChange={(e) => set("cover_gradient", e.target.value)} />
           </Field>
