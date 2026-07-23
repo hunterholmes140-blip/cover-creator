@@ -56,7 +56,7 @@ function AdminLayout() {
       <main className="flex-1 min-w-0">
         <div className="md:hidden bg-card border-b border-border p-3 flex gap-2 overflow-x-auto">
           {NAV.map(({ to, label, Icon }) => (
-            <Link key={to} to={to} className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs whitespace-nowrap">
+            <Link key={to} to={to as any} className="inline-flex items-center gap-1 rounded-md border border-border px-3 py-1.5 text-xs whitespace-nowrap">
               <Icon className="h-3.5 w-3.5" /> {label}
             </Link>
           ))}
