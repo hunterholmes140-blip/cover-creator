@@ -7,8 +7,15 @@
 
 import { useSyncExternalStore } from "react";
 
-const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
-const USE_REMOTE = !!API_URL;
+function detectLive(): boolean {
+  const envUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
+  if (envUrl) return true;
+  if (typeof window === "undefined") return false;
+  const h = window.location.hostname;
+  return !(h.includes("lovableproject.com") || h.startsWith("id-preview--"));
+}
+const USE_REMOTE = detectLive();
+const API_URL = ((import.meta.env.VITE_API_URL as string | undefined) ?? "").replace(/\/$/, "") || (USE_REMOTE ? "/api" : "");
 const LS_PREFIX = "ns.content.";
 
 type Listener = () => void;
