@@ -1,6 +1,6 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Menu, X, User, LogOut, ShoppingBag } from "lucide-react";
+import { Menu, X, User, LogOut, ShoppingBag, Facebook, Youtube, Instagram, Linkedin } from "lucide-react";
 import { clearAuth, getStoredUser } from "@/lib/api";
 
 const NAV = [
@@ -135,39 +135,116 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
       <main className="flex-1">{children}</main>
 
-      <footer className="border-t border-border bg-muted/30 mt-16">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 grid gap-8 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <div className="flex items-center gap-2">
-              <div className="h-9 w-9 rounded-lg bg-primary text-primary-foreground grid place-items-center font-bold">N</div>
-              <span className="text-lg font-bold">NextScale Academy</span>
+      <footer className="relative mt-20 text-white overflow-hidden bg-[linear-gradient(135deg,#2a1170_0%,#3d1a8a_45%,#5b21b6_100%)]">
+        {/* decorative glows */}
+        <div aria-hidden className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-fuchsia-500/20 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl" />
+
+        <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-14 pb-8">
+          <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
+            {/* Brand */}
+            <div className="lg:pr-4">
+              <div className="flex items-center gap-2">
+                <div className="h-10 w-10 rounded-lg bg-white text-primary grid place-items-center font-bold shadow-md">N</div>
+                <span className="text-2xl font-extrabold tracking-tight">NextScale</span>
+              </div>
+              <p className="mt-4 text-sm leading-relaxed text-white/75">
+                একজনকে মাছ ধরে দিলে সে একদিন খেতে পারবে; মাছ ধরা শেখালে সারাজীবন। আমরা শেখাই — সারাজীবনের জন্য।
+              </p>
+              <div className="mt-5 flex items-center gap-3">
+                {[
+                  { Icon: Facebook, label: "Facebook", href: "#" },
+                  { Icon: Youtube, label: "YouTube", href: "#" },
+                  { Icon: Instagram, label: "Instagram", href: "#" },
+                  { Icon: Linkedin, label: "LinkedIn", href: "#" },
+                ].map(({ Icon, label, href }) => (
+                  <a
+                    key={label}
+                    href={href}
+                    aria-label={label}
+                    className="grid h-9 w-9 place-items-center rounded-full bg-white/10 hover:bg-white hover:text-primary transition-colors ring-1 ring-white/15"
+                  >
+                    <Icon className="h-4 w-4" />
+                  </a>
+                ))}
+              </div>
             </div>
-            <p className="mt-3 text-sm text-muted-foreground max-w-md">
-              বাংলাদেশের অগ্রণী অনলাইন লার্নিং প্ল্যাটফর্ম। ইন্ডাস্ট্রি এক্সপার্টদের কাছ থেকে শিখুন এবং ক্যারিয়ার গড়ুন।
-            </p>
+
+            {/* Company */}
+            <div>
+              <h4 className="text-lg font-bold mb-4">কোম্পানি</h4>
+              <ul className="space-y-3 text-sm text-white/80">
+                <li><Link to="/about" className="hover:text-white transition-colors">আমাদের সম্পর্কে</Link></li>
+                <li><a href="#" className="hover:text-white transition-colors">রিফান্ড পলিসি</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">প্রাইভেসি পলিসি</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">শর্তাবলী</a></li>
+              </ul>
+            </div>
+
+            {/* Contact */}
+            <div>
+              <h4 className="text-lg font-bold mb-4">যোগাযোগ</h4>
+              <ul className="space-y-3 text-sm text-white/80">
+                <li><a href="#" className="hover:text-white transition-colors">WhatsApp চ্যাট</a></li>
+                <li><a href="tel:+8801700000000" className="hover:text-white transition-colors">কল করুন</a></li>
+                <li><a href="mailto:support@nextscale.com" className="hover:text-white transition-colors">support@nextscale.com</a></li>
+              </ul>
+            </div>
+
+            {/* Quick Links */}
+            <div>
+              <h4 className="text-lg font-bold mb-4">কুইক লিংক</h4>
+              <ul className="space-y-3 text-sm text-white/80">
+                <li><Link to="/dashboard" className="hover:text-white transition-colors">অ্যাফিলিয়েট অ্যাকাউন্ট</Link></li>
+                <li><Link to="/courses" className="hover:text-white transition-colors">সব কোর্স</Link></li>
+                <li><Link to="/courses" className="hover:text-white transition-colors">ফ্রি কোর্স</Link></li>
+                <li><Link to="/blog" className="hover:text-white transition-colors">ব্লগ</Link></li>
+              </ul>
+            </div>
+
+            {/* Gov Info */}
+            <div>
+              <h4 className="text-lg font-bold mb-4">সরকারি তথ্য</h4>
+              <ul className="space-y-3 text-sm text-white/80">
+                <li>
+                  <span className="block text-white/60 text-xs">ট্রেড লাইসেন্স</span>
+                  <span className="font-medium">2022191679400130৪</span>
+                </li>
+                <li>
+                  <span className="block text-white/60 text-xs">BIN নং</span>
+                  <span className="font-medium">004876442-0601</span>
+                </li>
+                <li>
+                  <span className="block text-white/60 text-xs">DBID নং</span>
+                  <span className="font-medium">714248165</span>
+                </li>
+              </ul>
+            </div>
           </div>
-          <div>
-            <h4 className="font-semibold mb-3 text-sm">কুইক লিংক</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li><Link to="/courses" className="hover:text-primary">সব কোর্স</Link></li>
-              <li><Link to="/about" className="hover:text-primary">আমাদের সম্পর্কে</Link></li>
-              <li><Link to="/contact" className="hover:text-primary">যোগাযোগ</Link></li>
-            </ul>
+
+          {/* Payment strip */}
+          <div className="mt-12 pt-8 border-t border-white/15">
+            <p className="text-center text-xs uppercase tracking-widest text-white/60 mb-4">Payments Accepted</p>
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
+              {["Visa","Mastercard","Amex","bKash","Nagad","Rocket","Upay","Tap","DBBL","City","EBL","BRAC","MTB","IFIC","SSL","PayPal"].map((p) => (
+                <span
+                  key={p}
+                  className="inline-flex items-center justify-center h-9 min-w-[52px] px-3 rounded-md bg-white text-[11px] font-semibold text-slate-700 shadow-sm"
+                >
+                  {p}
+                </span>
+              ))}
+            </div>
           </div>
-          <div>
-            <h4 className="font-semibold mb-3 text-sm">যোগাযোগ</h4>
-            <ul className="space-y-2 text-sm text-muted-foreground">
-              <li>📧 info@nextscale.com</li>
-              <li>📞 +৮৮০ ১৭০০-০০০০০০</li>
-            </ul>
-          </div>
-        </div>
-        <div className="border-t border-border">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-4 text-center text-xs text-muted-foreground">
-            © {new Date().getFullYear()} NextScale Academy. সর্বস্বত্ব সংরক্ষিত।
+
+          {/* Bottom bar */}
+          <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/60">
+            <p>© {new Date().getFullYear()} NextScale Academy. সর্বস্বত্ব সংরক্ষিত।</p>
+            <p>Made with ❤️ in Bangladesh</p>
           </div>
         </div>
       </footer>
+
     </div>
   );
 }
