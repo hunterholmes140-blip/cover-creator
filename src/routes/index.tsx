@@ -193,11 +193,42 @@ function HomePage() {
       </section>
 
       {/* MENTOR + TRAINERS */}
-      <section className="border-y border-border bg-gradient-to-br from-primary/15 via-primary/5 to-accent">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
-          <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-bold tracking-widest text-primary uppercase">Founder & Team</span>
-            <h2 className="mt-2 text-2xl md:text-3xl font-bold">আমাদের মেন্টর ও ট্রেনার</h2>
+      <section className="relative overflow-hidden border-y border-border bg-gradient-to-br from-primary/10 via-background to-accent/60">
+        {/* Decorative pattern */}
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-0 opacity-[0.15]"
+          style={{
+            backgroundImage:
+              "radial-gradient(circle, hsl(var(--primary)) 1px, transparent 1px)",
+            backgroundSize: "22px 22px",
+          }}
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -top-24 -left-24 h-72 w-72 rounded-full bg-primary/20 blur-3xl"
+        />
+        <div
+          aria-hidden
+          className="pointer-events-none absolute -bottom-24 -right-24 h-72 w-72 rounded-full bg-amber-400/20 blur-3xl"
+        />
+
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-14">
+          {/* Section header with side lines */}
+          <div className="flex flex-col items-center text-center">
+            <span className="text-[11px] font-bold tracking-[0.25em] text-primary uppercase">
+              Founder & Team
+            </span>
+            <div className="mt-3 flex items-center gap-3">
+              <span className="h-px w-10 bg-gradient-to-r from-transparent to-primary/60" />
+              <h2 className="text-2xl md:text-3xl font-bold">
+                আমাদের মেন্টর ও ট্রেনার
+              </h2>
+              <span className="h-px w-10 bg-gradient-to-l from-transparent to-primary/60" />
+            </div>
+            <p className="mt-2 max-w-md text-sm text-muted-foreground">
+              ইন্ডাস্ট্রি-অভিজ্ঞ প্রফেশনালদের কাছ থেকে সরাসরি শিখুন
+            </p>
           </div>
 
           {(() => {
@@ -214,31 +245,44 @@ function HomePage() {
                 >
                   {/* Circle + PNG cutout */}
                   <div className="relative w-full max-w-[220px] aspect-square">
-                    {/* Teal circle background */}
+                    {/* Outer dashed decorative ring */}
                     <div
-                      className={`absolute inset-x-0 bottom-0 top-[15%] rounded-full shadow-lg transition-transform duration-500 group-hover:scale-[1.03] ${
-                        isMentor
-                          ? "bg-gradient-to-br from-amber-400 to-amber-600"
-                          : "bg-gradient-to-br from-primary to-primary/70"
+                      className={`absolute inset-x-0 bottom-0 top-[12%] rounded-full border-2 border-dashed transition-transform duration-700 group-hover:rotate-45 ${
+                        isMentor ? "border-amber-400/60" : "border-primary/40"
+                      }`}
+                      style={{ transform: "scale(1.08)" }}
+                    />
+                    {/* Soft glow */}
+                    <div
+                      className={`absolute inset-x-0 bottom-0 top-[15%] rounded-full blur-2xl opacity-60 transition-opacity duration-500 group-hover:opacity-90 ${
+                        isMentor ? "bg-amber-400/50" : "bg-primary/40"
                       }`}
                     />
-                    {/* Mentor crown */}
+                    {/* Solid colored circle */}
+                    <div
+                      className={`absolute inset-x-0 bottom-0 top-[15%] rounded-full shadow-xl ring-4 ring-white transition-transform duration-500 group-hover:scale-[1.04] ${
+                        isMentor
+                          ? "bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500"
+                          : "bg-gradient-to-br from-primary via-primary to-primary/70"
+                      }`}
+                    />
+                    {/* Mentor crown badge */}
                     {isMentor && (
-                      <div className="absolute top-1 right-2 z-20 h-8 w-8 rounded-full bg-white shadow-md grid place-items-center">
+                      <div className="absolute top-0 right-3 z-20 h-9 w-9 rounded-full bg-white shadow-lg ring-2 ring-amber-200 grid place-items-center">
                         <Crown className="h-4 w-4 text-amber-500" />
                       </div>
                     )}
                     {/* Rating pill */}
-                    <div className="absolute bottom-3 right-1 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-amber-600 shadow-md">
+                    <div className="absolute bottom-2 right-0 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-amber-600 shadow-lg ring-1 ring-amber-100">
                       <Star className="h-3 w-3 fill-current" /> {t.rating}
                     </div>
-                    {/* PNG cutout — bleeds above the circle */}
+                    {/* PNG cutout */}
                     {img ? (
                       <img
                         src={img}
                         alt={t.name}
                         loading="lazy"
-                        className="absolute inset-x-0 bottom-0 mx-auto h-[115%] w-auto object-contain object-bottom drop-shadow-xl transition-transform duration-500 group-hover:-translate-y-1"
+                        className="relative z-10 mx-auto h-full w-auto object-contain object-bottom drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2"
                       />
                     ) : (
                       <div className="absolute inset-x-0 bottom-0 mx-auto h-[80%] w-[80%] grid place-items-center text-white text-6xl font-bold">
@@ -249,7 +293,7 @@ function HomePage() {
 
                   {/* Script name */}
                   <h4
-                    className="relative -mt-3 z-10 text-3xl md:text-4xl leading-none text-foreground"
+                    className="relative -mt-2 z-10 text-3xl md:text-[2.1rem] leading-none text-foreground transition-colors group-hover:text-primary"
                     style={{ fontFamily: "var(--font-script)" }}
                   >
                     {t.name}
@@ -257,8 +301,10 @@ function HomePage() {
 
                   {/* Title pill */}
                   <div
-                    className={`mt-2 inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow ${
-                      isMentor ? "bg-amber-500" : "bg-primary"
+                    className={`mt-2.5 inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white shadow-md transition-transform group-hover:scale-105 ${
+                      isMentor
+                        ? "bg-gradient-to-r from-amber-500 to-orange-500"
+                        : "bg-gradient-to-r from-primary to-primary/80"
                     }`}
                   >
                     <BadgeCheck className="h-3 w-3" />
@@ -271,20 +317,31 @@ function HomePage() {
             return (
               <>
                 {/* Mentor on top, centered */}
-                <div className="mt-8 flex justify-center">
+                <div className="mt-10 flex justify-center">
                   <div className="w-full max-w-[240px]">
                     <TrainerCard t={mentor} mentor />
                   </div>
                 </div>
 
+                {/* Divider ornament */}
+                <div className="mt-10 flex items-center justify-center gap-2 opacity-60">
+                  <span className="h-px w-16 bg-border" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+                  <span className="h-2 w-2 rounded-full bg-primary" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+                  <span className="h-px w-16 bg-border" />
+                </div>
+
                 {/* Trainer grid */}
-                <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
                   {rest.slice(0, 4).map((t: any) => <TrainerCard key={t.id} t={t} />)}
                 </div>
 
-
-                <div className="mt-6 text-center">
-                  <Link to="/trainers" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                <div className="mt-10 text-center">
+                  <Link
+                    to="/trainers"
+                    className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-5 py-2 text-sm font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-colors"
+                  >
                     সব ট্রেনার দেখুন <ArrowRight className="h-4 w-4" />
                   </Link>
                 </div>
@@ -293,6 +350,7 @@ function HomePage() {
           })()}
         </div>
       </section>
+
 
 
       {/* TESTIMONIALS */}
