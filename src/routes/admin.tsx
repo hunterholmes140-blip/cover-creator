@@ -103,6 +103,7 @@ const GROUPS: NavGroup[] = [
     items: [
       { to: "/admin", label: "ড্যাশবোর্ড", Icon: LayoutDashboard, exact: true },
       { to: "/admin/settings", label: "সাইট সেটিংস", Icon: Settings },
+      { to: "/admin/marketing", label: "মার্কেটিং / Pixel", Icon: Megaphone },
     ],
   },
   {
