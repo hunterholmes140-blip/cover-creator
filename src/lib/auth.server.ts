@@ -82,6 +82,9 @@ export async function handle(fn: () => Promise<Response>): Promise<Response> {
   } catch (e: any) {
     if (e instanceof HttpError) return fail(e.status, e.message);
     console.error("[api]", e);
+    if (e?.message === "JWT_SECRET env var missing") {
+      return fail(500, "JWT_SECRET Environment Variable সেট করা নেই");
+    }
     if (e?.code === "ER_ACCESS_DENIED_ERROR") {
       return fail(500, "ডাটাবেজ কানেকশন সেটিংস সঠিক নয়");
     }
