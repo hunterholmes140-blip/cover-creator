@@ -1,10 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Star, Users, BookOpen, Facebook, Linkedin, Youtube, ArrowLeft } from "lucide-react";
+import { Star, Users, BookOpen, Facebook, Linkedin, Youtube, ArrowLeft, Crown } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
 import { toBn } from "@/lib/format";
+import trainer1 from "@/assets/trainer-1.png";
+import trainer2 from "@/assets/trainer-2.png";
+import trainer3 from "@/assets/trainer-3.png";
+import trainer4 from "@/assets/trainer-4.png";
+
+const TRAINER_IMAGES: Record<string, string> = {
+  "trainer-1": trainer1,
+  "trainer-2": trainer2,
+  "trainer-3": trainer3,
+  "trainer-4": trainer4,
+};
+
 
 const trainerQuery = (slug: string) =>
   queryOptions({
@@ -40,10 +52,49 @@ function TrainerDetailPage() {
           <Link to="/trainers" className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-primary mb-6">
             <ArrowLeft className="h-4 w-4" /> সব ট্রেনার
           </Link>
-          <div className="flex flex-col md:flex-row items-start gap-6">
-            <div className="h-28 w-28 rounded-2xl bg-gradient-to-br from-primary to-primary/60 grid place-items-center text-primary-foreground text-5xl font-bold shrink-0">
-              {t.name.charAt(0)}
+          <div className="flex flex-col md:flex-row items-center md:items-start gap-8">
+            {/* Circle avatar — same style as home */}
+            <div className="relative w-[200px] aspect-square shrink-0">
+              <div
+                className={`absolute inset-0 rounded-full border-2 border-dashed ${
+                  t.is_mentor ? "border-amber-400/60" : "border-primary/40"
+                }`}
+                style={{ transform: "scale(1.08)" }}
+              />
+              <div
+                className={`absolute inset-0 rounded-full blur-2xl opacity-60 ${
+                  t.is_mentor ? "bg-amber-400/50" : "bg-primary/40"
+                }`}
+              />
+              <div
+                className={`absolute inset-0 overflow-hidden rounded-full shadow-xl ring-4 ring-white ${
+                  t.is_mentor
+                    ? "bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500"
+                    : "bg-gradient-to-br from-primary via-primary to-primary/70"
+                }`}
+              >
+                {TRAINER_IMAGES[t.avatar] ? (
+                  <img
+                    src={TRAINER_IMAGES[t.avatar]}
+                    alt={t.name}
+                    className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom"
+                  />
+                ) : (
+                  <div className="absolute inset-0 grid place-items-center text-white text-6xl font-bold">
+                    {t.name.charAt(0)}
+                  </div>
+                )}
+              </div>
+              {t.is_mentor && (
+                <div className="absolute -top-1 right-1 z-20 h-9 w-9 rounded-full bg-white shadow-lg ring-2 ring-amber-200 grid place-items-center">
+                  <Crown className="h-4 w-4 text-amber-500" />
+                </div>
+              )}
+              <div className="absolute -bottom-1 right-1 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-amber-600 shadow-lg ring-1 ring-amber-100">
+                <Star className="h-3 w-3 fill-current" /> {t.rating}
+              </div>
             </div>
+
             <div className="flex-1">
               <h1 className="text-3xl md:text-4xl font-bold">{t.name}</h1>
               <p className="mt-1 text-lg text-primary font-medium">{t.title}</p>
