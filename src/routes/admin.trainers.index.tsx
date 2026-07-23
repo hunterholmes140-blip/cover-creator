@@ -13,6 +13,16 @@ function TrainersList() {
   const toast = useToast();
   const [confirmId, setConfirmId] = useState<any>(null);
 
+  const setAsMentor = (id: any, on: boolean) => {
+    // Ensure only one head mentor at a time.
+    items.forEach((t: any) => {
+      if (t.id === id) update(t.id, { is_mentor: on });
+      else if (on && t.is_mentor) update(t.id, { is_mentor: false });
+    });
+    toast.show(on ? "প্রধান মেন্টর সেট হয়েছে" : "মেন্টর সরানো হয়েছে");
+  };
+
+
   return (
     <div className="max-w-6xl mx-auto">
       <PageHeader
@@ -59,11 +69,12 @@ function TrainersList() {
                 <Button
                   size="sm"
                   variant="secondary"
-                  onClick={() => update(t.id, { is_mentor: !t.is_mentor })}
-                  title="Mentor toggle"
+                  onClick={() => setAsMentor(t.id, !t.is_mentor)}
+                  title="প্রধান মেন্টর টগল"
                 >
                   <Star className="h-3 w-3" fill={t.is_mentor ? "currentColor" : "none"} />
                 </Button>
+
                 <Button size="sm" variant="danger" onClick={() => setConfirmId(t.id)}>
                   <Trash2 className="h-3 w-3" />
                 </Button>
