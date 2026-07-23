@@ -210,7 +210,7 @@ function CourseDetailPage() {
                 </Link>
               ) : (
                 <button
-                  onClick={() => setShowEnroll(true)}
+                  onClick={openEnroll}
                   className="ml-auto rounded-lg bg-primary text-primary-foreground px-5 py-2.5 font-semibold"
                 >
                   এখনই এনরোল করুন
@@ -227,7 +227,7 @@ function CourseDetailPage() {
               hasDiscount={!!hasDiscount}
               discountPct={discountPct}
               enrolled={enrolled}
-              onEnroll={() => setShowEnroll(true)}
+              onEnroll={openEnroll}
             />
           </aside>
         </div>
@@ -386,7 +386,7 @@ function CourseDetailPage() {
           </Link>
         ) : (
           <button
-            onClick={() => setShowEnroll(true)}
+            onClick={openEnroll}
             className="flex-1 rounded-lg bg-primary text-primary-foreground py-3 font-semibold"
           >
             এনরোল করুন
