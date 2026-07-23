@@ -1,4 +1,12 @@
-import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  type ReactNode,
+} from "react";
+import { useContent } from "./content-store";
 
 export type SiteSettings = {
   brandName: string;
@@ -11,16 +19,17 @@ export type SiteSettings = {
   instagramUrl: string;
   linkedinUrl: string;
   // Colors — HSL values only (space separated) to match Tailwind theme tokens
-  primaryHsl: string;      // e.g. "262 83% 58%"
+  primaryHsl: string;
   accentHsl: string;
-  footerFrom: string;      // hex or CSS color
+  footerFrom: string;
   footerVia: string;
   footerTo: string;
 };
 
 export const DEFAULT_SETTINGS: SiteSettings = {
   brandName: "NextScale",
-  brandTagline: "একজনকে মাছ ধরে দিলে সে একদিন খেতে পারবে; মাছ ধরা শেখালে সারাজীবন। আমরা শেখাই — সারাজীবনের জন্য।",
+  brandTagline:
+    "একজনকে মাছ ধরে দিলে সে একদিন খেতে পারবে; মাছ ধরা শেখালে সারাজীবন। আমরা শেখাই — সারাজীবনের জন্য।",
   whatsappNumber: "8801700000000",
   phoneNumber: "+8801700000000",
   email: "support@nextscale.com",
@@ -35,7 +44,8 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   footerTo: "#5a2f0c",
 };
 
-const STORAGE_KEY = "nextscale.site-settings.v2";
+// Content-store key — same key is read by public pages and written by admin.
+const SETTINGS_KEY = "site_settings";
 
 type Ctx = {
   settings: SiteSettings;
@@ -44,17 +54,6 @@ type Ctx = {
 };
 
 const SiteSettingsContext = createContext<Ctx | null>(null);
-
-function loadSettings(): SiteSettings {
-  if (typeof window === "undefined") return DEFAULT_SETTINGS;
-  try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return DEFAULT_SETTINGS;
-    return { ...DEFAULT_SETTINGS, ...JSON.parse(raw) };
-  } catch {
-    return DEFAULT_SETTINGS;
-  }
-}
 
 function applyCssVars(s: SiteSettings) {
   if (typeof document === "undefined") return;
@@ -68,36 +67,27 @@ function applyCssVars(s: SiteSettings) {
 }
 
 export function SiteSettingsProvider({ children }: { children: ReactNode }) {
-  const [settings, setSettings] = useState<SiteSettings>(DEFAULT_SETTINGS);
+  const [settings, setPatch, setAll] = useContent<SiteSettings>(
+    SETTINGS_KEY,
+    DEFAULT_SETTINGS,
+  );
 
   useEffect(() => {
-    const loaded = loadSettings();
-    setSettings(loaded);
-    applyCssVars(loaded);
-  }, []);
+    applyCssVars(settings);
+  }, [settings]);
 
-  const update = useCallback((patch: Partial<SiteSettings>) => {
-    setSettings((prev) => {
-      const next = { ...prev, ...patch };
-      try {
-        window.localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-      } catch {}
-      applyCssVars(next);
-      return next;
-    });
-  }, []);
+  const update = useCallback(
+    (patch: Partial<SiteSettings>) => setPatch(patch),
+    [setPatch],
+  );
 
-  const reset = useCallback(() => {
-    try {
-      window.localStorage.removeItem(STORAGE_KEY);
-    } catch {}
-    setSettings(DEFAULT_SETTINGS);
-    applyCssVars(DEFAULT_SETTINGS);
-  }, []);
+  const reset = useCallback(() => setAll(DEFAULT_SETTINGS), [setAll]);
 
   const value = useMemo(() => ({ settings, update, reset }), [settings, update, reset]);
 
-  return <SiteSettingsContext.Provider value={value}>{children}</SiteSettingsContext.Provider>;
+  return (
+    <SiteSettingsContext.Provider value={value}>{children}</SiteSettingsContext.Provider>
+  );
 }
 
 export function useSiteSettings() {
