@@ -103,15 +103,25 @@ function HomePage() {
           </div>
 
           <div className="relative">
-            <div className="aspect-square max-w-md mx-auto rounded-3xl bg-gradient-to-br from-primary to-primary/60 p-8 shadow-2xl relative overflow-hidden">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.2),transparent_50%)]" />
-              <div className="relative h-full flex flex-col justify-between text-primary-foreground">
-                <PlayCircle className="h-16 w-16 opacity-90" />
+            <div className="relative aspect-video max-w-lg mx-auto rounded-3xl overflow-hidden shadow-2xl ring-1 ring-primary/20 bg-black">
+              <video
+                src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
+                poster="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=70"
+                autoPlay
+                muted
+                loop
+                playsInline
+                className="h-full w-full object-cover"
+              />
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
                 <div>
-                  <div className="text-sm opacity-80">চলছে</div>
-                  <div className="text-2xl font-bold mt-1">লাইভ ক্লাস</div>
-                  <div className="text-sm opacity-80 mt-2">{toBn(featured.courses.length)}টি প্রিমিয়াম কোর্স</div>
+                  <div className="text-xs opacity-80">চলছে</div>
+                  <div className="text-xl font-bold leading-tight">লাইভ ক্লাস প্রিভিউ</div>
                 </div>
+                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-3 py-1.5 text-xs font-semibold shadow-lg">
+                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" /> {toBn(featured.courses.length)}টি কোর্স
+                </span>
               </div>
             </div>
           </div>
