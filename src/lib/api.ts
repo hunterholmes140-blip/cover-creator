@@ -22,8 +22,20 @@ function fromStore<T>(getter: () => T[], fallback: T[]): T[] {
   } catch { return fallback; }
 }
 
-const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
-const USE_MOCK = !API_URL;
+// Runtime detection: Lovable preview iframes host on lovableproject.com /
+// lovable.app preview subdomains — there we use in-browser mock data.
+// Everywhere else (custom domain, published site) we call same-origin /api.
+function detectLive(): boolean {
+  const envUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
+  if (envUrl) return true;
+  if (typeof window === "undefined") return false;
+  const h = window.location.hostname;
+  const isPreview = h.includes("lovableproject.com") || h.startsWith("id-preview--");
+  return !isPreview;
+}
+const LIVE = detectLive();
+const API_URL = ((import.meta.env.VITE_API_URL as string | undefined) ?? "").replace(/\/$/, "") || (LIVE ? "/api" : "");
+const USE_MOCK = !LIVE;
 
 const TOKEN_KEY = "nextscale_token";
 const USER_KEY = "nextscale_user";

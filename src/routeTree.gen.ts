@@ -61,6 +61,14 @@ import { Route as ApiAuthRegisterDotphpRouteImport } from './routes/api/auth/reg
 import { Route as ApiAuthMeDotphpRouteImport } from './routes/api/auth/me[.]php'
 import { Route as ApiAuthLoginDotphpRouteImport } from './routes/api/auth/login[.]php'
 import { Route as ApiAuthAdminLoginDotphpRouteImport } from './routes/api/auth/admin-login[.]php'
+import { Route as ApiAdminUsersDotphpRouteImport } from './routes/api/admin/users[.]php'
+import { Route as ApiAdminStatsDotphpRouteImport } from './routes/api/admin/stats[.]php'
+import { Route as ApiAdminSettingsDotphpRouteImport } from './routes/api/admin/settings[.]php'
+import { Route as ApiAdminOrdersDotphpRouteImport } from './routes/api/admin/orders[.]php'
+import { Route as ApiAdminLessonsDotphpRouteImport } from './routes/api/admin/lessons[.]php'
+import { Route as ApiAdminCoursesDotphpRouteImport } from './routes/api/admin/courses[.]php'
+import { Route as ApiAdminContentDotphpRouteImport } from './routes/api/admin/content[.]php'
+import { Route as ApiAdminCategoriesDotphpRouteImport } from './routes/api/admin/categories[.]php'
 import { Route as AdminTrainersNewRouteImport } from './routes/admin.trainers.new'
 import { Route as AdminTrainersSlugRouteImport } from './routes/admin.trainers.$slug'
 import { Route as AdminCoursesNewRouteImport } from './routes/admin.courses.new'
@@ -332,6 +340,47 @@ const ApiAuthAdminLoginDotphpRoute = ApiAuthAdminLoginDotphpRouteImport.update({
   path: '/api/auth/admin-login.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAdminUsersDotphpRoute = ApiAdminUsersDotphpRouteImport.update({
+  id: '/api/admin/users.php',
+  path: '/api/admin/users.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminStatsDotphpRoute = ApiAdminStatsDotphpRouteImport.update({
+  id: '/api/admin/stats.php',
+  path: '/api/admin/stats.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminSettingsDotphpRoute = ApiAdminSettingsDotphpRouteImport.update({
+  id: '/api/admin/settings.php',
+  path: '/api/admin/settings.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminOrdersDotphpRoute = ApiAdminOrdersDotphpRouteImport.update({
+  id: '/api/admin/orders.php',
+  path: '/api/admin/orders.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminLessonsDotphpRoute = ApiAdminLessonsDotphpRouteImport.update({
+  id: '/api/admin/lessons.php',
+  path: '/api/admin/lessons.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminCoursesDotphpRoute = ApiAdminCoursesDotphpRouteImport.update({
+  id: '/api/admin/courses.php',
+  path: '/api/admin/courses.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminContentDotphpRoute = ApiAdminContentDotphpRouteImport.update({
+  id: '/api/admin/content.php',
+  path: '/api/admin/content.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminCategoriesDotphpRoute =
+  ApiAdminCategoriesDotphpRouteImport.update({
+    id: '/api/admin/categories.php',
+    path: '/api/admin/categories.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const AdminTrainersNewRoute = AdminTrainersNewRouteImport.update({
   id: '/new',
   path: '/new',
@@ -408,6 +457,14 @@ export interface FileRoutesByFullPath {
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
+  '/api/admin/categories.php': typeof ApiAdminCategoriesDotphpRoute
+  '/api/admin/content.php': typeof ApiAdminContentDotphpRoute
+  '/api/admin/courses.php': typeof ApiAdminCoursesDotphpRoute
+  '/api/admin/lessons.php': typeof ApiAdminLessonsDotphpRoute
+  '/api/admin/orders.php': typeof ApiAdminOrdersDotphpRoute
+  '/api/admin/settings.php': typeof ApiAdminSettingsDotphpRoute
+  '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
+  '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
   '/api/auth/admin-login.php': typeof ApiAuthAdminLoginDotphpRoute
   '/api/auth/login.php': typeof ApiAuthLoginDotphpRoute
   '/api/auth/me.php': typeof ApiAuthMeDotphpRoute
@@ -466,6 +523,14 @@ export interface FileRoutesByTo {
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
+  '/api/admin/categories.php': typeof ApiAdminCategoriesDotphpRoute
+  '/api/admin/content.php': typeof ApiAdminContentDotphpRoute
+  '/api/admin/courses.php': typeof ApiAdminCoursesDotphpRoute
+  '/api/admin/lessons.php': typeof ApiAdminLessonsDotphpRoute
+  '/api/admin/orders.php': typeof ApiAdminOrdersDotphpRoute
+  '/api/admin/settings.php': typeof ApiAdminSettingsDotphpRoute
+  '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
+  '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
   '/api/auth/admin-login.php': typeof ApiAuthAdminLoginDotphpRoute
   '/api/auth/login.php': typeof ApiAuthLoginDotphpRoute
   '/api/auth/me.php': typeof ApiAuthMeDotphpRoute
@@ -527,6 +592,14 @@ export interface FileRoutesById {
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
+  '/api/admin/categories.php': typeof ApiAdminCategoriesDotphpRoute
+  '/api/admin/content.php': typeof ApiAdminContentDotphpRoute
+  '/api/admin/courses.php': typeof ApiAdminCoursesDotphpRoute
+  '/api/admin/lessons.php': typeof ApiAdminLessonsDotphpRoute
+  '/api/admin/orders.php': typeof ApiAdminOrdersDotphpRoute
+  '/api/admin/settings.php': typeof ApiAdminSettingsDotphpRoute
+  '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
+  '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
   '/api/auth/admin-login.php': typeof ApiAuthAdminLoginDotphpRoute
   '/api/auth/login.php': typeof ApiAuthLoginDotphpRoute
   '/api/auth/me.php': typeof ApiAuthMeDotphpRoute
@@ -589,6 +662,14 @@ export interface FileRouteTypes {
     | '/admin/courses/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
+    | '/api/admin/categories.php'
+    | '/api/admin/content.php'
+    | '/api/admin/courses.php'
+    | '/api/admin/lessons.php'
+    | '/api/admin/orders.php'
+    | '/api/admin/settings.php'
+    | '/api/admin/stats.php'
+    | '/api/admin/users.php'
     | '/api/auth/admin-login.php'
     | '/api/auth/login.php'
     | '/api/auth/me.php'
@@ -647,6 +728,14 @@ export interface FileRouteTypes {
     | '/admin/courses/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
+    | '/api/admin/categories.php'
+    | '/api/admin/content.php'
+    | '/api/admin/courses.php'
+    | '/api/admin/lessons.php'
+    | '/api/admin/orders.php'
+    | '/api/admin/settings.php'
+    | '/api/admin/stats.php'
+    | '/api/admin/users.php'
     | '/api/auth/admin-login.php'
     | '/api/auth/login.php'
     | '/api/auth/me.php'
@@ -707,6 +796,14 @@ export interface FileRouteTypes {
     | '/admin/courses/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
+    | '/api/admin/categories.php'
+    | '/api/admin/content.php'
+    | '/api/admin/courses.php'
+    | '/api/admin/lessons.php'
+    | '/api/admin/orders.php'
+    | '/api/admin/settings.php'
+    | '/api/admin/stats.php'
+    | '/api/admin/users.php'
     | '/api/auth/admin-login.php'
     | '/api/auth/login.php'
     | '/api/auth/me.php'
@@ -742,6 +839,14 @@ export interface RootRouteChildren {
   TrainersRoute: typeof TrainersRouteWithChildren
   ApiContentDotphpRoute: typeof ApiContentDotphpRoute
   CheckoutSlugRoute: typeof CheckoutSlugRoute
+  ApiAdminCategoriesDotphpRoute: typeof ApiAdminCategoriesDotphpRoute
+  ApiAdminContentDotphpRoute: typeof ApiAdminContentDotphpRoute
+  ApiAdminCoursesDotphpRoute: typeof ApiAdminCoursesDotphpRoute
+  ApiAdminLessonsDotphpRoute: typeof ApiAdminLessonsDotphpRoute
+  ApiAdminOrdersDotphpRoute: typeof ApiAdminOrdersDotphpRoute
+  ApiAdminSettingsDotphpRoute: typeof ApiAdminSettingsDotphpRoute
+  ApiAdminStatsDotphpRoute: typeof ApiAdminStatsDotphpRoute
+  ApiAdminUsersDotphpRoute: typeof ApiAdminUsersDotphpRoute
   ApiAuthAdminLoginDotphpRoute: typeof ApiAuthAdminLoginDotphpRoute
   ApiAuthLoginDotphpRoute: typeof ApiAuthLoginDotphpRoute
   ApiAuthMeDotphpRoute: typeof ApiAuthMeDotphpRoute
@@ -1124,6 +1229,62 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthAdminLoginDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/admin/users.php': {
+      id: '/api/admin/users.php'
+      path: '/api/admin/users.php'
+      fullPath: '/api/admin/users.php'
+      preLoaderRoute: typeof ApiAdminUsersDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/stats.php': {
+      id: '/api/admin/stats.php'
+      path: '/api/admin/stats.php'
+      fullPath: '/api/admin/stats.php'
+      preLoaderRoute: typeof ApiAdminStatsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/settings.php': {
+      id: '/api/admin/settings.php'
+      path: '/api/admin/settings.php'
+      fullPath: '/api/admin/settings.php'
+      preLoaderRoute: typeof ApiAdminSettingsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/orders.php': {
+      id: '/api/admin/orders.php'
+      path: '/api/admin/orders.php'
+      fullPath: '/api/admin/orders.php'
+      preLoaderRoute: typeof ApiAdminOrdersDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/lessons.php': {
+      id: '/api/admin/lessons.php'
+      path: '/api/admin/lessons.php'
+      fullPath: '/api/admin/lessons.php'
+      preLoaderRoute: typeof ApiAdminLessonsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/courses.php': {
+      id: '/api/admin/courses.php'
+      path: '/api/admin/courses.php'
+      fullPath: '/api/admin/courses.php'
+      preLoaderRoute: typeof ApiAdminCoursesDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/content.php': {
+      id: '/api/admin/content.php'
+      path: '/api/admin/content.php'
+      fullPath: '/api/admin/content.php'
+      preLoaderRoute: typeof ApiAdminContentDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/categories.php': {
+      id: '/api/admin/categories.php'
+      path: '/api/admin/categories.php'
+      fullPath: '/api/admin/categories.php'
+      preLoaderRoute: typeof ApiAdminCategoriesDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/trainers/new': {
       id: '/admin/trainers/new'
       path: '/new'
@@ -1305,6 +1466,14 @@ const rootRouteChildren: RootRouteChildren = {
   TrainersRoute: TrainersRouteWithChildren,
   ApiContentDotphpRoute: ApiContentDotphpRoute,
   CheckoutSlugRoute: CheckoutSlugRoute,
+  ApiAdminCategoriesDotphpRoute: ApiAdminCategoriesDotphpRoute,
+  ApiAdminContentDotphpRoute: ApiAdminContentDotphpRoute,
+  ApiAdminCoursesDotphpRoute: ApiAdminCoursesDotphpRoute,
+  ApiAdminLessonsDotphpRoute: ApiAdminLessonsDotphpRoute,
+  ApiAdminOrdersDotphpRoute: ApiAdminOrdersDotphpRoute,
+  ApiAdminSettingsDotphpRoute: ApiAdminSettingsDotphpRoute,
+  ApiAdminStatsDotphpRoute: ApiAdminStatsDotphpRoute,
+  ApiAdminUsersDotphpRoute: ApiAdminUsersDotphpRoute,
   ApiAuthAdminLoginDotphpRoute: ApiAuthAdminLoginDotphpRoute,
   ApiAuthLoginDotphpRoute: ApiAuthLoginDotphpRoute,
   ApiAuthMeDotphpRoute: ApiAuthMeDotphpRoute,
