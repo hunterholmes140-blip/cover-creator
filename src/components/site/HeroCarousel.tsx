@@ -140,73 +140,83 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       {/* Enlarged modal */}
       {open && (
         <div
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm animate-in fade-in duration-200 flex items-center justify-center p-4 md:p-10"
+          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md animate-in fade-in duration-200 flex items-center justify-center p-4 sm:p-6 md:p-10"
           onClick={() => setOpen(false)}
         >
-          {/* Close button — top-right of viewport */}
-          <button
-            type="button"
-            onClick={(e) => { e.stopPropagation(); setOpen(false); }}
-            aria-label="বন্ধ করুন"
-            className="fixed top-4 right-4 z-[110] h-12 w-12 rounded-full bg-white text-black hover:bg-white/90 grid place-items-center shadow-2xl transition"
-          >
-            <X className="h-6 w-6" />
-          </button>
-
+          {/* Main Modal Box */}
           <div
-            className="relative w-full max-w-6xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black"
+            className="relative w-full max-w-4xl flex flex-col items-center animate-in zoom-in-95 duration-200"
             onClick={(e) => e.stopPropagation()}
           >
-            {vid && (
-              <iframe
-                key={`big-${current.id}`}
-                className="absolute inset-0 h-full w-full"
-                src={`https://www.youtube.com/embed/${vid}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1`}
-                title={current.heading}
-                allow="autoplay; encrypted-media; fullscreen"
-                allowFullScreen
-              />
+            {/* Close button — top-right of modal box */}
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              aria-label="বন্ধ করুন"
+              className="absolute -top-12 right-0 sm:-right-2 z-[110] h-10 w-10 rounded-full bg-white text-black hover:bg-white/90 grid place-items-center shadow-2xl transition-transform hover:scale-105"
+            >
+              <X className="h-5 w-5" />
+            </button>
+
+            {/* Video container */}
+            <div className="relative w-full aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black border border-white/10">
+              {vid && (
+                <iframe
+                  key={`big-${current.id}`}
+                  className="absolute inset-0 h-full w-full"
+                  src={`https://www.youtube.com/embed/${vid}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1`}
+                  title={current.heading}
+                  allow="autoplay; encrypted-media; fullscreen"
+                  allowFullScreen
+                />
+              )}
+            </div>
+
+            {/* Title & Subtitle */}
+            <div className="mt-4 text-center text-white px-2">
+              <h3 className="text-lg md:text-xl font-bold">{current.heading}</h3>
+              {current.subheading && (
+                <p className="mt-1 text-sm text-white/70">{current.subheading}</p>
+              )}
+            </div>
+
+            {/* Carousel Navigation */}
+            {total > 1 && (
+              <div className="mt-4 flex items-center justify-center gap-6">
+                <button
+                  type="button"
+                  onClick={() => setIdx((i) => (i - 1 + total) % total)}
+                  aria-label="আগের"
+                  className="h-10 w-10 rounded-full bg-white/15 hover:bg-white/30 text-white grid place-items-center backdrop-blur transition"
+                >
+                  <ChevronLeft className="h-5 w-5" />
+                </button>
+
+                <div className="flex items-center gap-2">
+                  {slides.map((s, i) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      onClick={() => setIdx(i)}
+                      aria-label={`স্লাইড ${i + 1}`}
+                      className={`h-2 rounded-full transition-all ${
+                        i === idx ? "w-8 bg-primary" : "w-2 bg-white/40 hover:bg-white/80"
+                      }`}
+                    />
+                  ))}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => setIdx((i) => (i + 1) % total)}
+                  aria-label="পরের"
+                  className="h-10 w-10 rounded-full bg-white/15 hover:bg-white/30 text-white grid place-items-center backdrop-blur transition"
+                >
+                  <ChevronRight className="h-5 w-5" />
+                </button>
+              </div>
             )}
           </div>
-
-          {/* Modal nav */}
-          {total > 1 && (
-            <>
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); setIdx((i) => (i - 1 + total) % total); }}
-                aria-label="আগের"
-                className="fixed left-3 md:left-8 top-1/2 -translate-y-1/2 z-[105] h-11 w-11 md:h-12 md:w-12 rounded-full bg-white/10 hover:bg-white/25 text-white grid place-items-center backdrop-blur transition"
-              >
-                <ChevronLeft className="h-6 w-6" />
-              </button>
-              <button
-                type="button"
-                onClick={(e) => { e.stopPropagation(); setIdx((i) => (i + 1) % total); }}
-                aria-label="পরের"
-                className="fixed right-3 md:right-8 top-1/2 -translate-y-1/2 z-[105] h-11 w-11 md:h-12 md:w-12 rounded-full bg-white/10 hover:bg-white/25 text-white grid place-items-center backdrop-blur transition"
-              >
-                <ChevronRight className="h-6 w-6" />
-              </button>
-
-              <div
-                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[105] flex gap-2"
-                onClick={(e) => e.stopPropagation()}
-              >
-                {slides.map((s, i) => (
-                  <button
-                    key={s.id}
-                    type="button"
-                    onClick={(e) => { e.stopPropagation(); setIdx(i); }}
-                    aria-label={`স্লাইড ${i + 1}`}
-                    className={`h-1.5 rounded-full transition-all ${
-                      i === idx ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
-                    }`}
-                  />
-                ))}
-              </div>
-            </>
-          )}
         </div>
       )}
     </div>

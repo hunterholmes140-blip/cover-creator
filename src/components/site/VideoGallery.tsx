@@ -254,22 +254,22 @@ export default function VideoGallery({ videos }: { videos: GalleryVideo[] }) {
       {/* Modal */}
       {active ? (
         <div
-          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-sm p-4 sm:p-8 grid place-items-center animate-fade-in"
+          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md p-4 sm:p-6 md:p-10 flex items-center justify-center animate-fade-in"
           onClick={() => setOpenId(null)}
         >
           <div
-            className="relative w-full max-w-5xl animate-scale-in"
+            className="relative w-full max-w-4xl flex flex-col items-center animate-scale-in"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setOpenId(null)}
               aria-label="বন্ধ করুন"
-              className="absolute -top-12 right-0 sm:-right-2 z-10 grid h-10 w-10 place-items-center rounded-full bg-white text-black hover:bg-white/90 shadow-lg"
+              className="absolute -top-12 right-0 sm:-right-2 z-10 grid h-10 w-10 place-items-center rounded-full bg-white text-black hover:bg-white/90 shadow-2xl transition-transform hover:scale-105"
             >
               <X className="h-5 w-5" />
             </button>
-            <div className="aspect-video w-full overflow-hidden rounded-xl bg-black shadow-2xl ring-1 ring-white/10">
+            <div className="aspect-video w-full overflow-hidden rounded-2xl bg-black shadow-2xl border border-white/10">
               <iframe
                 key={active.id}
                 title={active.title}
@@ -279,8 +279,8 @@ export default function VideoGallery({ videos }: { videos: GalleryVideo[] }) {
                 allowFullScreen
               />
             </div>
-            <div className="mt-4 text-white">
-              <h3 className="text-lg md:text-xl font-semibold">{active.title}</h3>
+            <div className="mt-4 text-center text-white px-2">
+              <h3 className="text-lg md:text-xl font-bold">{active.title}</h3>
               {active.description ? (
                 <p className="mt-1 text-sm text-white/70">{active.description}</p>
               ) : null}
