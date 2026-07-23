@@ -43,16 +43,35 @@ async function fileToResizedDataUrl(
   return canvas.toDataURL(hasAlpha ? "image/png" : "image/jpeg", quality);
 }
 
+const DEFAULT_SAMPLES: Record<"landscape" | "square" | "portrait", string> = {
+  landscape:
+    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?w=800&auto=format&fit=crop&q=70",
+  square:
+    "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&auto=format&fit=crop&q=70&crop=faces",
+  portrait:
+    "https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=400&auto=format&fit=crop&q=70&crop=faces",
+};
+
+const RECOMMENDED: Record<"landscape" | "square" | "portrait", string> = {
+  landscape: "প্রস্তাবিত সাইজ: 1280×720 (16:9)",
+  square: "প্রস্তাবিত সাইজ: 600×600 (1:1) — ফেস সেন্টার",
+  portrait: "প্রস্তাবিত সাইজ: 600×800 (3:4)",
+};
+
 export function ImageUpload({
   value,
   onChange,
   maxDim = 1200,
   aspect = "landscape",
+  sample,
+  hint,
 }: {
   value: string;
   onChange: (v: string) => void;
   maxDim?: number;
   aspect?: "landscape" | "square" | "portrait";
+  sample?: string;
+  hint?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
   const [showUrl, setShowUrl] = useState(false);
@@ -64,6 +83,9 @@ export function ImageUpload({
       : aspect === "portrait"
         ? "h-32 w-24"
         : "h-24 w-40";
+
+  const sampleUrl = sample ?? DEFAULT_SAMPLES[aspect];
+  const hintText = hint ?? RECOMMENDED[aspect];
 
   const handleFile = async (file: File | null | undefined) => {
     if (!file) return;
@@ -96,9 +118,16 @@ export function ImageUpload({
               </button>
             </>
           ) : (
-            <span className="text-[10px] text-muted-foreground px-1 text-center">
-              কোন ছবি নেই
-            </span>
+            <>
+              <img
+                src={sampleUrl}
+                alt="নমুনা"
+                className="h-full w-full object-cover opacity-40"
+              />
+              <span className="absolute inset-x-0 bottom-0 text-[9px] font-medium text-white bg-black/55 px-1 py-0.5 text-center">
+                নমুনা
+              </span>
+            </>
           )}
         </div>
         <div className="flex flex-col gap-2">
@@ -137,8 +166,8 @@ export function ImageUpload({
           placeholder="https://..."
         />
       )}
-      <div className="text-[11px] text-muted-foreground">
-        JPG/PNG/WEBP — অটো রিসাইজ হবে (max {maxDim}px)।
+      <div className="text-[11px] text-muted-foreground leading-relaxed">
+        {hintText} · JPG/PNG/WEBP — অটো রিসাইজ হবে (max {maxDim}px)।
       </div>
     </div>
   );
