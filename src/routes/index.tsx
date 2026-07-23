@@ -105,9 +105,7 @@ function HomePage() {
           </div>
 
           <div className="relative">
-            <div className="relative aspect-video max-w-lg mx-auto rounded-3xl overflow-hidden shadow-2xl ring-1 ring-primary/20 bg-black">
-              <HeroCarousel slides={MOCK_HERO_VIDEOS} />
-            </div>
+            <HeroCarousel slides={MOCK_HERO_VIDEOS} />
           </div>
         </div>
       </section>
