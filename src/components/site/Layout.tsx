@@ -4,6 +4,7 @@ import { Menu, X, User, LogOut, Facebook, Youtube, Instagram, Linkedin, MessageC
 import { clearAuth, getStoredUser } from "@/lib/api";
 import { useSiteSettings, whatsappLink } from "@/lib/site-settings";
 import paymentsStrip from "@/assets/payments-strip.png.asset.json";
+import brandLogo from "@/assets/brand-logo.png.asset.json";
 
 
 
