@@ -12,7 +12,7 @@ const detailQuery = (slug: string) =>
   });
 
 export const Route = createFileRoute("/courses/$slug")({
-  head: ({ loaderData }) => ({
+  head: ({ loaderData }: { loaderData?: { course: any } }) => ({
     meta: loaderData?.course
       ? [
           { title: `${loaderData.course.title} — NextScale` },
