@@ -24,6 +24,7 @@ const NAV = [
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { settings } = useSiteSettings();
+  const [footer] = useContent(CONTENT_KEYS.FOOTER, FOOTER_CONTENT_DEFAULTS);
   const [user, setUser] = useState<any>(null);
   useScrollReveal();
 
