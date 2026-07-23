@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { ChevronLeft, ChevronRight, X, Play } from "lucide-react";
 
 export type HeroSlide = {
@@ -26,7 +27,12 @@ const AUTOPLAY_MS = 8000;
 export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const [idx, setIdx] = useState(0);
   const [open, setOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const total = slides.length;
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (total <= 1 || open) return;
@@ -137,15 +143,15 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         </div>
       )}
 
-      {/* Enlarged modal */}
-      {open && (
+      {/* Enlarged modal via Portal */}
+      {mounted && open && createPortal(
         <div
-          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md animate-in fade-in duration-200 flex items-center justify-center p-4 sm:p-6 md:p-10"
+          className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md animate-in fade-in duration-200 flex items-center justify-center p-4 sm:p-6 md:p-8"
           onClick={() => setOpen(false)}
         >
           {/* Main Modal Box */}
           <div
-            className="relative w-full max-w-4xl flex flex-col items-center animate-in zoom-in-95 duration-200"
+            className="relative w-full max-w-3xl md:max-w-4xl flex flex-col items-center animate-in zoom-in-95 duration-200 my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Close button — top-right of modal box */}
@@ -153,7 +159,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               type="button"
               onClick={() => setOpen(false)}
               aria-label="বন্ধ করুন"
-              className="absolute -top-12 right-0 sm:-right-2 z-[110] h-10 w-10 rounded-full bg-white text-black hover:bg-white/90 grid place-items-center shadow-2xl transition-transform hover:scale-105"
+              className="absolute -top-12 right-0 sm:-right-2 z-[100000] h-10 w-10 rounded-full bg-white text-black hover:bg-white/90 grid place-items-center shadow-2xl transition-transform hover:scale-105"
             >
               <X className="h-5 w-5" />
             </button>
@@ -173,7 +179,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             </div>
 
             {/* Title & Subtitle */}
-            <div className="mt-4 text-center text-white px-2">
+            <div className="mt-4 text-center text-white px-2 max-w-2xl">
               <h3 className="text-lg md:text-xl font-bold">{current.heading}</h3>
               {current.subheading && (
                 <p className="mt-1 text-sm text-white/70">{current.subheading}</p>
@@ -217,7 +223,8 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
               </div>
             )}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );

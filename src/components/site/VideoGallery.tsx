@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { Play, X, Clock, ChevronLeft, ChevronRight } from "lucide-react";
 
 export type GalleryVideo = {
@@ -252,20 +253,20 @@ export default function VideoGallery({ videos }: { videos: GalleryVideo[] }) {
       </div>
 
       {/* Modal */}
-      {active ? (
+      {active && typeof document !== "undefined" ? createPortal(
         <div
-          className="fixed inset-0 z-[100] bg-black/85 backdrop-blur-md p-4 sm:p-6 md:p-10 flex items-center justify-center animate-fade-in"
+          className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md p-4 sm:p-6 md:p-8 flex items-center justify-center animate-fade-in"
           onClick={() => setOpenId(null)}
         >
           <div
-            className="relative w-full max-w-4xl flex flex-col items-center animate-scale-in"
+            className="relative w-full max-w-3xl md:max-w-4xl flex flex-col items-center animate-scale-in my-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
               onClick={() => setOpenId(null)}
               aria-label="বন্ধ করুন"
-              className="absolute -top-12 right-0 sm:-right-2 z-10 grid h-10 w-10 place-items-center rounded-full bg-white text-black hover:bg-white/90 shadow-2xl transition-transform hover:scale-105"
+              className="absolute -top-12 right-0 sm:-right-2 z-[100000] grid h-10 w-10 place-items-center rounded-full bg-white text-black hover:bg-white/90 shadow-2xl transition-transform hover:scale-105"
             >
               <X className="h-5 w-5" />
             </button>
@@ -279,14 +280,15 @@ export default function VideoGallery({ videos }: { videos: GalleryVideo[] }) {
                 allowFullScreen
               />
             </div>
-            <div className="mt-4 text-center text-white px-2">
+            <div className="mt-4 text-center text-white px-2 max-w-2xl">
               <h3 className="text-lg md:text-xl font-bold">{active.title}</h3>
               {active.description ? (
                 <p className="mt-1 text-sm text-white/70">{active.description}</p>
               ) : null}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       ) : null}
     </>
   );
