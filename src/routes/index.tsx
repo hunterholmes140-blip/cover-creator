@@ -80,7 +80,7 @@ function HomePage() {
     <SiteLayout>
       {/* HERO */}
       <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/50 border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16 md:py-24 grid lg:grid-cols-2 gap-12 items-center">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 md:py-10 grid lg:grid-cols-2 gap-12 items-center">
           <div>
             <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-medium">
               <Sparkles className="h-3.5 w-3.5" /> নতুন কোর্স যোগ হয়েছে
@@ -119,7 +119,7 @@ function HomePage() {
 
       {/* STATS */}
       <section className="border-b border-border bg-muted/30">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
           {[
             { icon: UserCheck, n: "১০,০০০+", l: "সক্রিয় শিক্ষার্থী" },
             { icon: BookOpen, n: "৫০+", l: "প্রিমিয়াম কোর্স" },
@@ -138,7 +138,7 @@ function HomePage() {
       </section>
 
       {/* FEATURES */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="grid md:grid-cols-3 gap-6">
           {[
             { icon: GraduationCap, title: "এক্সপার্ট ইন্সট্রাক্টর", desc: "ইন্ডাস্ট্রির অভিজ্ঞ প্রফেশনালদের কাছ থেকে শিখুন।" },
@@ -157,7 +157,7 @@ function HomePage() {
       </section>
 
       {/* CATEGORIES */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <h2 className="text-2xl md:text-3xl font-bold">জনপ্রিয় ক্যাটেগরি</h2>
         <p className="mt-2 text-muted-foreground">আপনার পছন্দের বিষয় বেছে নিন</p>
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -176,7 +176,7 @@ function HomePage() {
       </section>
 
       {/* FEATURED COURSES */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="flex items-end justify-between">
           <div>
             <h2 className="text-2xl md:text-3xl font-bold">ফিচার্ড কোর্স</h2>
@@ -186,14 +186,14 @@ function HomePage() {
             সব দেখুন <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
-        <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {featured.courses.map((c) => <CourseCard key={c.id} course={c} />)}
         </div>
       </section>
 
       {/* MENTOR + TRAINERS */}
       <section className="border-y border-border bg-gradient-to-br from-primary/15 via-primary/5 to-accent">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold tracking-widest text-primary uppercase">Founder</span>
             <h2 className="mt-2 text-2xl md:text-3xl font-bold">আমাদের সম্পর্কে জানতে চান?</h2>
@@ -279,12 +279,12 @@ function HomePage() {
             return (
               <>
                 {/* Mentor on top — same size, centered */}
-                <div className="mt-10 max-w-xs mx-auto">
+                <div className="mt-6 max-w-xs mx-auto">
                   <TrainerCard t={mentor} mentor />
                 </div>
 
                 {/* Trainers below */}
-                <div className="mt-14 flex items-end justify-between">
+                <div className="mt-10 flex items-end justify-between">
                   <div>
                     <h3 className="text-xl md:text-2xl font-bold">আমাদের ট্রেনার</h3>
                     <p className="mt-1 text-sm text-muted-foreground">ইন্ডাস্ট্রি এক্সপার্টদের সাথে পরিচিত হোন</p>
@@ -303,7 +303,7 @@ function HomePage() {
       </section>
 
       {/* TESTIMONIALS */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="text-center max-w-2xl mx-auto">
           <h2 className="text-2xl md:text-3xl font-bold">শিক্ষার্থীদের মতামত</h2>
           <p className="mt-2 text-muted-foreground">যারা আমাদের কোর্সে ক্যারিয়ার গড়েছেন — তাদের গল্প।</p>
@@ -333,7 +333,7 @@ function HomePage() {
 
       {/* BLOG */}
       <section className="bg-muted/30 border-y border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
           <div className="flex items-end justify-between">
             <div>
               <h2 className="text-2xl md:text-3xl font-bold">সাম্প্রতিক আর্টিকেল</h2>
@@ -343,7 +343,7 @@ function HomePage() {
               সব আর্টিকেল <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
-          <div className="mt-8 grid md:grid-cols-3 gap-5">
+          <div className="mt-6 grid md:grid-cols-3 gap-5">
             {posts.posts.slice(0, 3).map((p) => (
               <Link key={p.id} to="/blog/$slug" params={{ slug: p.slug }} className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all">
                 <div className={`aspect-video bg-gradient-to-br ${p.cover_gradient} relative`}>
@@ -366,7 +366,7 @@ function HomePage() {
       </section>
 
       {/* FAQ */}
-      <section className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16">
+      <section className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="text-center">
           <h2 className="text-2xl md:text-3xl font-bold">সাধারণ প্রশ্নাবলী</h2>
           <p className="mt-2 text-muted-foreground">যা আপনি জানতে চাইতে পারেন</p>
@@ -397,7 +397,7 @@ function HomePage() {
       </section>
 
       {/* CTA */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground p-8 md:p-12 text-center">
           <h2 className="text-2xl md:text-3xl font-bold">আজই শুরু করুন আপনার শেখার যাত্রা</h2>
           <p className="mt-3 opacity-90 max-w-2xl mx-auto">
