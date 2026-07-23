@@ -184,6 +184,7 @@ export default function VideoGallery({ videos }: { videos: GalleryVideo[] }) {
   }, [active]);
 
   const scrollerRef = useRef<HTMLDivElement>(null);
+  const [paused, setPaused] = useState(false);
   const scrollBy = (dir: 1 | -1) => {
     const el = scrollerRef.current;
     if (!el) return;
@@ -192,9 +193,29 @@ export default function VideoGallery({ videos }: { videos: GalleryVideo[] }) {
     el.scrollBy({ left: dir * step, behavior: "smooth" });
   };
 
+  // Auto-slide every 4s, pause on hover / when modal open
+  useEffect(() => {
+    if (paused || active) return;
+    const el = scrollerRef.current;
+    if (!el) return;
+    const id = setInterval(() => {
+      const maxLeft = el.scrollWidth - el.clientWidth - 4;
+      if (el.scrollLeft >= maxLeft) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        scrollBy(1);
+      }
+    }, 4000);
+    return () => clearInterval(id);
+  }, [paused, active]);
+
   return (
     <>
-      <div className="relative">
+      <div
+        className="relative"
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+      >
         <div
           ref={scrollerRef}
           className="flex gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-6 -mx-4 px-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
