@@ -6,6 +6,7 @@ import { useSiteSettings, whatsappLink } from "@/lib/site-settings";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
 import { useContent } from "@/lib/content-store";
 import { FOOTER_CONTENT_DEFAULTS, CONTENT_KEYS } from "@/lib/content-defaults";
+import { LanguageTranslator } from "./LanguageTranslator";
 import paymentsStrip from "@/assets/payments-strip.png.asset.json";
 import brandLogo from "@/assets/brand-logo.png.asset.json";
 
@@ -65,6 +66,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
           </nav>
 
           <div className="hidden md:flex items-center gap-2">
+            <LanguageTranslator />
             {user ? (
               <>
                 <Link
@@ -96,13 +98,16 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             )}
           </div>
 
-          <button
-            className="md:hidden p-2 -mr-2"
-            onClick={() => setOpen(!open)}
-            aria-label="Menu"
-          >
-            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
+          <div className="flex md:hidden items-center gap-2">
+            <LanguageTranslator />
+            <button
+              className="p-2 -mr-2"
+              onClick={() => setOpen(!open)}
+              aria-label="Menu"
+            >
+              {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+            </button>
+          </div>
         </div>
 
         {open && (
