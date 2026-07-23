@@ -48,6 +48,7 @@ function RegisterPage() {
       });
       setToken(res.token);
       setStoredUser(res.user);
+      track("CompleteRegistration", { status: true, method: "email" });
       nav({ to: "/dashboard" });
     } catch (e: any) {
       setErr(e.message);
