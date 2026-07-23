@@ -299,7 +299,7 @@ function HomePage() {
                           src={img}
                           alt={name}
                           loading="lazy"
-                          className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom transition-transform duration-500 group-hover:scale-105"
+                          className="absolute inset-0 h-full w-full object-cover object-center transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
                         <div className="absolute inset-0 grid place-items-center text-white text-6xl font-bold">
