@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Check, X, Trash2, Search } from "lucide-react";
-import { useOrders } from "@/lib/admin-store";
+import { useLiveOrders } from "@/lib/live-store";
 import { taka } from "@/lib/format";
 import { PageHeader, Card, Input, Button, Badge, ConfirmDialog, useToast, Empty } from "@/components/admin/ui";
 
@@ -12,7 +12,7 @@ export const Route = createFileRoute("/admin/orders")({
 const STATUSES = ["all", "pending", "approved", "rejected"] as const;
 
 function OrdersAdmin() {
-  const { items, update, remove } = useOrders();
+  const { items, update, remove, loading, error } = useLiveOrders();
   const toast = useToast();
   const [q, setQ] = useState("");
   const [status, setStatus] = useState<(typeof STATUSES)[number]>("all");
@@ -32,14 +32,24 @@ function OrdersAdmin() {
     });
   }, [items, q, status]);
 
-  const setStatusFor = (id: any, s: string) => {
-    update(id, { status: s });
-    toast.show(`অর্ডার ${s}`);
+  const setStatusFor = async (id: any, s: string) => {
+    try {
+      await update(id, { status: s });
+      toast.show(`অর্ডার ${s}`);
+    } catch (e: any) {
+      toast.show(e?.message || "আপডেট ব্যর্থ");
+    }
   };
 
   return (
     <div className="max-w-6xl mx-auto">
       <PageHeader title="অর্ডার ম্যানেজমেন্ট" subtitle={`মোট ${items.length} টি অর্ডার।`} />
+
+      {error && (
+        <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
       <div className="mb-4 flex flex-wrap gap-2 items-center">
         <div className="relative flex-1 max-w-sm">
@@ -61,7 +71,9 @@ function OrdersAdmin() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {loading && items.length === 0 ? (
+        <Card><div className="p-6 text-sm text-muted-foreground text-center">লোড হচ্ছে…</div></Card>
+      ) : filtered.length === 0 ? (
         <Empty title="কোনো অর্ডার পাওয়া যায়নি।" />
       ) : (
         <Card className="p-0 overflow-hidden">
@@ -126,7 +138,14 @@ function OrdersAdmin() {
         </Card>
       )}
 
-      <ConfirmDialog open={confirmId !== null} onClose={() => setConfirmId(null)} onConfirm={() => { remove(confirmId); toast.show("ডিলিট হয়েছে"); }} />
+      <ConfirmDialog
+        open={confirmId !== null}
+        onClose={() => setConfirmId(null)}
+        onConfirm={async () => {
+          try { await remove(confirmId); toast.show("ডিলিট হয়েছে"); }
+          catch (e: any) { toast.show(e?.message || "ডিলিট ব্যর্থ"); }
+        }}
+      />
       {toast.node}
     </div>
   );

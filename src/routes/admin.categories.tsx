@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { Plus, Trash2, Pencil } from "lucide-react";
-import { useCategories, makeSlug } from "@/lib/admin-store";
+import { makeSlug } from "@/lib/admin-store";
+import { useLiveCategories } from "@/lib/live-store";
 import { PageHeader, Card, Field, Input, Button, ConfirmDialog, useToast, Empty } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/categories")({
@@ -9,7 +10,7 @@ export const Route = createFileRoute("/admin/categories")({
 });
 
 function CategoriesPage() {
-  const { items, add, update, remove } = useCategories();
+  const { items, add, update, remove, loading, error } = useLiveCategories();
   const toast = useToast();
   const [editing, setEditing] = useState<any | null>(null);
   const [name, setName] = useState("");
@@ -27,26 +28,38 @@ function CategoriesPage() {
     setSlug("");
   };
 
-  const save = () => {
+  const save = async () => {
     if (!name.trim()) return;
     const s = slug.trim() || makeSlug(name);
-    if (editing) {
-      update(editing.id, { name, slug: s });
-      toast.show("ক্যাটাগরি আপডেট হয়েছে");
-    } else {
-      add({ name, slug: s });
-      toast.show("ক্যাটাগরি যোগ হয়েছে");
+    try {
+      if (editing) {
+        await update(editing.id, { name, slug: s });
+        toast.show("ক্যাটাগরি আপডেট হয়েছে");
+      } else {
+        await add({ name, slug: s });
+        toast.show("ক্যাটাগরি যোগ হয়েছে");
+      }
+      reset();
+    } catch (e: any) {
+      toast.show(e?.message || "সেভ ব্যর্থ");
     }
-    reset();
   };
 
   return (
     <div className="max-w-4xl mx-auto">
       <PageHeader title="ক্যাটাগরি" subtitle="কোর্স ক্যাটাগরি যোগ, এডিট বা ডিলিট করুন।" />
 
+      {error && (
+        <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
       <div className="grid gap-6 md:grid-cols-[1fr_320px]">
         <Card className="p-0 overflow-hidden">
-          {items.length === 0 ? (
+          {loading && items.length === 0 ? (
+            <div className="p-6 text-sm text-muted-foreground text-center">লোড হচ্ছে…</div>
+          ) : items.length === 0 ? (
             <Empty title="এখনো কোনো ক্যাটাগরি নেই।" />
           ) : (
             <div className="divide-y divide-border">
@@ -96,9 +109,9 @@ function CategoriesPage() {
       <ConfirmDialog
         open={confirmId !== null}
         onClose={() => setConfirmId(null)}
-        onConfirm={() => {
-          remove(confirmId);
-          toast.show("ডিলিট হয়েছে");
+        onConfirm={async () => {
+          try { await remove(confirmId); toast.show("ডিলিট হয়েছে"); }
+          catch (e: any) { toast.show(e?.message || "ডিলিট ব্যর্থ"); }
         }}
       />
       {toast.node}

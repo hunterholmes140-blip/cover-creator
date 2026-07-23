@@ -2,9 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   BookOpen, Users, ShoppingCart, DollarSign, FileText, Video, User, FolderTree,
 } from "lucide-react";
-import {
-  useCourses, useTrainers, useOrders, useUsers, useBlog, useVideos, useCategories,
-} from "@/lib/admin-store";
+import { useTrainers, useBlog, useVideos } from "@/lib/admin-store";
+import { useLiveCourses, useLiveOrders, useLiveUsers, useLiveCategories } from "@/lib/live-store";
 import { taka } from "@/lib/format";
 import { Card, PageHeader, Badge } from "@/components/admin/ui";
 
@@ -13,13 +12,13 @@ export const Route = createFileRoute("/admin/")({
 });
 
 function AdminHome() {
-  const { items: courses } = useCourses();
+  const { items: courses } = useLiveCourses();
   const { items: trainers } = useTrainers();
-  const { items: orders } = useOrders();
-  const { items: users } = useUsers();
+  const { items: orders } = useLiveOrders();
+  const { items: users } = useLiveUsers();
   const { items: blog } = useBlog();
   const { items: videos } = useVideos();
-  const { items: categories } = useCategories();
+  const { items: categories } = useLiveCategories();
 
   const revenue = orders
     .filter((o: any) => o.status === "approved")

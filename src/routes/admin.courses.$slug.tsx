@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
-import { useCourses } from "@/lib/admin-store";
+import { useLiveCourses } from "@/lib/live-store";
 import { CourseForm, emptyCourse, type CourseFormValue } from "@/lib/course-form";
 import { PageHeader, Button, useToast } from "@/components/admin/ui";
 
@@ -10,7 +10,7 @@ export const Route = createFileRoute("/admin/courses/$slug")({
 
 function EditCoursePage() {
   const { slug } = Route.useParams();
-  const { items, update } = useCourses();
+  const { items, update, loading } = useLiveCourses();
   const toast = useToast();
   const navigate = useNavigate();
   const course = items.find((c: any) => c.slug === slug);
@@ -18,7 +18,7 @@ function EditCoursePage() {
   if (!course) {
     return (
       <div className="max-w-2xl mx-auto">
-        <PageHeader title="কোর্স পাওয়া যায়নি" />
+        <PageHeader title={loading ? "লোড হচ্ছে…" : "কোর্স পাওয়া যায়নি"} />
         <Link to="/admin/courses">
           <Button variant="secondary">
             <ArrowLeft className="h-4 w-4" /> কোর্স লিস্টে ফিরে যান
@@ -46,10 +46,14 @@ function EditCoursePage() {
       <CourseForm
         initial={initial}
         submitLabel="আপডেট করুন"
-        onSubmit={(v) => {
-          update(course.id, v);
-          toast.show("আপডেট হয়েছে");
-          setTimeout(() => navigate({ to: "/admin/courses" }), 500);
+        onSubmit={async (v) => {
+          try {
+            await update((course as any).id, v);
+            toast.show("আপডেট হয়েছে");
+            setTimeout(() => navigate({ to: "/admin/courses" }), 500);
+          } catch (e: any) {
+            toast.show(e?.message || "আপডেট ব্যর্থ");
+          }
         }}
       />
       {toast.node}
