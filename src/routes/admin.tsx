@@ -136,9 +136,10 @@ const GROUPS: NavGroup[] = [
   },
 ];
 
-function AdminLayout() {
+function AdminLayout({ onLogout }: { onLogout: () => void }) {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const [open, setOpen] = useState(false);
+
 
   const isActive = (to: string, exact?: boolean) =>
     exact ? pathname === to : pathname === to || pathname.startsWith(to + "/");
