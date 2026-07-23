@@ -174,9 +174,9 @@ const TrainersSlugRoute = TrainersSlugRouteImport.update({
   getParentRoute: () => TrainersRoute,
 } as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
-  id: '/courses/$slug',
-  path: '/courses/$slug',
-  getParentRoute: () => rootRouteImport,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => CoursesRoute,
 } as any)
 const CheckoutSlugRoute = CheckoutSlugRouteImport.update({
   id: '/checkout/$slug',
@@ -862,7 +862,6 @@ export interface RootRouteChildren {
   TrainersRoute: typeof TrainersRouteWithChildren
   ApiContentDotphpRoute: typeof ApiContentDotphpRoute
   CheckoutSlugRoute: typeof CheckoutSlugRoute
-  CoursesSlugRoute: typeof CoursesSlugRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
   ApiAdminCategoriesDotphpRoute: typeof ApiAdminCategoriesDotphpRoute
   ApiAdminContentDotphpRoute: typeof ApiAdminContentDotphpRoute
@@ -1025,10 +1024,10 @@ declare module '@tanstack/react-router' {
     }
     '/courses/$slug': {
       id: '/courses/$slug'
-      path: '/courses/$slug'
+      path: '/$slug'
       fullPath: '/courses/$slug'
       preLoaderRoute: typeof CoursesSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof CoursesRoute
     }
     '/checkout/$slug': {
       id: '/checkout/$slug'
@@ -1467,7 +1466,6 @@ const rootRouteChildren: RootRouteChildren = {
   TrainersRoute: TrainersRouteWithChildren,
   ApiContentDotphpRoute: ApiContentDotphpRoute,
   CheckoutSlugRoute: CheckoutSlugRoute,
-  CoursesSlugRoute: CoursesSlugRoute,
   CoursesIndexRoute: CoursesIndexRoute,
   ApiAdminCategoriesDotphpRoute: ApiAdminCategoriesDotphpRoute,
   ApiAdminContentDotphpRoute: ApiAdminContentDotphpRoute,
@@ -1495,3 +1493,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
