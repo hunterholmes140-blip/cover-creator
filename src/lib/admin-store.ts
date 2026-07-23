@@ -59,11 +59,13 @@ class Collection<T extends { id: any }> {
   private items: T[];
   private listeners = new Set<Listener>();
   private saveTimer: any = null;
-  constructor(private key: string, private seed: T[]) {
+  private remoteKey: string;
+  constructor(private key: string, private seed: T[], remoteKey?: string) {
+    this.remoteKey = remoteKey ?? key;
     this.items = this.load();
     if (USE_REMOTE && typeof window !== "undefined") {
-      // Hydrate from server once — same key is used by admin and public pages.
-      fetchRemoteList(this.key).then((v) => {
+      // Hydrate from server once — same remote key as public content endpoints.
+      fetchRemoteList(this.remoteKey).then((v) => {
         if (v && Array.isArray(v)) {
           this.items = v as T[];
           try { window.localStorage.setItem(this.key, JSON.stringify(this.items)); } catch {}
@@ -72,6 +74,7 @@ class Collection<T extends { id: any }> {
       });
     }
   }
+
   private load(): T[] {
     if (typeof window === "undefined") return this.seed;
     try {
@@ -89,9 +92,10 @@ class Collection<T extends { id: any }> {
       // Debounce so rapid inline edits become one network write.
       if (this.saveTimer) clearTimeout(this.saveTimer);
       const snapshot = this.items;
-      this.saveTimer = setTimeout(() => saveRemoteList(this.key, snapshot), 400);
+      this.saveTimer = setTimeout(() => saveRemoteList(this.remoteKey, snapshot), 400);
     }
   }
+
   getAll() {
     return this.items;
   }
@@ -134,8 +138,9 @@ class Collection<T extends { id: any }> {
   async saveNow() {
     if (!USE_REMOTE) return;
     if (this.saveTimer) { clearTimeout(this.saveTimer); this.saveTimer = null; }
-    await saveRemoteList(this.key, this.items);
+    await saveRemoteList(this.remoteKey, this.items);
   }
+
   subscribe(l: Listener) {
     this.listeners.add(l);
     return () => {
@@ -163,17 +168,21 @@ function useCollection<T extends { id: any }>(c: Collection<T>) {
 }
 
 // -------- Collections --------
-export const coursesStore = new Collection<any>("ns.courses.v1", MOCK_COURSES as any);
-export const categoriesStore = new Collection<any>("ns.categories.v1", MOCK_CATEGORIES as any);
-export const trainersStore = new Collection<any>("ns.trainers.v1", MOCK_TRAINERS as any);
-export const blogStore = new Collection<any>("ns.blog.v1", MOCK_POSTS as any);
-export const heroStore = new Collection<any>("ns.hero.v1", MOCK_HERO_VIDEOS as any);
-export const videosStore = new Collection<any>("ns.videos.v1", MOCK_VIDEO_GALLERY as any);
-export const testimonialsStore = new Collection<any>("ns.testimonials.v1", MOCK_TESTIMONIALS as any);
+// NOTE: third arg = remoteKey — must match public content endpoints so admin
+// changes reflect on the site instantly.
+export const coursesStore = new Collection<any>("ns.courses.v1", MOCK_COURSES as any, "courses");
+export const categoriesStore = new Collection<any>("ns.categories.v1", MOCK_CATEGORIES as any, "categories");
+export const trainersStore = new Collection<any>("ns.trainers.v1", MOCK_TRAINERS as any, "trainers");
+export const blogStore = new Collection<any>("ns.blog.v1", MOCK_POSTS as any, "posts");
+export const heroStore = new Collection<any>("ns.hero.v1", MOCK_HERO_VIDEOS as any, "hero");
+export const videosStore = new Collection<any>("ns.videos.v1", MOCK_VIDEO_GALLERY as any, "videos");
+export const testimonialsStore = new Collection<any>("ns.testimonials.v1", MOCK_TESTIMONIALS as any, "testimonials");
 export const faqsStore = new Collection<any>(
   "ns.faqs.v1",
   (MOCK_FAQS as any).map((f: any, i: number) => ({ id: i + 1, ...f })),
+  "faqs",
 );
+
 export const ordersStore = new Collection<any>("ns.orders.v1", [
   {
     id: 1001,
