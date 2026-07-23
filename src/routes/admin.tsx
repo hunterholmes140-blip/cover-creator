@@ -37,13 +37,14 @@ function AdminLayout() {
             return (
               <Link
                 key={to}
-                to={to}
+                to={to as any}
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors ${
                   active ? "bg-primary/10 text-primary" : "text-foreground/70 hover:bg-accent hover:text-foreground"
                 }`}
               >
                 <Icon className="h-4 w-4" /> {label}
               </Link>
+
             );
           })}
         </nav>
