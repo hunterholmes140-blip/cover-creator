@@ -190,3 +190,12 @@
   [data-reveal] { opacity: 1 !important; animation: none !important; }
 }
 
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-none {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+

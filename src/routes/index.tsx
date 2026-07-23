@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { ArrowRight, GraduationCap, Users, Award, PlayCircle, Sparkles, Star, GraduationCap as GradIcon, BookOpen, UserCheck, TrendingUp, ChevronDown, Calendar, Clock, Crown, BadgeCheck } from "lucide-react";
-import { useState } from "react";
+import { ArrowRight, GraduationCap, Users, Award, PlayCircle, Sparkles, Star, GraduationCap as GradIcon, BookOpen, UserCheck, TrendingUp, ChevronDown, ChevronLeft, ChevronRight, Calendar, Clock, Crown, BadgeCheck } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
 import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
@@ -72,6 +72,81 @@ export const Route = createFileRoute("/")({
   pendingComponent: () => <SiteLayout><div className="min-h-[60vh]" /></SiteLayout>,
   errorComponent: ({ error }) => <SiteLayout><div className="p-8 text-center text-destructive">ত্রুটি: {error.message}</div></SiteLayout>,
 });
+
+function CategoryAutoScroll({ categories }: { categories: any[] }) {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+
+    let animationFrameId: number;
+    const speed = 0.6;
+
+    const scroll = () => {
+      if (!isHovered && el && el.scrollWidth > el.clientWidth) {
+        el.scrollLeft += speed;
+        if (el.scrollLeft >= el.scrollWidth - el.clientWidth - 1) {
+          el.scrollLeft = 0;
+        }
+      }
+      animationFrameId = requestAnimationFrame(scroll);
+    };
+
+    animationFrameId = requestAnimationFrame(scroll);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isHovered, categories]);
+
+  const scrollByAmount = (amount: number) => {
+    if (scrollRef.current) {
+      scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
+    }
+  };
+
+  return (
+    <div className="relative group/carousel mt-6">
+      <button
+        type="button"
+        onClick={() => scrollByAmount(-280)}
+        className="absolute -left-3 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-background/90 border border-border shadow-md grid place-items-center text-foreground hover:bg-accent transition-opacity opacity-0 group-hover/carousel:opacity-100"
+        aria-label="Previous categories"
+      >
+        <ChevronLeft className="h-5 w-5" />
+      </button>
+
+      <div
+        ref={scrollRef}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        className="flex gap-4 overflow-x-auto pb-4 pt-1 scrollbar-none scroll-smooth"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      >
+        {categories.map((cat) => (
+          <Link
+            key={cat.id}
+            to="/courses"
+            search={{ category: cat.slug }}
+            className="w-[calc(50%-8px)] sm:w-[calc(33.33%-11px)] md:w-[calc(25%-12px)] min-w-[200px] flex-shrink-0 rounded-xl border border-border bg-card p-5 hover:border-primary hover:shadow-md transition-all group"
+          >
+            <div className="text-3xl">{["💻", "🎨", "📈", "🎬"][cat.id % 4] ?? "📚"}</div>
+            <div className="mt-3 font-semibold group-hover:text-primary">{cat.name}</div>
+          </Link>
+        ))}
+      </div>
+
+      <button
+        type="button"
+        onClick={() => scrollByAmount(280)}
+        className="absolute -right-3 top-1/2 -translate-y-1/2 z-10 h-9 w-9 rounded-full bg-background/90 border border-border shadow-md grid place-items-center text-foreground hover:bg-accent transition-opacity opacity-0 group-hover/carousel:opacity-100"
+        aria-label="Next categories"
+      >
+        <ChevronRight className="h-5 w-5" />
+      </button>
+    </div>
+  );
+}
 
 function HomePage() {
   const { data: featured } = useSuspenseQuery(featuredQuery);
@@ -176,19 +251,7 @@ function HomePage() {
           <h2 className="text-2xl md:text-3xl font-bold">{c.sectionCategoriesTitle}</h2>
           <p className="mt-2 text-muted-foreground">{c.sectionCategoriesSubtitle}</p>
         </div>
-        <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {cats.categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to="/courses"
-              search={{ category: cat.slug }}
-              className="rounded-xl border border-border bg-card p-5 hover:border-primary hover:shadow-md transition-all group"
-            >
-              <div className="text-3xl">{["💻", "🎨", "📈", "🎬"][cat.id % 4] ?? "📚"}</div>
-              <div className="mt-3 font-semibold group-hover:text-primary">{cat.name}</div>
-            </Link>
-          ))}
-        </div>
+        <CategoryAutoScroll categories={cats.categories} />
       </section>
 
       {/* FEATURED COURSES */}
