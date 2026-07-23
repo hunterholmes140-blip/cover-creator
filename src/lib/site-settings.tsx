@@ -59,9 +59,9 @@ function loadSettings(): SiteSettings {
 function applyCssVars(s: SiteSettings) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
-  root.style.setProperty("--primary", s.primaryHsl);
-  root.style.setProperty("--accent", s.accentHsl);
-  root.style.setProperty("--ring", s.primaryHsl);
+  root.style.setProperty("--primary", `hsl(${s.primaryHsl})`);
+  root.style.setProperty("--accent", `hsl(${s.accentHsl})`);
+  root.style.setProperty("--ring", `hsl(${s.primaryHsl})`);
   root.style.setProperty("--footer-from", s.footerFrom);
   root.style.setProperty("--footer-via", s.footerVia);
   root.style.setProperty("--footer-to", s.footerTo);
