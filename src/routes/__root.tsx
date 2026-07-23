@@ -20,6 +20,7 @@ import "@fontsource/great-vibes/400.css";
 
 
 import appCss from "../styles.css?url";
+import faviconAsset from "../assets/favicon-mark.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteSettingsProvider } from "../lib/site-settings";
 
@@ -101,7 +102,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: appCss,
       },
-      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "icon", type: "image/png", href: faviconAsset.url },
     ],
   }),
   shellComponent: RootShell,
