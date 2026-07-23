@@ -23,6 +23,7 @@ import appCss from "../styles.css?url";
 import faviconAsset from "../assets/favicon-mark.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteSettingsProvider } from "../lib/site-settings";
+import { MarketingProvider } from "../lib/marketing";
 
 
 function NotFoundComponent() {
