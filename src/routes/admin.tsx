@@ -1,13 +1,98 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Settings, LayoutDashboard, BookOpen, Users, ShoppingCart, Film, Video,
-  FolderTree, FileText, User, CreditCard, FilePenLine, Menu, X,
+  FolderTree, FileText, User, CreditCard, FilePenLine, Menu, X, LogOut, Lock,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
-  component: AdminLayout,
+  component: AdminGate,
 });
+
+function AdminGate() {
+  const [ready, setReady] = useState(false);
+  const [authed, setAuthed] = useState(false);
+
+  useEffect(() => {
+    const t = localStorage.getItem("nextscale_token");
+    const u = localStorage.getItem("nextscale_user");
+    try {
+      const user = u ? JSON.parse(u) : null;
+      setAuthed(!!t && user?.role === "admin");
+    } catch {
+      setAuthed(false);
+    }
+    setReady(true);
+  }, []);
+
+  if (!ready) return null;
+  if (!authed) return <AdminLogin onDone={() => setAuthed(true)} />;
+  return <AdminLayout onLogout={() => { localStorage.removeItem("nextscale_token"); localStorage.removeItem("nextscale_user"); setAuthed(false); }} />;
+}
+
+function AdminLogin({ onDone }: { onDone: () => void }) {
+  const [email, setEmail] = useState("admin@nextscale.com");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [err, setErr] = useState<string | null>(null);
+
+  const submit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErr(null);
+    try {
+      const res = await fetch("/api/auth/admin-login.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
+      const json = await res.json().catch(() => ({}));
+      if (!res.ok || json.success === false) throw new Error(json.error || "লগইন ব্যর্থ");
+      const data = json.data ?? json;
+      localStorage.setItem("nextscale_token", data.token);
+      localStorage.setItem("nextscale_user", JSON.stringify(data.user));
+      onDone();
+    } catch (e: any) {
+      setErr(e?.message || "লগইন ব্যর্থ");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen grid place-items-center bg-muted/30 p-4">
+      <form onSubmit={submit} className="w-full max-w-sm bg-card border border-border rounded-xl p-6 space-y-4 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-lg bg-primary text-primary-foreground grid place-items-center">
+            <Lock className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="font-semibold">Admin Login</div>
+            <div className="text-xs text-muted-foreground">NextScale অ্যাডমিন প্যানেল</div>
+          </div>
+        </div>
+        <label className="block text-sm">
+          <span className="text-foreground/80">ইমেইল</span>
+          <input type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+            className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+        </label>
+        <label className="block text-sm">
+          <span className="text-foreground/80">পাসওয়ার্ড</span>
+          <input type="password" required value={password} onChange={(e) => setPassword(e.target.value)}
+            className="mt-1 w-full rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring" />
+        </label>
+        {err && <div className="text-sm text-red-600">{err}</div>}
+        <button disabled={loading} className="w-full rounded-md bg-primary text-primary-foreground py-2 text-sm font-semibold hover:bg-primary/90 disabled:opacity-60">
+          {loading ? "লগইন হচ্ছে..." : "লগইন"}
+        </button>
+        <p className="text-xs text-muted-foreground">
+          ডিফল্ট: admin@nextscale.com / admin123
+        </p>
+      </form>
+    </div>
+  );
+}
+
 
 type NavItem = { to: string; label: string; Icon: typeof Settings; exact?: boolean };
 type NavGroup = { label: string; items: NavItem[] };
