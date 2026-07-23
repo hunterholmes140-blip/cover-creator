@@ -82,6 +82,9 @@ export async function handle(fn: () => Promise<Response>): Promise<Response> {
   } catch (e: any) {
     if (e instanceof HttpError) return fail(e.status, e.message);
     console.error("[api]", e);
-    return fail(500, e?.message || "সার্ভার এরর");
+    if (e?.code === "ER_ACCESS_DENIED_ERROR") {
+      return fail(500, "ডাটাবেজ কানেকশন সেটিংস সঠিক নয়");
+    }
+    return fail(500, "সার্ভার এরর");
   }
 }
