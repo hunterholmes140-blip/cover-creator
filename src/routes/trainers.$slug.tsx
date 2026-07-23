@@ -13,7 +13,7 @@ const trainerQuery = (slug: string) =>
   });
 
 export const Route = createFileRoute("/trainers/$slug")({
-  head: ({ loaderData }) => ({
+  head: ({ loaderData }: { loaderData?: { trainer: any; courses: any[] } }) => ({
     meta: [
       { title: `${loaderData?.trainer?.name ?? "ট্রেনার"} — NextScale Academy` },
       { name: "description", content: loaderData?.trainer?.bio?.slice(0, 150) ?? "ট্রেনার প্রোফাইল" },
