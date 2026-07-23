@@ -23,6 +23,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { settings } = useSiteSettings();
   const [user, setUser] = useState<any>(null);
+  useScrollReveal();
 
   const navigate = useNavigate();
 
