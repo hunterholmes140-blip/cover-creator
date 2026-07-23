@@ -42,6 +42,58 @@ export const MOCK_HERO_VIDEOS = [
   },
 ];
 
+// ভিডিও গ্যালারি সেকশন (এডমিন প্যানেল থেকে YouTube লিংক দিয়ে ম্যানেজ হবে)
+export const MOCK_VIDEO_GALLERY = [
+  {
+    id: 1,
+    title: "কোর্স ইন্ট্রোডাকশন — কীভাবে শুরু করবেন",
+    description: "আমাদের কোর্স প্ল্যাটফর্মের সম্পূর্ণ পরিচিতি",
+    youtube_url: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+    duration: "৫:২৩",
+    category: "পরিচিতি",
+  },
+  {
+    id: 2,
+    title: "শিক্ষার্থীদের সাফল্যের গল্প",
+    description: "আমাদের শিক্ষার্থীরা কীভাবে ক্যারিয়ার গড়েছেন",
+    youtube_url: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    duration: "৮:১৫",
+    category: "সাফল্য",
+  },
+  {
+    id: 3,
+    title: "লাইভ ক্লাস প্রিভিউ",
+    description: "আমাদের লাইভ ক্লাসের একটি ঝলক দেখে নিন",
+    youtube_url: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+    duration: "১২:৪০",
+    category: "লাইভ ক্লাস",
+  },
+  {
+    id: 4,
+    title: "মেন্টরের সাথে পরিচয়",
+    description: "আমাদের প্রধান মেন্টরের গল্প ও দর্শন",
+    youtube_url: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+    duration: "৬:৫০",
+    category: "মেন্টর",
+  },
+  {
+    id: 5,
+    title: "ফ্রিল্যান্সিং টিপস ও ট্রিকস",
+    description: "প্রফেশনাল ফ্রিল্যান্সার হওয়ার গাইডলাইন",
+    youtube_url: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+    duration: "১০:২৫",
+    category: "টিপস",
+  },
+  {
+    id: 6,
+    title: "টেকনোলজি আপডেট",
+    description: "সর্বশেষ টেকনোলজি ট্রেন্ড ও নিউজ",
+    youtube_url: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+    duration: "৭:৩০",
+    category: "টেক নিউজ",
+  },
+];
+
 export const MOCK_COURSES = [
   {
     id: 1,
