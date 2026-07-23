@@ -108,29 +108,60 @@ function useRemoteCollection<T extends { id: any }>(
   const add = useCallback(
     async (item: Partial<T>) => {
       if (endpoint.supportsCreate === false) throw new Error("Create সাপোর্ট করে না");
-      const res = await apiCall<{ id: any }>(endpoint.path, { method: "POST", body: item });
-      await refresh();
-      return { ...(item as any), id: res.id } as T;
+      const tempId = `tmp_${Date.now()}`;
+      const optimistic = { ...(item as any), id: tempId } as T;
+      setItems((prev) => [optimistic, ...prev]);
+      try {
+        const res = await apiCall<{ id: any }>(endpoint.path, { method: "POST", body: item });
+        setItems((prev) =>
+          prev.map((r) => (String((r as any).id) === tempId ? ({ ...(r as any), id: res.id } as T) : r)),
+        );
+        refresh(); // background reconcile
+        return { ...(item as any), id: res.id } as T;
+      } catch (e) {
+        setItems((prev) => prev.filter((r) => String((r as any).id) !== tempId));
+        throw e;
+      }
     },
     [endpoint.path, endpoint.supportsCreate, refresh],
   );
 
   const update = useCallback(
     async (id: any, patch: Partial<T>) => {
-      // Merge with current row so partial toggles (is_published, status, etc.)
-      // don't wipe unrelated columns on the server side.
-      const cur = items.find((i) => String((i as any).id) === String(id));
+      let snapshot: T[] = [];
+      setItems((prev) => {
+        snapshot = prev;
+        return prev.map((r) =>
+          String((r as any).id) === String(id) ? ({ ...(r as any), ...patch } as T) : r,
+        );
+      });
+      const cur = snapshot.find((i) => String((i as any).id) === String(id));
       const body = { ...(cur || {}), ...patch, id };
-      await apiCall(endpoint.path, { method: "PUT", body });
-      await refresh();
+      try {
+        await apiCall(endpoint.path, { method: "PUT", body });
+        refresh();
+      } catch (e) {
+        setItems(snapshot);
+        throw e;
+      }
     },
-    [endpoint.path, refresh, items],
+    [endpoint.path, refresh],
   );
 
   const remove = useCallback(
     async (id: any) => {
-      await apiCall(endpoint.path, { method: "DELETE", query: { id } });
-      await refresh();
+      let snapshot: T[] = [];
+      setItems((prev) => {
+        snapshot = prev;
+        return prev.filter((r) => String((r as any).id) !== String(id));
+      });
+      try {
+        await apiCall(endpoint.path, { method: "DELETE", query: { id } });
+        refresh();
+      } catch (e) {
+        setItems(snapshot);
+        throw e;
+      }
     },
     [endpoint.path, refresh],
   );
