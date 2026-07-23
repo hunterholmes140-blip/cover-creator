@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site/Layout";
 import { api, setToken, setStoredUser } from "@/lib/api";
+import { track } from "@/lib/marketing";
 import { Field } from "./login";
 import { useContent } from "@/lib/content-store";
 import { AUTH_CONTENT_DEFAULTS, CONTENT_KEYS, type RegisterField } from "@/lib/content-defaults";
