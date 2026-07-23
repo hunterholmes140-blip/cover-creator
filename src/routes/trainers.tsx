@@ -91,7 +91,6 @@ function TrainersPage() {
               </div>
             </div>
           </div>
-        </div>
         </Link>
       </section>
 
