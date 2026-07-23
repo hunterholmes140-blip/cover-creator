@@ -10,6 +10,7 @@ export function useScrollReveal() {
     if (typeof window === "undefined") return;
     if (window.matchMedia?.("(prefers-reduced-motion: reduce)").matches) return;
 
+    const observed = new WeakSet<Element>();
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -30,11 +31,17 @@ export function useScrollReveal() {
       root.querySelectorAll("section").forEach((section) => {
         Array.from(section.children).forEach((child, i) => {
           const el = child as HTMLElement;
-          if (el.dataset.revealInit) return;
-          el.dataset.revealInit = "1";
+          if (observed.has(el)) return;
+          observed.add(el);
           if (!el.hasAttribute("data-reveal")) el.setAttribute("data-reveal", "");
           el.style.animationDelay = `${Math.min(i * 90, 450)}ms`;
-          io.observe(el);
+          // Safety: if already within the viewport at scan time, reveal immediately
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            el.classList.add("is-visible");
+          } else {
+            io.observe(el);
+          }
         });
       });
     };
