@@ -149,73 +149,7 @@ function HomePage() {
         </div>
       </section>
 
-  return (
-    <SiteLayout>
-      {/* HERO — টেক্সট + ভিডিও ফ্রেম (ফ্রেমের ভেতরে YouTube ক্যারুসেল, উপরে হেডিং overlay) */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/50 border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 md:py-10 grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-medium">
-              <Sparkles className="h-3.5 w-3.5" /> নতুন কোর্স যোগ হয়েছে
-            </span>
-            <h1 className="mt-4 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
-              আপনার ভবিষ্যৎ শুরু হোক <span className="text-primary">এখান থেকে</span>
-            </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-xl">
-              ইন্ডাস্ট্রি এক্সপার্টদের কাছ থেকে শিখুন আধুনিক স্কিল। ঘরে বসেই ক্যারিয়ার গড়ুন প্রফেশনাল কোর্সে।
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/courses" className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-6 py-3 text-base font-semibold hover:bg-primary/90 transition-colors">
-                সব কোর্স দেখুন <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link to="/about" className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-6 py-3 text-base font-semibold hover:bg-accent transition-colors">
-                আমাদের সম্পর্কে
-              </Link>
-            </div>
-          </div>
 
-          <div className="relative">
-            <HeroCarousel slides={MOCK_HERO_VIDEOS} />
-          </div>
-        </div>
-      </section>
-
-      {/* CTA স্ট্রিপ */}
-      <section className="border-b border-border bg-gradient-to-r from-primary/5 via-background to-accent/40">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-wrap items-center justify-between gap-4">
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Sparkles className="h-4 w-4 text-primary" /> নতুন কোর্স যোগ হয়েছে — এখনই এনরোল করুন
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link to="/courses" className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold hover:bg-primary/90 transition-colors">
-              সব কোর্স দেখুন <ArrowRight className="h-4 w-4" />
-            </Link>
-            <Link to="/about" className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-5 py-2.5 text-sm font-semibold hover:bg-accent transition-colors">
-              আমাদের সম্পর্কে
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* STATS */}
-      <section className="border-b border-border bg-muted/30">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
-          {[
-            { icon: UserCheck, n: "১০,০০০+", l: "সক্রিয় শিক্ষার্থী" },
-            { icon: BookOpen, n: "৫০+", l: "প্রিমিয়াম কোর্স" },
-            { icon: GradIcon, n: "২৫+", l: "এক্সপার্ট ট্রেনার" },
-            { icon: TrendingUp, n: "৯৮%", l: "সন্তুষ্টির হার" },
-          ].map((s) => (
-            <div key={s.l} className="text-center">
-              <div className="mx-auto h-12 w-12 rounded-xl bg-primary/10 text-primary grid place-items-center">
-                <s.icon className="h-6 w-6" />
-              </div>
-              <div className="mt-3 text-2xl md:text-3xl font-bold">{s.n}</div>
-              <div className="text-sm text-muted-foreground mt-1">{s.l}</div>
-            </div>
-          ))}
-        </div>
-      </section>
 
       {/* FEATURES */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
