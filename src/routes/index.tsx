@@ -1,11 +1,22 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { ArrowRight, GraduationCap, Users, Award, PlayCircle, Sparkles, Star, GraduationCap as GradIcon, BookOpen, UserCheck, TrendingUp, ChevronDown, Calendar, Clock } from "lucide-react";
+import { ArrowRight, GraduationCap, Users, Award, PlayCircle, Sparkles, Star, GraduationCap as GradIcon, BookOpen, UserCheck, TrendingUp, ChevronDown, Calendar, Clock, Crown, BadgeCheck } from "lucide-react";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
 import { toBn } from "@/lib/format";
+import trainer1 from "@/assets/trainer-1.jpg";
+import trainer2 from "@/assets/trainer-2.jpg";
+import trainer3 from "@/assets/trainer-3.jpg";
+import trainer4 from "@/assets/trainer-4.jpg";
+
+const TRAINER_IMAGES: Record<string, string> = {
+  "trainer-1": trainer1,
+  "trainer-2": trainer2,
+  "trainer-3": trainer3,
+  "trainer-4": trainer4,
+};
 
 const featuredQuery = queryOptions({
   queryKey: ["courses", "featured"],
@@ -191,28 +202,80 @@ function HomePage() {
           {(() => {
             const mentor = trainers.trainers.find((t: any) => t.is_mentor) ?? trainers.trainers[0];
             const rest = trainers.trainers.filter((t: any) => t.id !== mentor.id);
-            const TrainerCard = ({ t, mentor: isMentor = false }: { t: any; mentor?: boolean }) => (
-              <Link
-                to="/trainers/$slug"
-                params={{ slug: t.slug }}
-                className={`group rounded-xl border bg-card p-5 text-center hover:shadow-lg transition-all ${isMentor ? "border-amber-500/60 ring-1 ring-amber-500/30" : "border-border hover:border-primary/40"}`}
-              >
-                {isMentor && (
-                  <span className="inline-block mb-3 rounded-full bg-amber-500 text-white px-2.5 py-0.5 text-[10px] font-bold">
-                    ⭐ প্রধান মেন্টর
-                  </span>
-                )}
-                <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-primary to-primary/60 grid place-items-center text-primary-foreground text-3xl font-bold">
-                  {t.name.charAt(0)}
-                </div>
-                <h4 className="mt-4 font-semibold group-hover:text-primary">{t.name}</h4>
-                <p className="text-xs text-muted-foreground mt-1">{t.title}</p>
-                <div className="mt-3 flex items-center justify-center gap-3 text-xs text-muted-foreground">
-                  <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {toBn(t.students)}+</span>
-                  <span className="inline-flex items-center gap-1 text-amber-500"><Star className="h-3 w-3 fill-current" /> {t.rating}</span>
-                </div>
-              </Link>
-            );
+            const TrainerCard = ({ t, mentor: isMentor = false }: { t: any; mentor?: boolean }) => {
+              const img = TRAINER_IMAGES[t.avatar];
+              return (
+                <Link
+                  to="/trainers/$slug"
+                  params={{ slug: t.slug }}
+                  className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${
+                    isMentor ? "border-amber-400/70 ring-2 ring-amber-300/40" : "border-border hover:border-primary/50"
+                  }`}
+                >
+                  {/* Image */}
+                  <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+                    {img ? (
+                      <img
+                        src={img}
+                        alt={t.name}
+                        loading="lazy"
+                        width={768}
+                        height={768}
+                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                      />
+                    ) : (
+                      <div className="h-full w-full grid place-items-center bg-gradient-to-br from-primary to-primary/60 text-primary-foreground text-5xl font-bold">
+                        {t.name.charAt(0)}
+                      </div>
+                    )}
+                    {/* Gradient overlay */}
+                    <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
+
+                    {/* Mentor crown */}
+                    {isMentor && (
+                      <div className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 text-[10px] font-bold text-white shadow-lg">
+                        <Crown className="h-3 w-3" /> প্রধান মেন্টর
+                      </div>
+                    )}
+                    {/* Rating pill */}
+                    <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/95 backdrop-blur px-2 py-0.5 text-[11px] font-semibold text-amber-600 shadow">
+                      <Star className="h-3 w-3 fill-current" /> {t.rating}
+                    </div>
+
+                    {/* Name over image */}
+                    <div className="absolute inset-x-0 bottom-0 p-4 text-white">
+                      <div className="flex items-center gap-1">
+                        <h4 className="font-bold text-lg leading-tight">{t.name}</h4>
+                        <BadgeCheck className="h-4 w-4 text-sky-300 shrink-0" />
+                      </div>
+                      <p className="text-[11px] text-white/85 mt-0.5 line-clamp-1">{t.title}</p>
+                    </div>
+                  </div>
+
+                  {/* Footer */}
+                  <div className="p-4">
+                    <div className="flex flex-wrap gap-1.5">
+                      {(t.expertise ?? []).slice(0, 3).map((s: string) => (
+                        <span
+                          key={s}
+                          className="rounded-md bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-medium"
+                        >
+                          {s}
+                        </span>
+                      ))}
+                    </div>
+                    <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
+                      <span className="inline-flex items-center gap-1">
+                        <Users className="h-3.5 w-3.5" /> {toBn(t.students)}+ শিক্ষার্থী
+                      </span>
+                      <span className="inline-flex items-center gap-1 text-primary font-medium group-hover:gap-2 transition-all">
+                        প্রোফাইল <ArrowRight className="h-3.5 w-3.5" />
+                      </span>
+                    </div>
+                  </div>
+                </Link>
+              );
+            };
             return (
               <>
                 {/* Mentor on top — same size, centered */}
@@ -221,7 +284,7 @@ function HomePage() {
                 </div>
 
                 {/* Trainers below */}
-                <div className="mt-12 flex items-end justify-between">
+                <div className="mt-14 flex items-end justify-between">
                   <div>
                     <h3 className="text-xl md:text-2xl font-bold">আমাদের ট্রেনার</h3>
                     <p className="mt-1 text-sm text-muted-foreground">ইন্ডাস্ট্রি এক্সপার্টদের সাথে পরিচিত হোন</p>

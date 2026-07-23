@@ -158,7 +158,7 @@ export const MOCK_TRAINERS = [
     students: 4200,
     courses: 2,
     rating: 4.9,
-    avatar: "",
+    avatar: "trainer-1",
     is_mentor: true,
     social: { facebook: "#", linkedin: "#", youtube: "#" },
   },
@@ -172,7 +172,7 @@ export const MOCK_TRAINERS = [
     students: 3100,
     courses: 2,
     rating: 4.8,
-    avatar: "",
+    avatar: "trainer-2",
     social: { facebook: "#", linkedin: "#", youtube: "#" },
   },
   {
@@ -185,7 +185,7 @@ export const MOCK_TRAINERS = [
     students: 2800,
     courses: 1,
     rating: 4.9,
-    avatar: "",
+    avatar: "trainer-3",
     social: { facebook: "#", linkedin: "#", youtube: "#" },
   },
   {
@@ -198,7 +198,7 @@ export const MOCK_TRAINERS = [
     students: 1900,
     courses: 1,
     rating: 4.7,
-    avatar: "",
+    avatar: "trainer-4",
     social: { facebook: "#", linkedin: "#", youtube: "#" },
   },
 ];
