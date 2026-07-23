@@ -2,7 +2,7 @@ import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-r
 import { useEffect, useState } from "react";
 import {
   Settings, LayoutDashboard, BookOpen, Users, ShoppingCart, Film, Video,
-  FolderTree, FileText, User, CreditCard, FilePenLine, Menu, X, LogOut, Lock,
+  FolderTree, FileText, User, CreditCard, FilePenLine, Menu, X, LogOut, Lock, Megaphone,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
