@@ -522,6 +522,14 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
         auth: true,
         body: { course_id: course.id, payment_method: method, ...f },
       });
+      track("Purchase", {
+        content_ids: [String(course.id)],
+        content_name: course.title,
+        content_type: "product",
+        value: Number(amount) || 0,
+        currency: "BDT",
+        num_items: 1,
+      });
       setMsg("অর্ডার সাবমিট হয়েছে! এডমিন verify করার পর কোর্স access পাবেন।");
     } catch (e: any) {
       setErr(e.message);
