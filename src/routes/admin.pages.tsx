@@ -36,7 +36,7 @@ function PagesAdmin() {
             {items.map((p: any) => (
               <button
                 key={p.id}
-                onClick={() => setSelected(p)}
+                onClick={() => setSelectedId(p.id)}
                 className={`w-full text-left p-3 text-sm hover:bg-accent transition ${
                   selected?.id === p.id ? "bg-primary/10 text-primary font-medium" : ""
                 }`}
