@@ -397,6 +397,7 @@ export const MOCK_POSTS = [
     category: "ক্যারিয়ার",
     published_at: "২৫ জুলাই, ২০২৬",
     read_time: "৬ মিনিট",
+    cover_image: "https://images.unsplash.com/photo-1461749280684-dccba630e2f6?w=900&auto=format&fit=crop&q=70",
     cover_gradient: "from-blue-500 via-cyan-500 to-teal-500",
   },
   {
