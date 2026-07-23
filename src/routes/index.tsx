@@ -6,10 +6,11 @@ import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
 import { toBn } from "@/lib/format";
-import trainer1 from "@/assets/trainer-1.jpg";
-import trainer2 from "@/assets/trainer-2.jpg";
-import trainer3 from "@/assets/trainer-3.jpg";
-import trainer4 from "@/assets/trainer-4.jpg";
+import trainer1 from "@/assets/trainer-1.png";
+import trainer2 from "@/assets/trainer-2.png";
+import trainer3 from "@/assets/trainer-3.png";
+import trainer4 from "@/assets/trainer-4.png";
+
 
 const TRAINER_IMAGES: Record<string, string> = {
   "trainer-1": trainer1,
@@ -209,46 +210,59 @@ function HomePage() {
                 <Link
                   to="/trainers/$slug"
                   params={{ slug: t.slug }}
-                  className={`group relative flex items-center gap-3 rounded-full border bg-card/90 backdrop-blur pl-1.5 pr-4 py-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 ${
-                    isMentor ? "border-amber-400/70 ring-1 ring-amber-300/50" : "border-border hover:border-primary/50"
-                  }`}
+                  className="group relative flex flex-col items-center text-center pt-6"
                 >
-                  {/* Circular avatar */}
-                  <div className="relative h-14 w-14 shrink-0 rounded-full overflow-hidden bg-muted ring-2 ring-background">
+                  {/* Circle + PNG cutout */}
+                  <div className="relative w-full max-w-[220px] aspect-square">
+                    {/* Teal circle background */}
+                    <div
+                      className={`absolute inset-x-0 bottom-0 top-[15%] rounded-full shadow-lg transition-transform duration-500 group-hover:scale-[1.03] ${
+                        isMentor
+                          ? "bg-gradient-to-br from-amber-400 to-amber-600"
+                          : "bg-gradient-to-br from-primary to-primary/70"
+                      }`}
+                    />
+                    {/* Mentor crown */}
+                    {isMentor && (
+                      <div className="absolute top-1 right-2 z-20 h-8 w-8 rounded-full bg-white shadow-md grid place-items-center">
+                        <Crown className="h-4 w-4 text-amber-500" />
+                      </div>
+                    )}
+                    {/* Rating pill */}
+                    <div className="absolute bottom-3 right-1 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2 py-0.5 text-[11px] font-semibold text-amber-600 shadow-md">
+                      <Star className="h-3 w-3 fill-current" /> {t.rating}
+                    </div>
+                    {/* PNG cutout — bleeds above the circle */}
                     {img ? (
                       <img
                         src={img}
                         alt={t.name}
                         loading="lazy"
-                        width={128}
-                        height={128}
-                        className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
+                        className="absolute inset-x-0 bottom-0 mx-auto h-[115%] w-auto object-contain object-bottom drop-shadow-xl transition-transform duration-500 group-hover:-translate-y-1"
                       />
                     ) : (
-                      <div className="h-full w-full grid place-items-center bg-gradient-to-br from-primary to-primary/60 text-primary-foreground font-bold">
+                      <div className="absolute inset-x-0 bottom-0 mx-auto h-[80%] w-[80%] grid place-items-center text-white text-6xl font-bold">
                         {t.name.charAt(0)}
                       </div>
                     )}
-                    {isMentor && (
-                      <div className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-amber-500 grid place-items-center shadow ring-2 ring-card">
-                        <Crown className="h-2.5 w-2.5 text-white" />
-                      </div>
-                    )}
                   </div>
 
-                  {/* Info */}
-                  <div className="min-w-0 flex-1">
-                    <div className="flex items-center gap-1">
-                      <h4 className="font-semibold text-sm truncate">{t.name}</h4>
-                      <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" />
-                    </div>
-                    <p className="text-[11px] text-muted-foreground truncate">{t.title}</p>
-                  </div>
+                  {/* Script name */}
+                  <h4
+                    className="relative -mt-3 z-10 text-3xl md:text-4xl leading-none text-foreground"
+                    style={{ fontFamily: "var(--font-script)" }}
+                  >
+                    {t.name}
+                  </h4>
 
-                  {/* Rating */}
-                  <div className="flex items-center gap-0.5 text-amber-500 shrink-0">
-                    <Star className="h-3 w-3 fill-current" />
-                    <span className="text-[11px] font-semibold text-foreground">{t.rating}</span>
+                  {/* Title pill */}
+                  <div
+                    className={`mt-2 inline-flex items-center gap-1 rounded-full px-3 py-1 text-[11px] font-bold uppercase tracking-wider text-white shadow ${
+                      isMentor ? "bg-amber-500" : "bg-primary"
+                    }`}
+                  >
+                    <BadgeCheck className="h-3 w-3" />
+                    <span className="truncate max-w-[180px]">{t.title}</span>
                   </div>
                 </Link>
               );
@@ -256,17 +270,18 @@ function HomePage() {
 
             return (
               <>
-                {/* Mentor pill on top, centered */}
+                {/* Mentor on top, centered */}
                 <div className="mt-8 flex justify-center">
-                  <div className="w-full max-w-sm">
+                  <div className="w-full max-w-[240px]">
                     <TrainerCard t={mentor} mentor />
                   </div>
                 </div>
 
-                {/* Trainer pills grid */}
-                <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl mx-auto">
-                  {rest.slice(0, 6).map((t: any) => <TrainerCard key={t.id} t={t} />)}
+                {/* Trainer grid */}
+                <div className="mt-10 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+                  {rest.slice(0, 4).map((t: any) => <TrainerCard key={t.id} t={t} />)}
                 </div>
+
 
                 <div className="mt-6 text-center">
                   <Link to="/trainers" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">

@@ -48,7 +48,9 @@
   --color-ring-offset-background: var(--background);
   --font-sans: "Hind Siliguri", var(--font-inter), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-playfair), ui-serif, Georgia, serif;
+  --font-script: "Great Vibes", cursive;
   --font-display: var(--font-sans);
+
   --color-cyan: var(--cyan);
   --color-cyan-foreground: var(--cyan-foreground);
   --color-ink: var(--ink);
