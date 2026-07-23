@@ -251,15 +251,24 @@ function HomePage() {
           </div>
 
           {(() => {
-            const mentor = trainers.trainers.find((t: any) => t.is_mentor) ?? trainers.trainers[0];
-            const rest = trainers.trainers.filter((t: any) => t.id !== mentor.id);
+            const trainerList = Array.isArray(trainers.trainers) ? trainers.trainers : [];
+            const mentor = trainerList.find((t: any) => t?.is_mentor) ?? trainerList[0];
+            if (!mentor) {
+              return (
+                <div className="mt-10 rounded-xl border border-dashed border-border bg-background/70 p-8 text-center text-sm text-muted-foreground">
+                  এখনো কোনো ট্রেনার যোগ করা হয়নি।
+                </div>
+              );
+            }
+            const rest = trainerList.filter((t: any) => t?.id !== mentor.id);
 
             const TrainerCard = ({ t, mentor: isMentor = false }: { t: any; mentor?: boolean }) => {
-              const img = TRAINER_IMAGES[t.avatar];
+              const img = t.avatar_url || TRAINER_IMAGES[t.avatar];
+              const name = t.name || "ট্রেনার";
               return (
                 <Link
                   to="/trainers/$slug"
-                  params={{ slug: t.slug }}
+                  params={{ slug: String(t.slug || t.id || "trainer") }}
                   className="group relative flex flex-col items-center text-center pt-6"
                 >
                   {/* Circle + PNG cutout */}
@@ -288,13 +297,13 @@ function HomePage() {
                       {img ? (
                         <img
                           src={img}
-                          alt={t.name}
+                          alt={name}
                           loading="lazy"
                           className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom transition-transform duration-500 group-hover:scale-105"
                         />
                       ) : (
                         <div className="absolute inset-0 grid place-items-center text-white text-6xl font-bold">
-                          {t.name.charAt(0)}
+                          {name.charAt(0)}
                         </div>
                       )}
                     </div>
@@ -306,7 +315,7 @@ function HomePage() {
                     )}
                     {/* Rating pill */}
                     <div className="absolute -bottom-1 right-1 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-amber-600 shadow-lg ring-1 ring-amber-100">
-                      <Star className="h-3 w-3 fill-current" /> {t.rating}
+                      <Star className="h-3 w-3 fill-current" /> {t.rating ?? 5}
                     </div>
                   </div>
 
@@ -323,7 +332,7 @@ function HomePage() {
                       className="text-base md:text-lg font-bold leading-tight text-foreground transition-colors group-hover:text-primary"
                       style={{ fontFamily: '"Hind Siliguri", var(--font-sans)' }}
                     >
-                      {t.name}
+                      {name}
                     </h4>
                   </div>
 
@@ -337,7 +346,7 @@ function HomePage() {
                     }`}
                   >
                     <BadgeCheck className="h-3 w-3" />
-                    <span className="truncate max-w-[180px]">{t.title}</span>
+                    <span className="truncate max-w-[180px]">{t.title || "ইন্সট্রাক্টর"}</span>
                   </div>
                 </Link>
               );

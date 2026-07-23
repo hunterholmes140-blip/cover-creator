@@ -36,11 +36,12 @@ export const Route = createFileRoute("/trainers/")({
 });
 
 function TrainerCard({ t, mentor: isMentor = false }: { t: any; mentor?: boolean }) {
-  const img = TRAINER_IMAGES[t.avatar];
+  const img = t.avatar_url || TRAINER_IMAGES[t.avatar];
+  const name = t.name || "ট্রেনার";
   return (
     <Link
       to="/trainers/$slug"
-      params={{ slug: t.slug }}
+      params={{ slug: String(t.slug || t.id || "trainer") }}
       className="group relative flex flex-col items-center text-center pt-6"
     >
       <div className="relative w-full max-w-[200px] aspect-square">
@@ -65,13 +66,13 @@ function TrainerCard({ t, mentor: isMentor = false }: { t: any; mentor?: boolean
           {img ? (
             <img
               src={img}
-              alt={t.name}
+              alt={name}
               loading="lazy"
               className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom transition-transform duration-500 group-hover:scale-105"
             />
           ) : (
             <div className="absolute inset-0 grid place-items-center text-white text-6xl font-bold">
-              {t.name.charAt(0)}
+              {name.charAt(0)}
             </div>
           )}
         </div>
@@ -81,7 +82,7 @@ function TrainerCard({ t, mentor: isMentor = false }: { t: any; mentor?: boolean
           </div>
         )}
         <div className="absolute -bottom-1 right-1 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-amber-600 shadow-lg ring-1 ring-amber-100">
-          <Star className="h-3 w-3 fill-current" /> {t.rating}
+          <Star className="h-3 w-3 fill-current" /> {t.rating ?? 5}
         </div>
       </div>
 
@@ -96,7 +97,7 @@ function TrainerCard({ t, mentor: isMentor = false }: { t: any; mentor?: boolean
           className="text-base md:text-lg font-bold leading-tight text-foreground transition-colors group-hover:text-primary"
           style={{ fontFamily: '"Hind Siliguri", var(--font-sans)' }}
         >
-          {t.name}
+          {name}
         </h4>
       </div>
 
@@ -108,7 +109,7 @@ function TrainerCard({ t, mentor: isMentor = false }: { t: any; mentor?: boolean
         }`}
       >
         <BadgeCheck className="h-3 w-3" />
-        <span className="truncate max-w-[180px]">{t.title}</span>
+        <span className="truncate max-w-[180px]">{t.title || "ইন্সট্রাক্টর"}</span>
       </div>
     </Link>
   );
@@ -116,8 +117,9 @@ function TrainerCard({ t, mentor: isMentor = false }: { t: any; mentor?: boolean
 
 function TrainersPage() {
   const { data } = useSuspenseQuery(trainersQuery);
-  const mentor = data.trainers.find((t) => t.is_mentor) ?? data.trainers[0];
-  const rest = data.trainers.filter((t) => t.id !== mentor.id);
+  const trainerList = Array.isArray(data.trainers) ? data.trainers : [];
+  const mentor = trainerList.find((t) => t?.is_mentor) ?? trainerList[0];
+  const rest = mentor ? trainerList.filter((t) => t?.id !== mentor.id) : [];
 
   return (
     <SiteLayout>
@@ -132,12 +134,17 @@ function TrainersPage() {
 
       <section className="bg-gradient-to-br from-primary/15 via-primary/5 to-accent">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
-          {/* Mentor centered on top */}
-          <div className="flex justify-center">
-            <div className="w-full max-w-[240px]">
-              <TrainerCard t={mentor} mentor />
+          {mentor ? (
+            <div className="flex justify-center">
+              <div className="w-full max-w-[240px]">
+                <TrainerCard t={mentor} mentor />
+              </div>
             </div>
-          </div>
+          ) : (
+            <div className="rounded-xl border border-dashed border-border bg-background/70 p-8 text-center text-sm text-muted-foreground">
+              এখনো কোনো ট্রেনার যোগ করা হয়নি।
+            </div>
+          )}
 
           {/* Divider */}
           <div className="mt-10 flex items-center justify-center gap-2 opacity-60">

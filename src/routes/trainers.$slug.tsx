@@ -60,7 +60,18 @@ function TrainerDetailPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(trainerQuery(slug));
   const t = data.trainer;
+  if (!t) {
+    return (
+      <SiteLayout>
+        <div className="mx-auto max-w-3xl px-4 py-16 text-center">
+          <h1 className="text-2xl font-bold">ট্রেনার পাওয়া যায়নি</h1>
+          <Link to="/trainers" className="mt-4 inline-flex text-primary hover:underline">সব ট্রেনার দেখুন</Link>
+        </div>
+      </SiteLayout>
+    );
+  }
   const isMentor = !!t.is_mentor;
+  const trainerImage = t.avatar_url || TRAINER_IMAGES[t.avatar];
 
   return (
     <SiteLayout>
@@ -84,10 +95,10 @@ function TrainerDetailPage() {
                 <div className={`absolute inset-0 rounded-full border-2 border-dashed ${isMentor ? "border-amber-400/60" : "border-primary/40"}`} style={{ transform: "scale(1.08)" }} />
                 <div className={`absolute inset-0 rounded-full blur-2xl opacity-60 ${isMentor ? "bg-amber-400/50" : "bg-primary/40"}`} />
                 <div className={`absolute inset-0 overflow-hidden rounded-full shadow-xl ring-4 ring-white ${isMentor ? "bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500" : "bg-gradient-to-br from-primary via-primary to-primary/70"}`}>
-                  {TRAINER_IMAGES[t.avatar] ? (
-                    <img src={TRAINER_IMAGES[t.avatar]} alt={t.name} className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom" />
+                  {trainerImage ? (
+                    <img src={trainerImage} alt={t.name || "ট্রেনার"} className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom" />
                   ) : (
-                    <div className="absolute inset-0 grid place-items-center text-white text-5xl font-bold">{t.name.charAt(0)}</div>
+                    <div className="absolute inset-0 grid place-items-center text-white text-5xl font-bold">{(t.name || "ট").charAt(0)}</div>
                   )}
                 </div>
                 {isMentor && (
