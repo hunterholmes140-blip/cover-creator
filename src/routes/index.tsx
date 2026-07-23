@@ -342,10 +342,23 @@ function HomePage() {
                   <span className="h-px w-16 bg-border" />
                 </div>
 
-                {/* Trainer grid */}
-                <div className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
-                  {rest.slice(0, 4).map((t: any) => <TrainerCard key={t.id} t={t} />)}
-                </div>
+                {/* Trainer row — 3 cards aligned with mentor above; auto-scroll if more */}
+                {rest.length <= 3 ? (
+                  <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+                    {rest.map((t: any) => <TrainerCard key={t.id} t={t} />)}
+                  </div>
+                ) : (
+                  <div className="mt-8 max-w-3xl mx-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:thin]">
+                    <div className="grid grid-flow-col auto-cols-[minmax(0,33.333%)] gap-8 pb-3">
+                      {rest.map((t: any) => (
+                        <div key={t.id} className="snap-center">
+                          <TrainerCard t={t} />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
 
                 <div className="mt-10 text-center">
                   <Link
