@@ -25,9 +25,10 @@ CREATE TABLE `admins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ডিফল্ট এডমিন: admin@nextscale.com / admin123
--- (bcrypt hash of "admin123")
+-- (bcryptjs hash of "admin123")
 INSERT INTO `admins` (`name`, `email`, `password`) VALUES
-('Super Admin', 'admin@nextscale.com', '$2y$10$e0MYzXyjpJS7Pd0RVvHwHe1HlCS4bZJ9m3H6qGqQyq3xJnFqK8yGm');
+('Super Admin', 'admin@nextscale.com', '$2b$10$e1lqtHxRVOVvW2oD4WbEcuvKFZ9kVckcq.6oi3YGmC24l4VIh6HfC');
+
 
 -- ---------- USERS ----------
 DROP TABLE IF EXISTS `users`;
