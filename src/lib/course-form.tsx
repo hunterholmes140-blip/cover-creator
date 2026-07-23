@@ -4,6 +4,8 @@ import { makeSlug } from "@/lib/admin-store";
 import { useLiveCategories } from "@/lib/live-store";
 import { BADGE_PRESETS, BADGE_STYLES, type BadgeVariant } from "@/lib/course-badges";
 import { Field, Input, Textarea, Select, Button } from "@/components/admin/ui";
+import { ImageUpload } from "@/components/admin/ImageUpload";
+
 
 export type CourseFormValue = {
   title: string;
