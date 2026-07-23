@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { ArrowRight, GraduationCap, Users, Award, PlayCircle, Sparkles } from "lucide-react";
+import { ArrowRight, GraduationCap, Users, Award, PlayCircle, Sparkles, Star, GraduationCap as GradIcon, BookOpen, UserCheck, TrendingUp, ChevronDown, Calendar, Clock } from "lucide-react";
+import { useState } from "react";
 import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
@@ -13,6 +14,22 @@ const featuredQuery = queryOptions({
 const categoriesQuery = queryOptions({
   queryKey: ["categories"],
   queryFn: () => api<{ categories: any[] }>("courses/categories.php"),
+});
+const trainersQuery = queryOptions({
+  queryKey: ["trainers"],
+  queryFn: () => api<{ trainers: any[] }>("content/trainers.php"),
+});
+const testimonialsQuery = queryOptions({
+  queryKey: ["testimonials"],
+  queryFn: () => api<{ testimonials: any[] }>("content/testimonials.php"),
+});
+const faqsQuery = queryOptions({
+  queryKey: ["faqs"],
+  queryFn: () => api<{ faqs: { q: string; a: string }[] }>("content/faqs.php"),
+});
+const postsQuery = queryOptions({
+  queryKey: ["posts"],
+  queryFn: () => api<{ posts: any[] }>("content/posts.php"),
 });
 
 export const Route = createFileRoute("/")({
@@ -28,6 +45,10 @@ export const Route = createFileRoute("/")({
     await Promise.all([
       context.queryClient.ensureQueryData(featuredQuery),
       context.queryClient.ensureQueryData(categoriesQuery),
+      context.queryClient.ensureQueryData(trainersQuery),
+      context.queryClient.ensureQueryData(testimonialsQuery),
+      context.queryClient.ensureQueryData(faqsQuery),
+      context.queryClient.ensureQueryData(postsQuery),
     ]);
   },
   component: HomePage,
@@ -38,6 +59,11 @@ export const Route = createFileRoute("/")({
 function HomePage() {
   const { data: featured } = useSuspenseQuery(featuredQuery);
   const { data: cats } = useSuspenseQuery(categoriesQuery);
+  const { data: trainers } = useSuspenseQuery(trainersQuery);
+  const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
+  const { data: faqs } = useSuspenseQuery(faqsQuery);
+  const { data: posts } = useSuspenseQuery(postsQuery);
+  const [openFaq, setOpenFaq] = useState<number | null>(0);
 
   return (
     <SiteLayout>
@@ -55,30 +81,12 @@ function HomePage() {
               ইন্ডাস্ট্রি এক্সপার্টদের কাছ থেকে শিখুন আধুনিক স্কিল। ঘরে বসেই ক্যারিয়ার গড়ুন প্রফেশনাল কোর্সে।
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link
-                to="/courses"
-                className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-6 py-3 text-base font-semibold hover:bg-primary/90 transition-colors"
-              >
+              <Link to="/courses" className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-6 py-3 text-base font-semibold hover:bg-primary/90 transition-colors">
                 সব কোর্স দেখুন <ArrowRight className="h-4 w-4" />
               </Link>
-              <Link
-                to="/about"
-                className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-6 py-3 text-base font-semibold hover:bg-accent transition-colors"
-              >
+              <Link to="/about" className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-6 py-3 text-base font-semibold hover:bg-accent transition-colors">
                 আমাদের সম্পর্কে
               </Link>
-            </div>
-            <div className="mt-10 grid grid-cols-3 gap-6 max-w-md">
-              {[
-                { n: "৫০+", l: "কোর্স" },
-                { n: "১০,০০০+", l: "শিক্ষার্থী" },
-                { n: "৯৮%", l: "সন্তুষ্টি" },
-              ].map((s) => (
-                <div key={s.l}>
-                  <div className="text-2xl md:text-3xl font-bold text-foreground">{s.n}</div>
-                  <div className="text-xs text-muted-foreground mt-1">{s.l}</div>
-                </div>
-              ))}
             </div>
           </div>
 
@@ -95,6 +103,26 @@ function HomePage() {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* STATS */}
+      <section className="border-b border-border bg-muted/30">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 grid grid-cols-2 md:grid-cols-4 gap-6">
+          {[
+            { icon: UserCheck, n: "১০,০০০+", l: "সক্রিয় শিক্ষার্থী" },
+            { icon: BookOpen, n: "৫০+", l: "প্রিমিয়াম কোর্স" },
+            { icon: GradIcon, n: "২৫+", l: "এক্সপার্ট ট্রেনার" },
+            { icon: TrendingUp, n: "৯৮%", l: "সন্তুষ্টির হার" },
+          ].map((s) => (
+            <div key={s.l} className="text-center">
+              <div className="mx-auto h-12 w-12 rounded-xl bg-primary/10 text-primary grid place-items-center">
+                <s.icon className="h-6 w-6" />
+              </div>
+              <div className="mt-3 text-2xl md:text-3xl font-bold">{s.n}</div>
+              <div className="text-sm text-muted-foreground mt-1">{s.l}</div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -149,6 +177,135 @@ function HomePage() {
         </div>
         <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {featured.courses.map((c) => <CourseCard key={c.id} course={c} />)}
+        </div>
+      </section>
+
+      {/* TRAINERS */}
+      <section className="bg-muted/30 border-y border-border">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold">আমাদের ট্রেনার</h2>
+              <p className="mt-2 text-muted-foreground">ইন্ডাস্ট্রি এক্সপার্টদের সাথে পরিচিত হোন</p>
+            </div>
+            <Link to="/trainers" className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              সব ট্রেনার <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
+            {trainers.trainers.slice(0, 4).map((t) => (
+              <Link
+                key={t.id}
+                to="/trainers/$slug"
+                params={{ slug: t.slug }}
+                className="group rounded-xl border border-border bg-card p-5 text-center hover:shadow-lg hover:border-primary/40 transition-all"
+              >
+                <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-primary to-primary/60 grid place-items-center text-primary-foreground text-3xl font-bold">
+                  {t.name.charAt(0)}
+                </div>
+                <h3 className="mt-4 font-semibold group-hover:text-primary">{t.name}</h3>
+                <p className="text-xs text-muted-foreground mt-1">{t.title}</p>
+                <div className="mt-3 flex items-center justify-center gap-3 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {toBn(t.students)}+</span>
+                  <span className="inline-flex items-center gap-1 text-amber-500"><Star className="h-3 w-3 fill-current" /> {t.rating}</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* TESTIMONIALS */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center max-w-2xl mx-auto">
+          <h2 className="text-2xl md:text-3xl font-bold">শিক্ষার্থীদের মতামত</h2>
+          <p className="mt-2 text-muted-foreground">যারা আমাদের কোর্সে ক্যারিয়ার গড়েছেন — তাদের গল্প।</p>
+        </div>
+        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {testimonials.testimonials.map((t) => (
+            <div key={t.id} className="rounded-xl border border-border bg-card p-6 flex flex-col">
+              <div className="flex gap-0.5 text-amber-500">
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Star key={i} className={`h-4 w-4 ${i < t.rating ? "fill-current" : "opacity-30"}`} />
+                ))}
+              </div>
+              <p className="mt-4 text-sm text-foreground/90 leading-relaxed flex-1">"{t.comment}"</p>
+              <div className="mt-5 pt-4 border-t border-border flex items-center gap-3">
+                <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.avatar_color} grid place-items-center text-white font-bold`}>
+                  {t.name.charAt(0)}
+                </div>
+                <div>
+                  <div className="font-semibold text-sm">{t.name}</div>
+                  <div className="text-xs text-muted-foreground">{t.role}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* BLOG */}
+      <section className="bg-muted/30 border-y border-border">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+          <div className="flex items-end justify-between">
+            <div>
+              <h2 className="text-2xl md:text-3xl font-bold">সাম্প্রতিক আর্টিকেল</h2>
+              <p className="mt-2 text-muted-foreground">শিক্ষা ও ক্যারিয়ার সংক্রান্ত লেখা</p>
+            </div>
+            <Link to="/blog" className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              সব আর্টিকেল <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
+          <div className="mt-8 grid md:grid-cols-3 gap-5">
+            {posts.posts.slice(0, 3).map((p) => (
+              <Link key={p.id} to="/blog/$slug" params={{ slug: p.slug }} className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all">
+                <div className={`aspect-video bg-gradient-to-br ${p.cover_gradient} relative`}>
+                  <span className="absolute top-3 left-3 rounded-full bg-background/90 backdrop-blur px-2.5 py-1 text-xs font-medium">
+                    {p.category}
+                  </span>
+                </div>
+                <div className="p-5">
+                  <h3 className="font-semibold leading-snug line-clamp-2 group-hover:text-primary transition-colors">{p.title}</h3>
+                  <p className="mt-2 text-sm text-muted-foreground line-clamp-2">{p.excerpt}</p>
+                  <div className="mt-4 flex items-center gap-3 text-xs text-muted-foreground">
+                    <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" /> {p.published_at}</span>
+                    <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {p.read_time}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ */}
+      <section className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-16">
+        <div className="text-center">
+          <h2 className="text-2xl md:text-3xl font-bold">সাধারণ প্রশ্নাবলী</h2>
+          <p className="mt-2 text-muted-foreground">যা আপনি জানতে চাইতে পারেন</p>
+        </div>
+        <div className="mt-8 space-y-3">
+          {faqs.faqs.slice(0, 5).map((f, i) => (
+            <div key={i} className="rounded-xl border border-border bg-card overflow-hidden">
+              <button
+                onClick={() => setOpenFaq(openFaq === i ? null : i)}
+                className="w-full flex items-center justify-between gap-4 px-5 py-4 text-left hover:bg-accent/50 transition-colors"
+              >
+                <span className="font-semibold text-sm md:text-base">{f.q}</span>
+                <ChevronDown className={`h-5 w-5 shrink-0 text-muted-foreground transition-transform ${openFaq === i ? "rotate-180" : ""}`} />
+              </button>
+              {openFaq === i && (
+                <div className="px-5 pb-5 pt-1 text-muted-foreground text-sm leading-relaxed border-t border-border">
+                  {f.a}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+        <div className="mt-6 text-center">
+          <Link to="/faq" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+            সব প্রশ্ন দেখুন <ArrowRight className="h-4 w-4" />
+          </Link>
         </div>
       </section>
 
