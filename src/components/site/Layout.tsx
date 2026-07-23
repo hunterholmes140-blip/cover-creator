@@ -40,9 +40,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-primary text-primary-foreground grid place-items-center font-bold">
-              {settings.brandName.charAt(0)}
-            </div>
+            <img src={brandLogo.url} alt={settings.brandName} className="h-9 w-9 object-contain" />
             <span className="text-lg font-bold text-foreground">{settings.brandName}</span>
           </Link>
 
