@@ -4,6 +4,8 @@ import { Menu, X, User, LogOut, Facebook, Youtube, Instagram, Linkedin, MessageC
 import { clearAuth, getStoredUser } from "@/lib/api";
 import { useSiteSettings, whatsappLink } from "@/lib/site-settings";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
+import { useContent } from "@/lib/content-store";
+import { FOOTER_CONTENT_DEFAULTS, CONTENT_KEYS } from "@/lib/content-defaults";
 import paymentsStrip from "@/assets/payments-strip.png.asset.json";
 import brandLogo from "@/assets/brand-logo.png.asset.json";
 
@@ -22,6 +24,7 @@ const NAV = [
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { settings } = useSiteSettings();
+  const [footer] = useContent(CONTENT_KEYS.FOOTER, FOOTER_CONTENT_DEFAULTS);
   const [user, setUser] = useState<any>(null);
   useScrollReveal();
 
@@ -187,7 +190,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
             {/* Company */}
             <div>
-              <h4 className="text-lg font-bold mb-4">কোম্পানি</h4>
+              <h4 className="text-lg font-bold mb-4">{footer.companyHeading}</h4>
               <ul className="space-y-3 text-sm text-white/80">
                 <li><Link to="/about" className="hover:text-white transition-colors">আমাদের সম্পর্কে</Link></li>
                 <li><Link to="/refund-policy" className="hover:text-white transition-colors">রিফান্ড পলিসি</Link></li>
@@ -198,7 +201,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
             {/* Contact */}
             <div>
-              <h4 className="text-lg font-bold mb-4">যোগাযোগ</h4>
+              <h4 className="text-lg font-bold mb-4">{footer.contactHeading}</h4>
               <ul className="space-y-3 text-sm text-white/80">
                 <li>
                   <a
@@ -218,7 +221,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
             {/* Quick Links */}
             <div>
-              <h4 className="text-lg font-bold mb-4">কুইক লিংক</h4>
+              <h4 className="text-lg font-bold mb-4">{footer.quickLinksHeading}</h4>
               <ul className="space-y-3 text-sm text-white/80">
                 <li><Link to="/affiliate" className="hover:text-white transition-colors">অ্যাফিলিয়েট অ্যাকাউন্ট</Link></li>
                 <li><Link to="/courses" className="hover:text-white transition-colors">সব কোর্স</Link></li>
@@ -243,8 +246,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
           {/* Bottom bar */}
           <div className="mt-8 pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs text-white/60">
-            <p>© {new Date().getFullYear()} {settings.brandName} Academy. সর্বস্বত্ব সংরক্ষিত।</p>
-            <p>Made with ❤️ in Bangladesh</p>
+            <p>{footer.copyright.replace("{year}", String(new Date().getFullYear())).replace("{brand}", settings.brandName)}</p>
+            <p>{footer.madeInText}</p>
           </div>
         </div>
       </footer>

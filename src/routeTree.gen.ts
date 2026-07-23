@@ -34,11 +34,15 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AdminVideosRouteImport } from './routes/admin.videos'
 import { Route as AdminUsersRouteImport } from './routes/admin.users'
 import { Route as AdminTrainersRouteImport } from './routes/admin.trainers'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
 import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
 import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
 import { Route as AdminPagesRouteImport } from './routes/admin.pages'
 import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminHomepageRouteImport } from './routes/admin.homepage'
 import { Route as AdminHeroRouteImport } from './routes/admin.hero'
+import { Route as AdminFooterRouteImport } from './routes/admin.footer'
+import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
 import { Route as AdminCoursesRouteImport } from './routes/admin.courses'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
@@ -174,6 +178,11 @@ const AdminTrainersRoute = AdminTrainersRouteImport.update({
   path: '/trainers',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminSettingsRoute = AdminSettingsRouteImport.update({
   id: '/settings',
   path: '/settings',
@@ -194,9 +203,24 @@ const AdminOrdersRoute = AdminOrdersRouteImport.update({
   path: '/orders',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminHomepageRoute = AdminHomepageRouteImport.update({
+  id: '/homepage',
+  path: '/homepage',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminHeroRoute = AdminHeroRouteImport.update({
   id: '/hero',
   path: '/hero',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFooterRoute = AdminFooterRouteImport.update({
+  id: '/footer',
+  path: '/footer',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFaqsRoute = AdminFaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCoursesRoute = AdminCoursesRouteImport.update({
@@ -265,11 +289,15 @@ export interface FileRoutesByFullPath {
   '/admin/blog': typeof AdminBlogRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/courses': typeof AdminCoursesRouteWithChildren
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/footer': typeof AdminFooterRoute
   '/admin/hero': typeof AdminHeroRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/trainers': typeof AdminTrainersRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
@@ -304,11 +332,15 @@ export interface FileRoutesByTo {
   '/admin/blog': typeof AdminBlogRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/courses': typeof AdminCoursesRouteWithChildren
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/footer': typeof AdminFooterRoute
   '/admin/hero': typeof AdminHeroRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/trainers': typeof AdminTrainersRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
@@ -346,11 +378,15 @@ export interface FileRoutesById {
   '/admin/blog': typeof AdminBlogRouteWithChildren
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/courses': typeof AdminCoursesRouteWithChildren
+  '/admin/faqs': typeof AdminFaqsRoute
+  '/admin/footer': typeof AdminFooterRoute
   '/admin/hero': typeof AdminHeroRoute
+  '/admin/homepage': typeof AdminHomepageRoute
   '/admin/orders': typeof AdminOrdersRoute
   '/admin/pages': typeof AdminPagesRoute
   '/admin/payments': typeof AdminPaymentsRoute
   '/admin/settings': typeof AdminSettingsRoute
+  '/admin/testimonials': typeof AdminTestimonialsRoute
   '/admin/trainers': typeof AdminTrainersRouteWithChildren
   '/admin/users': typeof AdminUsersRoute
   '/admin/videos': typeof AdminVideosRoute
@@ -389,11 +425,15 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/categories'
     | '/admin/courses'
+    | '/admin/faqs'
+    | '/admin/footer'
     | '/admin/hero'
+    | '/admin/homepage'
     | '/admin/orders'
     | '/admin/pages'
     | '/admin/payments'
     | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/trainers'
     | '/admin/users'
     | '/admin/videos'
@@ -428,11 +468,15 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/categories'
     | '/admin/courses'
+    | '/admin/faqs'
+    | '/admin/footer'
     | '/admin/hero'
+    | '/admin/homepage'
     | '/admin/orders'
     | '/admin/pages'
     | '/admin/payments'
     | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/trainers'
     | '/admin/users'
     | '/admin/videos'
@@ -469,11 +513,15 @@ export interface FileRouteTypes {
     | '/admin/blog'
     | '/admin/categories'
     | '/admin/courses'
+    | '/admin/faqs'
+    | '/admin/footer'
     | '/admin/hero'
+    | '/admin/homepage'
     | '/admin/orders'
     | '/admin/pages'
     | '/admin/payments'
     | '/admin/settings'
+    | '/admin/testimonials'
     | '/admin/trainers'
     | '/admin/users'
     | '/admin/videos'
@@ -688,6 +736,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminTrainersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/settings': {
       id: '/admin/settings'
       path: '/settings'
@@ -716,11 +771,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminOrdersRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/homepage': {
+      id: '/admin/homepage'
+      path: '/homepage'
+      fullPath: '/admin/homepage'
+      preLoaderRoute: typeof AdminHomepageRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/hero': {
       id: '/admin/hero'
       path: '/hero'
       fullPath: '/admin/hero'
       preLoaderRoute: typeof AdminHeroRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/footer': {
+      id: '/admin/footer'
+      path: '/footer'
+      fullPath: '/admin/footer'
+      preLoaderRoute: typeof AdminFooterRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/faqs': {
+      id: '/admin/faqs'
+      path: '/faqs'
+      fullPath: '/admin/faqs'
+      preLoaderRoute: typeof AdminFaqsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/courses': {
@@ -835,11 +911,15 @@ interface AdminRouteChildren {
   AdminBlogRoute: typeof AdminBlogRouteWithChildren
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminCoursesRoute: typeof AdminCoursesRouteWithChildren
+  AdminFaqsRoute: typeof AdminFaqsRoute
+  AdminFooterRoute: typeof AdminFooterRoute
   AdminHeroRoute: typeof AdminHeroRoute
+  AdminHomepageRoute: typeof AdminHomepageRoute
   AdminOrdersRoute: typeof AdminOrdersRoute
   AdminPagesRoute: typeof AdminPagesRoute
   AdminPaymentsRoute: typeof AdminPaymentsRoute
   AdminSettingsRoute: typeof AdminSettingsRoute
+  AdminTestimonialsRoute: typeof AdminTestimonialsRoute
   AdminTrainersRoute: typeof AdminTrainersRouteWithChildren
   AdminUsersRoute: typeof AdminUsersRoute
   AdminVideosRoute: typeof AdminVideosRoute
@@ -850,11 +930,15 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogRoute: AdminBlogRouteWithChildren,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminCoursesRoute: AdminCoursesRouteWithChildren,
+  AdminFaqsRoute: AdminFaqsRoute,
+  AdminFooterRoute: AdminFooterRoute,
   AdminHeroRoute: AdminHeroRoute,
+  AdminHomepageRoute: AdminHomepageRoute,
   AdminOrdersRoute: AdminOrdersRoute,
   AdminPagesRoute: AdminPagesRoute,
   AdminPaymentsRoute: AdminPaymentsRoute,
   AdminSettingsRoute: AdminSettingsRoute,
+  AdminTestimonialsRoute: AdminTestimonialsRoute,
   AdminTrainersRoute: AdminTrainersRouteWithChildren,
   AdminUsersRoute: AdminUsersRoute,
   AdminVideosRoute: AdminVideosRoute,

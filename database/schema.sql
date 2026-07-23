@@ -170,3 +170,16 @@ VALUES
  5000.00, 3500.00, 1, 'রফিকুল ইসলাম', '৫০ ঘণ্টা', 'beginner', 1);
 
 SET FOREIGN_KEY_CHECKS = 1;
+
+-- ============================================================
+-- Generic key/value JSON content
+-- Used by /admin/homepage, /admin/footer, and any other editable
+-- section that does not need its own relational table.
+-- Read via GET /content.php?key=... (public)
+-- Write via PUT /admin/content.php  (admin only)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS site_content (
+    content_key  VARCHAR(64) PRIMARY KEY,
+    content_json LONGTEXT NOT NULL,
+    updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

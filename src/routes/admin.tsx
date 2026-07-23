@@ -23,10 +23,14 @@ const GROUPS: NavGroup[] = [
   {
     label: "কন্টেন্ট",
     items: [
+      { to: "/admin/homepage", label: "হোমপেজ টেক্সট", Icon: FilePenLine },
       { to: "/admin/hero", label: "হিরো ভিডিও", Icon: Film },
       { to: "/admin/videos", label: "ভিডিও গ্যালারি", Icon: Video },
       { to: "/admin/blog", label: "ব্লগ পোস্ট", Icon: FileText },
+      { to: "/admin/testimonials", label: "টেস্টিমোনিয়াল", Icon: Users },
+      { to: "/admin/faqs", label: "FAQ", Icon: FileText },
       { to: "/admin/pages", label: "পেইজ কন্টেন্ট", Icon: FilePenLine },
+      { to: "/admin/footer", label: "ফুটার", Icon: FilePenLine },
     ],
   },
   {
