@@ -115,6 +115,7 @@ const GROUPS: NavGroup[] = [
       { to: "/admin/testimonials", label: "টেস্টিমোনিয়াল", Icon: Users },
       { to: "/admin/faqs", label: "FAQ", Icon: FileText },
       { to: "/admin/pages", label: "পেইজ কন্টেন্ট", Icon: FilePenLine },
+      { to: "/admin/auth-pages", label: "লগইন/রেজিস্টার", Icon: Lock },
       { to: "/admin/footer", label: "ফুটার", Icon: FilePenLine },
     ],
   },
