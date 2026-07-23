@@ -5,7 +5,10 @@ import { clearAuth, getStoredUser } from "@/lib/api";
 
 const NAV = [
   { to: "/", label: "হোম" },
-  { to: "/courses", label: "সব কোর্স" },
+  { to: "/courses", label: "কোর্স" },
+  { to: "/trainers", label: "ট্রেনার" },
+  { to: "/blog", label: "ব্লগ" },
+  { to: "/faq", label: "FAQ" },
   { to: "/about", label: "আমাদের সম্পর্কে" },
   { to: "/contact", label: "যোগাযোগ" },
 ] as const;
