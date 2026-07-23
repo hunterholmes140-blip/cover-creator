@@ -35,7 +35,13 @@ export function useScrollReveal() {
           observed.add(el);
           if (!el.hasAttribute("data-reveal")) el.setAttribute("data-reveal", "");
           el.style.animationDelay = `${Math.min(i * 90, 450)}ms`;
-          io.observe(el);
+          // Safety: if already within the viewport at scan time, reveal immediately
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight && rect.bottom > 0) {
+            el.classList.add("is-visible");
+          } else {
+            io.observe(el);
+          }
         });
       });
     };
