@@ -157,9 +157,9 @@ function CoursesList() {
       <ConfirmDialog
         open={confirmId !== null}
         onClose={() => setConfirmId(null)}
-        onConfirm={() => {
-          remove(confirmId);
-          toast.show("কোর্স ডিলিট হয়েছে");
+        onConfirm={async () => {
+          try { await remove(confirmId); toast.show("কোর্স ডিলিট হয়েছে"); }
+          catch (e: any) { toast.show(e?.message || "ডিলিট ব্যর্থ"); }
         }}
         message="এই কোর্সটি ডিলিট করলে সব লেসনও মুছে যাবে।"
       />
