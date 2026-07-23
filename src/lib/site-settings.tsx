@@ -28,14 +28,14 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   youtubeUrl: "#",
   instagramUrl: "#",
   linkedinUrl: "#",
-  primaryHsl: "262 83% 58%",
-  accentHsl: "292 84% 61%",
-  footerFrom: "#2a1170",
-  footerVia: "#3d1a8a",
-  footerTo: "#5b21b6",
+  primaryHsl: "29 93% 54%",
+  accentHsl: "38 96% 58%",
+  footerFrom: "#1a1006",
+  footerVia: "#2d1a08",
+  footerTo: "#5a2f0c",
 };
 
-const STORAGE_KEY = "nextscale.site-settings.v1";
+const STORAGE_KEY = "nextscale.site-settings.v2";
 
 type Ctx = {
   settings: SiteSettings;

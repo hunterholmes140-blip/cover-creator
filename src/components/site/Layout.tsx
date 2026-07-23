@@ -4,6 +4,7 @@ import { Menu, X, User, LogOut, Facebook, Youtube, Instagram, Linkedin, MessageC
 import { clearAuth, getStoredUser } from "@/lib/api";
 import { useSiteSettings, whatsappLink } from "@/lib/site-settings";
 import paymentsStrip from "@/assets/payments-strip.png.asset.json";
+import brandLogo from "@/assets/brand-logo.png.asset.json";
 
 
 
@@ -39,9 +40,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
       <header className="sticky top-0 z-40 w-full border-b border-border bg-background/80 backdrop-blur">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <Link to="/" className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-primary text-primary-foreground grid place-items-center font-bold">
-              {settings.brandName.charAt(0)}
-            </div>
+            <img src={brandLogo.url} alt={settings.brandName} className="h-9 w-9 object-contain" />
             <span className="text-lg font-bold text-foreground">{settings.brandName}</span>
           </Link>
 
@@ -157,8 +156,8 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             {/* Brand */}
             <div className="lg:pr-4">
               <div className="flex items-center gap-2">
-                <div className="h-10 w-10 rounded-lg bg-white text-primary grid place-items-center font-bold shadow-md">
-                  {settings.brandName.charAt(0)}
+                <div className="h-11 w-11 rounded-lg bg-white grid place-items-center shadow-md p-1.5">
+                  <img src={brandLogo.url} alt={settings.brandName} className="h-full w-full object-contain" />
                 </div>
                 <span className="text-2xl font-extrabold tracking-tight">{settings.brandName}</span>
               </div>
