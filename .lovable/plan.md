@@ -1,45 +1,80 @@
-## এডমিন প্যানেল — সম্পূর্ণ A to Z ম্যানেজমেন্ট
+## লক্ষ্য
+1. সাইটের **সব দৃশ্যমান কন্টেন্ট** এডমিন প্যানেল থেকে এডিট করা যাবে।
+2. **প্রিভিউতে** (Lovable) — এখনকার মতো `localStorage` তে সেভ হবে (একা একা কাজ করা যাবে)।
+3. **Hostinger-এ লাইভ করার সাথে সাথেই** — একই এডমিন প্যানেল অটোমেটিক PHP API + MySQL-এ সেভ করবে, ফলে সব ভিজিটরের কাছে গ্লোবালি চেঞ্জ দেখাবে। কোনো কোড বদল লাগবে না, শুধু `.env`-এ API URL দিলেই সুইচ হবে।
 
-বর্তমান এডমিন প্যানেলে শুধু Settings, Courses (badge), Trainers (placeholder), Orders (placeholder) আছে। এটাকে সাইটের প্রতিটি ডাইনামিক অংশ ম্যানেজ করার একটা পূর্ণাঙ্গ কন্ট্রোল সেন্টারে পরিণত করব। ডেমো মোডে সব কিছু `localStorage`-এ সেভ হবে (PHP API আসলে সরাসরি DB-তে যাবে — একই শেপ)।
+## কভারেজ (যা যা এডিটেবল হবে)
+- ব্র্যান্ড, লোগো, কালার, WhatsApp/ফোন/ইমেইল, সোশ্যাল — ✅ আগেই আছে
+- কোর্স, ক্যাটাগরি, ট্রেনার, ব্লগ, হিরো ভিডিও, ভিডিও গ্যালারি, পেইজ কন্টেন্ট, অর্ডার, ইউজার, পেমেন্ট — ✅ আগেই আছে
+- **নতুন যোগ হবে:**
+  - সব **সেকশন হেডলাইন/সাব-টাইটেল** (হোমপেজের প্রতিটা সেকশন: জনপ্রিয় ক্যাটাগরি, ফিচার্ড কোর্স, ট্রেনার, ভিডিও, ব্লগ, টেস্টিমোনিয়াল, FAQ)
+  - **হোমপেজ CTA/ব্যানার** (টাইটেল, সাব-টেক্সট, বাটন লেবেল/লিঙ্ক, ব্যাকগ্রাউন্ড)
+  - **টেস্টিমোনিয়াল** CRUD (নাম, ছবি, রেটিং, মন্তব্য, কোর্স)
+  - **FAQ** CRUD
+  - ফুটার লিঙ্ক/কলাম টেক্সট
+  - SEO (মেটা টাইটেল/ডেসক্রিপশন per page)
 
-### নতুন এডমিন সেকশনগুলো
+## আর্কিটেকচার — "auto-global on live"
 
-```text
-/admin
-├── /               → ড্যাশবোর্ড: KPI কার্ড + দ্রুত লিঙ্ক
-├── /settings       → (আছে) ব্র্যান্ড, কালার, যোগাযোগ, সোশ্যাল
-├── /hero           → হিরো ভিডিও স্লাইডস (heading + YouTube link)
-├── /videos         → হোমপেজ ভিডিও গ্যালারি
-├── /categories     → কোর্স ক্যাটাগরি CRUD
-├── /courses        → কোর্স তালিকা + Add/Edit/Delete + badge + featured
-├── /courses/new    → নতুন কোর্স ফর্ম
-├── /courses/$slug  → এডিট + লেসন ম্যানেজার
-├── /trainers       → ট্রেনার/মেন্টর তালিকা + CRUD
-├── /trainers/new   → নতুন ট্রেনার (mentor toggle, expertise, experience CV)
-├── /trainers/$slug → এডিট
-├── /blog           → ব্লগ পোস্ট CRUD
-├── /orders         → অর্ডার তালিকা, approve/reject, ফিল্টার
-├── /users          → ইউজার তালিকা, enrollment ভিউ
-├── /pages          → About/FAQ/Privacy/Terms/Refund/Affiliate কন্টেন্ট এডিট
-└── /payments       → bKash/Nagad/Rocket নাম্বার, পেমেন্ট instructions
+### একটা রিমোট-অ্যাডাপ্টার লেয়ার
+`src/lib/admin-store.ts`-এর `Collection` ক্লাসকে দুই মোডে চালাবে:
+
+```
+if (import.meta.env.VITE_API_BASE)  →  fetch(`${VITE_API_BASE}/content/<key>`)
+else                                 →  localStorage (এখনকার মতো)
 ```
 
-### সাধারণ প্যাটার্ন
-- একটি admin store (`src/lib/admin-store.ts`) — mock data-কে localStorage-এ persist করবে; হুক দিবে (`useCourses`, `useTrainers` ইত্যাদি) যা রিয়েল-টাইম আপডেট দিবে।
-- reusable UI: `DataTable`, `FormField`, `Modal`, `ConfirmDialog`, `ImageUrlInput`।
-- প্রতিটা list পেজে: সার্চ, ফিল্টার, sort, pagination, bulk delete।
-- Form validation + toast notification।
-- API লেয়ার (`src/lib/api.ts`) — VITE_API_URL থাকলে PHP-তে call, না থাকলে store।
+- প্রতিটা কালেকশনের `load / persist` API-aware হবে।
+- অপটিমিস্টিক UI: এডমিন সেভ করলে সাথে সাথে স্ক্রিনে দেখাবে, ব্যাকগ্রাউন্ডে POST যাবে।
+- পাবলিক পেজে প্রথম লোডে `GET` করে ক্যাশে রাখবে (React Query-স্টাইল, in-memory)।
 
-### সাইড-ইফেক্ট
-- পাবলিক পেজগুলো (index, courses, trainers, blog) mock-data ইম্পোর্টের বদলে store হুক ব্যবহার করবে যেন এডমিনে বদলালে সাথে সাথে দেখা যায়।
-- নেভিগেশনে নতুন সেকশনগুলো যোগ হবে; মোবাইল drawer + collapsible groups।
+### PHP জেনেরিক content endpoint
+বেশিরভাগ কালেকশনের জন্য (testimonials, faqs, section-headings, cta, footer, seo) একটাই টেবিল যথেষ্ট — key/value JSON:
 
-### ফেজ (এক প্রম্পটে বেশি জিনিস, সব একসাথে ইমপ্লিমেন্ট)
-1. Store + hooks + shared UI প্রিমিটিভ
-2. Dashboard, Categories, Courses (list+form+lessons), Trainers (list+form CV)
-3. Hero videos, Video gallery, Blog posts
-4. Orders, Users, Pages, Payments
-5. Admin layout upgrade (grouped nav, mobile drawer)
+```sql
+CREATE TABLE site_content (
+  content_key   VARCHAR(64) PRIMARY KEY,   -- e.g. 'testimonials', 'section.headings', 'home.cta'
+  content_json  LONGTEXT NOT NULL,         -- JSON payload
+  updated_at    TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+```
 
-শেষে PHP API endpoints (`courses.php`, `lessons.php`, `orders.php` ইত্যাদি) ইতোমধ্যে আছে — store হুকগুলো এমনভাবে লিখব যেন পরে `VITE_API_URL` সেট করলেই স্বয়ংক্রিয়ভাবে PHP-তে সুইচ হয়ে যায়, কোড বদলানো লাগবে না।
+দুইটা এন্ডপয়েন্ট:
+- `GET  /content.php?key=xxx`  → public (সাইটে দেখানো)
+- `PUT  /admin/content.php`    → admin only, `{key, value}` সেভ
+
+কোর্স/ট্রেনার/ব্লগ/অর্ডারের মতো relational ডেটার জন্য আগে থেকেই আলাদা endpoint আছে — সেগুলোতে GET/PUT/POST/DELETE কমপ্লিট করবো।
+
+### লাইভে সুইচ
+Hostinger-এ ডিপ্লয়ের সময় শুধু `.env.production`-এ:
+```
+VITE_API_BASE=https://yourdomain.com/api
+```
+বসিয়ে `bun run build` — ব্যস, এডমিন প্যানেল অটোমেটিক গ্লোবাল হয়ে যাবে।
+
+## এই স্টেপে যা করবো (প্রিভিউতে ভিজিবল কাজ)
+1. **নতুন এডিটেবল কন্টেন্ট স্টোর যোগ:** `section-headings`, `home-cta`, `footer-content`, `seo-meta` — সব `Collection`-এ।
+2. **নতুন এডমিন পেইজ:**
+   - `/admin/homepage`  — সব সেকশন হেডলাইন, সাব-টাইটেল, CTA/ব্যানার
+   - `/admin/testimonials`  — CRUD
+   - `/admin/faqs`  — CRUD
+   - `/admin/footer`  — ফুটার কলাম টেক্সট
+   - `/admin/seo`  — per-page মেটা
+3. **পাবলিক পেজ wire:** `index.tsx`, Layout ফুটার, প্রতিটা রুটের `head()` — সব হার্ডকোডেড টেক্সট এই স্টোর থেকে পড়বে।
+4. **API adapter:** `Collection` ক্লাসে remote mode যোগ করবো (env থাকলে fetch, না থাকলে localStorage)। এখন প্রিভিউতে fallback-এ চলবে।
+5. **PHP এন্ডপয়েন্ট + SQL:** `database/schema.sql`-এ `site_content` টেবিল, `php-api/content.php` (public GET) ও `php-api/admin/content.php` (admin PUT) যোগ। বিদ্যমান endpoints (courses/trainers/blog ইত্যাদি)-এ CRUD complete।
+6. **DEPLOY.md আপডেট** — `.env.production` উদাহরণ ও এক-লাইনে সুইচ করার steps।
+
+## টেকনিক্যাল ডিটেইলস
+- সব `Collection`-এ একটা `remoteKey?: string` অপশন থাকবে। প্রেজেন্ট থাকলে remote mode এলিজিবল।
+- Public পেজের প্রথম লোডে `Promise.all` করে all-content prefetch → একটাই request।
+- Admin সেভ → PUT → success হলে local cache invalidate।
+- ফেইল হলে toast + লোকাল ফলব্যাক (কখনো ডেটা হারাবে না)।
+- SSR হেড মেটাগুলো build-time-এ static থাকবে; runtime override হবে ক্লায়েন্টে (SEO-এর জন্য এটাই যথেষ্ট, কারণ Hostinger shared hosting-এ SSR নেই — এটা SPA হয়ে যাবে ওখানে)।
+
+## এই প্ল্যানের বাইরে যা এখন করবো না
+- Auth/RBAC — আপনার PHP admin login আগেই আছে; ওটাই কাজ করবে।
+- Image upload UI — `upload.php` আগেই আছে, পরের ধাপে wire করবো।
+
+---
+Approve দিলে সব ফাইল একসাথে ইমপ্লিমেন্ট করবো।
