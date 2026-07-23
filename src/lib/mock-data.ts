@@ -410,6 +410,7 @@ export const MOCK_POSTS = [
     category: "ডিজাইন",
     published_at: "২০ জুলাই, ২০২৬",
     read_time: "৪ মিনিট",
+    cover_image: "https://images.unsplash.com/photo-1609921212029-bb5a28e60960?w=900&auto=format&fit=crop&q=70",
     cover_gradient: "from-pink-500 via-rose-500 to-red-500",
   },
   {
