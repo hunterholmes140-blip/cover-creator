@@ -77,6 +77,29 @@ function CourseDetailPage() {
 
   const [showEnroll, setShowEnroll] = useState(false);
 
+  // Facebook Pixel: ViewContent
+  useEffect(() => {
+    track("ViewContent", {
+      content_ids: [String(course.id)],
+      content_name: course.title,
+      content_type: "product",
+      content_category: course.category_name || undefined,
+      value: Number(price) || 0,
+      currency: "BDT",
+    });
+  }, [course.id, course.title, course.category_name, price]);
+
+  const openEnroll = () => {
+    track("InitiateCheckout", {
+      content_ids: [String(course.id)],
+      content_name: course.title,
+      value: Number(price) || 0,
+      currency: "BDT",
+      num_items: 1,
+    });
+    setShowEnroll(true);
+  };
+
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
