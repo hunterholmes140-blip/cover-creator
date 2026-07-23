@@ -26,9 +26,9 @@ export function CourseCard({ course }: { course: any }) {
     <Link
       to="/courses/$slug"
       params={{ slug: course.slug }}
-      className="group block rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all"
+      className="group relative block rounded-xl border border-border bg-card overflow-visible hover:shadow-lg hover:border-primary/40 transition-all"
     >
-      <div className="aspect-video bg-gradient-to-br from-primary/20 via-primary/10 to-accent relative overflow-hidden">
+      <div className="aspect-video bg-gradient-to-br from-primary/20 via-primary/10 to-accent relative overflow-hidden rounded-t-xl">
         {course.thumbnail ? (
           <img src={course.thumbnail} alt={course.title} className="h-full w-full object-cover" />
         ) : (
@@ -41,16 +41,17 @@ export function CourseCard({ course }: { course: any }) {
             {course.category_name}
           </span>
         )}
-        {badge && style && (
-          <div
-            className={`absolute top-3 right-3 inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r ${style.gradient} px-3 py-1.5 text-xs font-bold text-white ring-2 ${style.ring} shadow-lg ${style.glow} backdrop-blur-sm`}
-            style={{ fontFamily: '"Hind Siliguri", sans-serif' }}
-          >
-            <span className="text-sm leading-none">{style.icon}</span>
-            <span className="leading-none">{badge.text}</span>
-          </div>
-        )}
       </div>
+      {badge && style && (
+        <div
+          className={`absolute -top-3 -right-3 z-10 h-16 w-16 rounded-full bg-gradient-to-br ${style.gradient} ring-4 ${style.ring} shadow-xl ${style.glow} flex flex-col items-center justify-center text-white text-center rotate-[-8deg] group-hover:rotate-0 transition-transform`}
+          style={{ fontFamily: '"Hind Siliguri", sans-serif' }}
+        >
+          <span className="text-base leading-none">{style.icon}</span>
+          <span className="text-[10px] font-bold leading-tight mt-0.5 px-1 line-clamp-2">{badge.text}</span>
+        </div>
+      )}
+
       <div className="p-4">
         <h3 className="font-semibold text-base leading-snug line-clamp-2 group-hover:text-primary transition-colors">
           {course.title}
