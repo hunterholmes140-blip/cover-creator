@@ -1,9 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
-import { Star, Users, BookOpen, Facebook, Linkedin, Youtube, Crown, ArrowRight } from "lucide-react";
+import { Star, Crown, BadgeCheck } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { api } from "@/lib/api";
-import { toBn } from "@/lib/format";
+import trainer1 from "@/assets/trainer-1.png";
+import trainer2 from "@/assets/trainer-2.png";
+import trainer3 from "@/assets/trainer-3.png";
+import trainer4 from "@/assets/trainer-4.png";
+
+const TRAINER_IMAGES: Record<string, string> = {
+  "trainer-1": trainer1,
+  "trainer-2": trainer2,
+  "trainer-3": trainer3,
+  "trainer-4": trainer4,
+};
 
 const trainersQuery = queryOptions({
   queryKey: ["trainers"],
@@ -25,10 +35,89 @@ export const Route = createFileRoute("/trainers")({
   errorComponent: ({ error }) => <SiteLayout><div className="p-8 text-center text-destructive">{error.message}</div></SiteLayout>,
 });
 
+function TrainerCard({ t, mentor: isMentor = false }: { t: any; mentor?: boolean }) {
+  const img = TRAINER_IMAGES[t.avatar];
+  return (
+    <Link
+      to="/trainers/$slug"
+      params={{ slug: t.slug }}
+      className="group relative flex flex-col items-center text-center pt-6"
+    >
+      <div className="relative w-full max-w-[200px] aspect-square">
+        <div
+          className={`absolute inset-0 rounded-full border-2 border-dashed transition-transform duration-700 group-hover:rotate-45 ${
+            isMentor ? "border-amber-400/60" : "border-primary/40"
+          }`}
+          style={{ transform: "scale(1.08)" }}
+        />
+        <div
+          className={`absolute inset-0 rounded-full blur-2xl opacity-60 transition-opacity duration-500 group-hover:opacity-90 ${
+            isMentor ? "bg-amber-400/50" : "bg-primary/40"
+          }`}
+        />
+        <div
+          className={`absolute inset-0 overflow-hidden rounded-full shadow-xl ring-4 ring-white transition-transform duration-500 group-hover:scale-[1.04] ${
+            isMentor
+              ? "bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500"
+              : "bg-gradient-to-br from-primary via-primary to-primary/70"
+          }`}
+        >
+          {img ? (
+            <img
+              src={img}
+              alt={t.name}
+              loading="lazy"
+              className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom transition-transform duration-500 group-hover:scale-105"
+            />
+          ) : (
+            <div className="absolute inset-0 grid place-items-center text-white text-6xl font-bold">
+              {t.name.charAt(0)}
+            </div>
+          )}
+        </div>
+        {isMentor && (
+          <div className="absolute -top-1 right-1 z-20 h-9 w-9 rounded-full bg-white shadow-lg ring-2 ring-amber-200 grid place-items-center">
+            <Crown className="h-4 w-4 text-amber-500" />
+          </div>
+        )}
+        <div className="absolute -bottom-1 right-1 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-amber-600 shadow-lg ring-1 ring-amber-100">
+          <Star className="h-3 w-3 fill-current" /> {t.rating}
+        </div>
+      </div>
+
+      <div
+        className={`relative -mt-3 z-10 inline-flex items-center rounded-lg px-4 py-1.5 shadow-md ring-1 ${
+          isMentor
+            ? "bg-gradient-to-r from-amber-50 to-orange-50 ring-amber-200"
+            : "bg-white ring-primary/15"
+        }`}
+      >
+        <h4
+          className="text-base md:text-lg font-bold leading-tight text-foreground transition-colors group-hover:text-primary"
+          style={{ fontFamily: '"Hind Siliguri", var(--font-sans)' }}
+        >
+          {t.name}
+        </h4>
+      </div>
+
+      <div
+        className={`mt-2.5 inline-flex items-center gap-1 rounded-full px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-wider text-white shadow-md transition-transform group-hover:scale-105 ${
+          isMentor
+            ? "bg-gradient-to-r from-amber-500 to-orange-500"
+            : "bg-gradient-to-r from-primary to-primary/80"
+        }`}
+      >
+        <BadgeCheck className="h-3 w-3" />
+        <span className="truncate max-w-[180px]">{t.title}</span>
+      </div>
+    </Link>
+  );
+}
+
 function TrainersPage() {
   const { data } = useSuspenseQuery(trainersQuery);
   const mentor = data.trainers.find((t) => t.is_mentor) ?? data.trainers[0];
-  const others = data.trainers.filter((t) => t.id !== mentor.id);
+  const rest = data.trainers.filter((t) => t.id !== mentor.id);
 
   return (
     <SiteLayout>
@@ -41,95 +130,40 @@ function TrainersPage() {
         </div>
       </section>
 
-      {/* Mentor Section */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12">
-        <div className="flex items-center gap-2 mb-5">
-          <Crown className="h-5 w-5 text-amber-500" />
-          <h2 className="text-xl font-bold">প্রধান মেন্টর</h2>
-        </div>
-
-        <Link
-          to="/trainers/$slug"
-          params={{ slug: mentor.slug }}
-          className="group block rounded-3xl border-2 border-primary/30 bg-gradient-to-br from-primary/10 via-card to-accent/30 p-6 md:p-10 hover:border-primary hover:shadow-xl transition-all"
-        >
-          <div className="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-10">
-            <div className="relative shrink-0">
-              <div className="h-32 w-32 md:h-40 md:w-40 rounded-2xl bg-gradient-to-br from-primary to-primary/60 grid place-items-center text-primary-foreground text-5xl md:text-6xl font-bold shadow-lg">
-                {mentor.name.charAt(0)}
-              </div>
-              <div className="absolute -top-2 -right-2 h-10 w-10 rounded-full bg-amber-500 grid place-items-center shadow-lg">
-                <Crown className="h-5 w-5 text-white" />
-              </div>
-            </div>
-
-            <div className="flex-1">
-              <span className="inline-flex items-center gap-1 rounded-full bg-amber-500/15 text-amber-600 dark:text-amber-400 px-3 py-1 text-xs font-semibold">
-                <Crown className="h-3 w-3" /> Head Mentor
-              </span>
-              <h3 className="mt-3 text-2xl md:text-3xl font-bold">{mentor.name}</h3>
-              <p className="mt-1 text-primary font-medium">{mentor.title}</p>
-              <p className="mt-3 text-sm md:text-base text-muted-foreground leading-relaxed line-clamp-3">
-                {mentor.bio}
-              </p>
-
-              <div className="mt-5 flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                <span className="inline-flex items-center gap-1.5"><Users className="h-4 w-4" /> {toBn(mentor.students)}+ শিক্ষার্থী</span>
-                <span className="inline-flex items-center gap-1.5"><BookOpen className="h-4 w-4" /> {toBn(mentor.courses)} কোর্স</span>
-                <span className="inline-flex items-center gap-1.5 text-amber-500"><Star className="h-4 w-4 fill-current" /> {mentor.rating} রেটিং</span>
-              </div>
-
-              <div className="mt-5 flex items-center justify-between gap-4">
-                <div className="flex gap-2">
-                  <span className="h-8 w-8 rounded-lg border border-border grid place-items-center"><Facebook className="h-4 w-4" /></span>
-                  <span className="h-8 w-8 rounded-lg border border-border grid place-items-center"><Linkedin className="h-4 w-4" /></span>
-                  <span className="h-8 w-8 rounded-lg border border-border grid place-items-center"><Youtube className="h-4 w-4" /></span>
-                </div>
-                <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-primary group-hover:gap-2.5 transition-all">
-                  বিস্তারিত প্রোফাইল <ArrowRight className="h-4 w-4" />
-                </span>
-              </div>
+      <section className="bg-gradient-to-br from-primary/15 via-primary/5 to-accent">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
+          {/* Mentor centered on top */}
+          <div className="flex justify-center">
+            <div className="w-full max-w-[240px]">
+              <TrainerCard t={mentor} mentor />
             </div>
           </div>
-        </Link>
-      </section>
 
-      {/* Other Trainers */}
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
-        <h2 className="text-xl font-bold mb-5">আমাদের ট্রেনারবৃন্দ</h2>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {others.map((t) => (
-            <Link
-              key={t.id}
-              to="/trainers/$slug"
-              params={{ slug: t.slug }}
-              className="group rounded-2xl border border-border bg-card p-6 hover:shadow-lg hover:border-primary/40 transition-all"
-            >
-              <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary to-primary/60 grid place-items-center text-primary-foreground text-2xl font-bold">
-                  {t.name.charAt(0)}
-                </div>
-                <div>
-                  <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">{t.name}</h3>
-                  <p className="text-sm text-muted-foreground">{t.title}</p>
-                </div>
-              </div>
-              <p className="mt-4 text-sm text-muted-foreground line-clamp-3">{t.bio}</p>
-              <div className="mt-4 flex flex-wrap gap-1.5">
-                {t.expertise.slice(0, 4).map((e: string) => (
-                  <span key={e} className="text-xs rounded-full bg-primary/10 text-primary px-2.5 py-1">{e}</span>
+          {/* Divider */}
+          <div className="mt-10 flex items-center justify-center gap-2 opacity-60">
+            <span className="h-px w-16 bg-border" />
+            <span className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+            <span className="h-2 w-2 rounded-full bg-primary" />
+            <span className="h-1.5 w-1.5 rounded-full bg-primary/50" />
+            <span className="h-px w-16 bg-border" />
+          </div>
+
+          {/* Trainer row — 3 aligned with mentor; horizontal scroll if more */}
+          {rest.length <= 3 ? (
+            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
+              {rest.map((t) => <TrainerCard key={t.id} t={t} />)}
+            </div>
+          ) : (
+            <div className="mt-8 max-w-3xl mx-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:thin]">
+              <div className="grid grid-flow-col auto-cols-[minmax(0,33.333%)] gap-8 pb-3">
+                {rest.map((t) => (
+                  <div key={t.id} className="snap-center">
+                    <TrainerCard t={t} />
+                  </div>
                 ))}
               </div>
-              <div className="mt-5 flex items-center gap-4 text-xs text-muted-foreground border-t border-border pt-4">
-                <span className="inline-flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {toBn(t.students)}+</span>
-                <span className="inline-flex items-center gap-1"><BookOpen className="h-3.5 w-3.5" /> {toBn(t.courses)} কোর্স</span>
-                <span className="inline-flex items-center gap-1 text-amber-500 ml-auto"><Star className="h-3.5 w-3.5 fill-current" /> {t.rating}</span>
-              </div>
-              <div className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary group-hover:gap-2.5 transition-all">
-                প্রোফাইল দেখুন <ArrowRight className="h-4 w-4" />
-              </div>
-            </Link>
-          ))}
+            </div>
+          )}
         </div>
       </section>
     </SiteLayout>
