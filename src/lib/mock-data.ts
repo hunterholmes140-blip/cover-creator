@@ -294,6 +294,7 @@ export const MOCK_TESTIMONIALS = [
     course: "সম্পূর্ণ ওয়েব ডেভেলপমেন্ট বুটক্যাম্প",
     rating: 5,
     comment: "কোর্স শেষ করার ৩ মাসের মধ্যেই Upwork-এ প্রথম কাজ পাই। এখন মাসে ৫০ হাজার+ টাকা আয় করি। NextScale-এর প্রতিটি টাকা wisely spent!",
+    avatar_image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-blue-500 to-cyan-500",
   },
   {
@@ -303,6 +304,7 @@ export const MOCK_TESTIMONIALS = [
     course: "প্রফেশনাল গ্রাফিক ডিজাইন মাস্টারক্লাস",
     rating: 5,
     comment: "সাদিয়া আপার পড়ানোর স্টাইল অসাধারণ। প্রতিটি concept বাংলায় বুঝিয়ে দেন। এখন নিজে ক্লায়েন্ট নিয়ে কাজ করছি।",
+    avatar_image: "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-pink-500 to-rose-500",
   },
   {
@@ -312,6 +314,7 @@ export const MOCK_TESTIMONIALS = [
     course: "ডিজিটাল মার্কেটিং সম্পূর্ণ গাইড",
     rating: 5,
     comment: "নিজের ব্যবসার Facebook Ads নিজেই চালাচ্ছি এখন। ROI ৩ গুণ বেড়েছে। কোর্সে দেখানো strategy real-life-এ কাজ করে।",
+    avatar_image: "https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-emerald-500 to-teal-500",
   },
   {
@@ -321,6 +324,7 @@ export const MOCK_TESTIMONIALS = [
     course: "ভিডিও এডিটিং প্রো — Premiere Pro",
     rating: 4,
     comment: "কোর্সের প্রজেক্টগুলো দারুণ। আরিফ ভাইয়ের কালার গ্রেডিং সেকশনটা best ছিল। আমার ইউটিউব চ্যানেল এখন monetized!",
+    avatar_image: "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-amber-500 to-orange-500",
   },
   {
@@ -330,6 +334,7 @@ export const MOCK_TESTIMONIALS = [
     course: "Advanced React ও Next.js",
     rating: 5,
     comment: "University-র পাশাপাশি এই কোর্স করে internship পেয়েছি একটা top tech company-তে। Practical projects-গুলো interview-তে দারুণ কাজে দিয়েছে।",
+    avatar_image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-violet-500 to-purple-500",
   },
   {
@@ -339,6 +344,7 @@ export const MOCK_TESTIMONIALS = [
     course: "UI/UX ডিজাইন উইথ Figma",
     rating: 5,
     comment: "Zero থেকে শুরু করে আজ আমি একটি startup-এ full-time Product Designer। NextScale-এর কারণেই এটা সম্ভব হয়েছে।",
+    avatar_image: "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=200&auto=format&fit=crop&q=70",
     avatar_color: "from-indigo-500 to-blue-500",
   },
 ];
