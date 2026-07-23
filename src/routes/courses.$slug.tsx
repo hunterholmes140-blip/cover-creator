@@ -9,6 +9,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { api, ApiError, getStoredUser } from "@/lib/api";
 import { taka, toBn } from "@/lib/format";
 import { useSiteSettings } from "@/lib/site-settings";
+import { track } from "@/lib/marketing";
 
 const detailQuery = (slug: string) =>
   queryOptions({
