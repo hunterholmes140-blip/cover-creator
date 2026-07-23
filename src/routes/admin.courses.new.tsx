@@ -1,0 +1,38 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
+import { useCourses } from "@/lib/admin-store";
+import { CourseForm, emptyCourse } from "@/lib/course-form";
+import { PageHeader, Button } from "@/components/admin/ui";
+
+export const Route = createFileRoute("/admin/courses/new")({
+  component: NewCoursePage,
+});
+
+function NewCoursePage() {
+  const { add } = useCourses();
+  const navigate = useNavigate();
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <PageHeader
+        title="নতুন কোর্স"
+        subtitle="কোর্সের সব তথ্য পূরণ করে সেভ করুন।"
+        actions={
+          <Link to="/admin/courses">
+            <Button variant="secondary">
+              <ArrowLeft className="h-4 w-4" /> ফিরে যান
+            </Button>
+          </Link>
+        }
+      />
+      <CourseForm
+        initial={emptyCourse}
+        submitLabel="কোর্স তৈরি করুন"
+        onSubmit={(v) => {
+          add(v);
+          navigate({ to: "/admin/courses" });
+        }}
+      />
+    </div>
+  );
+}

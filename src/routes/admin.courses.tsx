@@ -1,117 +1,161 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { MOCK_COURSES } from "@/lib/mock-data";
-import {
-  BADGE_PRESETS,
-  BADGE_STYLES,
-  getAllBadges,
-  resolveBadge,
-  setBadgeOverride,
-  type BadgeVariant,
-  type CourseBadge,
-} from "@/lib/course-badges";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
+import { Plus, Search, Star, Trash2, Pencil, Eye, EyeOff } from "lucide-react";
+import { useCourses } from "@/lib/admin-store";
+import { taka } from "@/lib/format";
+import { resolveBadge, BADGE_STYLES } from "@/lib/course-badges";
+import { PageHeader, Card, Input, Button, ConfirmDialog, useToast, Empty, Badge } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/courses")({
-  component: AdminCourses,
+  component: CoursesList,
 });
 
-function AdminCourses() {
-  const [, setTick] = useState(0);
-  useEffect(() => {
-    const rerender = () => setTick((t) => t + 1);
-    window.addEventListener("course-badges-changed", rerender);
-    return () => window.removeEventListener("course-badges-changed", rerender);
-  }, []);
+function CoursesList() {
+  const { items, update, remove } = useCourses();
+  const toast = useToast();
+  const [q, setQ] = useState("");
+  const [confirmId, setConfirmId] = useState<any>(null);
+
+  const filtered = useMemo(() => {
+    const s = q.toLowerCase().trim();
+    if (!s) return items;
+    return items.filter(
+      (c: any) =>
+        c.title?.toLowerCase().includes(s) ||
+        c.slug?.toLowerCase().includes(s) ||
+        c.instructor?.toLowerCase().includes(s),
+    );
+  }, [items, q]);
 
   return (
-    <div className="max-w-5xl mx-auto space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold">কোর্স ম্যানেজমেন্ট</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          প্রতিটি কোর্সে একটি ব্যাজ (যেমন: নতুন, হট, বেস্টসেলার) অ্যাসাইন করুন। ব্যাজ সাথে সাথে কোর্স কার্ডে দেখা যাবে।
-        </p>
-      </div>
+    <div className="max-w-6xl mx-auto">
+      <PageHeader
+        title="কোর্স ম্যানেজমেন্ট"
+        subtitle={`মোট ${items.length} টি কোর্স। যোগ, এডিট, publish/unpublish, featured toggle করুন।`}
+        actions={
+          <Link to="/admin/courses/new">
+            <Button>
+              <Plus className="h-4 w-4" /> নতুন কোর্স
+            </Button>
+          </Link>
+        }
+      />
 
-      <div className="rounded-xl border border-border bg-card divide-y divide-border">
-        {MOCK_COURSES.map((c) => (
-          <CourseRow key={c.id} course={c} />
-        ))}
-      </div>
-
-      <p className="text-xs text-muted-foreground">
-        নোট: ডেমো মোডে ব্যাজ ব্রাউজারের localStorage-এ সেভ হচ্ছে। PHP API যুক্ত হলে সরাসরি ডাটাবেসে সেভ হবে।
-      </p>
-    </div>
-  );
-}
-
-function CourseRow({ course }: { course: any }) {
-  const current = resolveBadge(course);
-  const [text, setText] = useState(current?.text ?? "");
-  const [variant, setVariant] = useState<BadgeVariant>(current?.variant ?? "new");
-
-  useEffect(() => {
-    const c = resolveBadge(course);
-    setText(c?.text ?? "");
-    if (c?.variant) setVariant(c.variant);
-  }, [course, getAllBadges()[course.slug]]);
-
-  const save = (b: CourseBadge | null) => setBadgeOverride(course.slug, b);
-  const style = BADGE_STYLES[variant];
-
-  return (
-    <div className="p-4 flex flex-col gap-3 md:flex-row md:items-center md:gap-6">
-      <div className="flex items-center gap-3 md:w-64 shrink-0">
-        {course.thumbnail && (
-          <img src={course.thumbnail} alt="" className="h-12 w-16 rounded-md object-cover" />
-        )}
-        <div>
-          <div className="font-medium text-sm line-clamp-1">{course.title}</div>
-          <div className="text-xs text-muted-foreground">{course.category_name}</div>
+      <div className="mb-4 flex items-center gap-2">
+        <div className="relative flex-1 max-w-sm">
+          <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="সার্চ করুন..." className="pl-9" />
         </div>
       </div>
 
-      <div className="flex-1 grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-3">
-        <div className="flex items-center gap-2 flex-wrap">
-          <select
-            value={variant}
-            onChange={(e) => setVariant(e.target.value as BadgeVariant)}
-            className="h-9 rounded-md border border-input bg-background px-2 text-sm"
-          >
-            {BADGE_PRESETS.map((p) => (
-              <option key={p.variant} value={p.variant}>{p.text}</option>
-            ))}
-          </select>
-          <input
-            value={text}
-            onChange={(e) => setText(e.target.value)}
-            placeholder={BADGE_PRESETS.find((p) => p.variant === variant)?.text}
-            className="h-9 flex-1 min-w-[140px] rounded-md border border-input bg-background px-3 text-sm"
-          />
-          <span
-            className={`inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r ${style.gradient} px-3 py-1 text-xs font-bold text-white shadow ${style.glow}`}
-            style={{ fontFamily: '"Hind Siliguri", sans-serif' }}
-          >
-            <span>{style.icon}</span>
-            <span>{text || BADGE_PRESETS.find((p) => p.variant === variant)?.text}</span>
-          </span>
-        </div>
+      {filtered.length === 0 ? (
+        <Empty
+          title="কোনো কোর্স নেই।"
+          action={
+            <Link to="/admin/courses/new">
+              <Button>
+                <Plus className="h-4 w-4" /> প্রথম কোর্স যোগ করুন
+              </Button>
+            </Link>
+          }
+        />
+      ) : (
+        <Card className="p-0 overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/50">
+                <tr className="text-left">
+                  <th className="p-3 font-medium">কোর্স</th>
+                  <th className="p-3 font-medium">ক্যাটাগরি</th>
+                  <th className="p-3 font-medium">দাম</th>
+                  <th className="p-3 font-medium">ব্যাজ</th>
+                  <th className="p-3 font-medium">স্ট্যাটাস</th>
+                  <th className="p-3 font-medium text-right">অ্যাকশন</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-border">
+                {filtered.map((c: any) => {
+                  const b = resolveBadge(c);
+                  const style = b ? BADGE_STYLES[b.variant] : null;
+                  return (
+                    <tr key={c.id} className="hover:bg-muted/30">
+                      <td className="p-3">
+                        <div className="flex items-center gap-3 min-w-0">
+                          {c.thumbnail && (
+                            <img src={c.thumbnail} alt="" className="h-10 w-14 rounded object-cover shrink-0" />
+                          )}
+                          <div className="min-w-0">
+                            <div className="font-medium truncate">{c.title}</div>
+                            <div className="text-xs text-muted-foreground truncate">{c.instructor}</div>
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-3 text-muted-foreground">{c.category_name}</td>
+                      <td className="p-3 font-semibold">{taka(c.discount_price ?? c.price)}</td>
+                      <td className="p-3">
+                        {b && style ? (
+                          <span
+                            className={`inline-flex items-center gap-1 rounded-full bg-gradient-to-r ${style.gradient} px-2 py-0.5 text-[11px] font-bold text-white`}
+                          >
+                            {style.icon} {b.text}
+                          </span>
+                        ) : (
+                          <span className="text-xs text-muted-foreground">—</span>
+                        )}
+                      </td>
+                      <td className="p-3">
+                        <div className="flex flex-col gap-1">
+                          <Badge color={c.is_published ? "green" : "muted"}>
+                            {c.is_published ? "Published" : "Draft"}
+                          </Badge>
+                          {c.is_featured ? <Badge color="amber">Featured</Badge> : null}
+                        </div>
+                      </td>
+                      <td className="p-3">
+                        <div className="flex items-center gap-1 justify-end">
+                          <button
+                            title={c.is_published ? "Unpublish" : "Publish"}
+                            onClick={() => update(c.id, { is_published: c.is_published ? 0 : 1 })}
+                            className="p-2 rounded hover:bg-accent"
+                          >
+                            {c.is_published ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                          </button>
+                          <button
+                            title="Featured toggle"
+                            onClick={() => update(c.id, { is_featured: c.is_featured ? 0 : 1 })}
+                            className={`p-2 rounded hover:bg-accent ${c.is_featured ? "text-amber-500" : ""}`}
+                          >
+                            <Star className="h-4 w-4" fill={c.is_featured ? "currentColor" : "none"} />
+                          </button>
+                          <Link to="/admin/courses/$slug" params={{ slug: c.slug }}>
+                            <Button size="sm" variant="secondary">
+                              <Pencil className="h-3 w-3" />
+                            </Button>
+                          </Link>
+                          <Button size="sm" variant="danger" onClick={() => setConfirmId(c.id)}>
+                            <Trash2 className="h-3 w-3" />
+                          </Button>
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
 
-        <div className="flex items-center gap-2 justify-end">
-          <button
-            onClick={() => save({ text: text || BADGE_PRESETS.find((p) => p.variant === variant)!.text, variant })}
-            className="h-9 rounded-md bg-primary px-4 text-sm font-medium text-primary-foreground hover:opacity-90"
-          >
-            সেভ
-          </button>
-          <button
-            onClick={() => save(null)}
-            className="h-9 rounded-md border border-border px-3 text-sm hover:bg-muted"
-          >
-            মুছুন
-          </button>
-        </div>
-      </div>
+      <ConfirmDialog
+        open={confirmId !== null}
+        onClose={() => setConfirmId(null)}
+        onConfirm={() => {
+          remove(confirmId);
+          toast.show("কোর্স ডিলিট হয়েছে");
+        }}
+        message="এই কোর্সটি ডিলিট করলে সব লেসনও মুছে যাবে।"
+      />
+      {toast.node}
     </div>
   );
 }
