@@ -11,7 +11,7 @@ const postQuery = (slug: string) =>
   });
 
 export const Route = createFileRoute("/blog/$slug")({
-  head: ({ loaderData }) => ({
+  head: ({ loaderData }: { loaderData?: { post: any } }) => ({
     meta: [
       { title: `${loaderData?.post?.title ?? "আর্টিকেল"} — NextScale ব্লগ` },
       { name: "description", content: loaderData?.post?.excerpt ?? "" },
