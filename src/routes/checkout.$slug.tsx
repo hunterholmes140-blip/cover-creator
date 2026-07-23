@@ -64,15 +64,73 @@ function CheckoutPage() {
   };
 
   if (msg) {
+    const secretGroupUrl = course.secret_group_link || "https://facebook.com";
+
     return (
       <SiteLayout>
-        <div className="mx-auto max-w-lg px-4 py-16 text-center">
-          <CheckCircle2 className="mx-auto h-16 w-16 text-green-600" />
-          <h1 className="mt-4 text-2xl font-bold">ধন্যবাদ!</h1>
-          <p className="mt-3 text-muted-foreground">{msg}</p>
-          <Link to="/dashboard" className="mt-6 inline-flex rounded-lg bg-primary text-primary-foreground px-6 py-3 font-semibold">
-            ড্যাশবোর্ডে যান
-          </Link>
+        <div className="mx-auto max-w-2xl px-4 py-12">
+          <div className="rounded-2xl border border-border bg-card p-6 md:p-8 text-center shadow-xl space-y-6">
+            <div className="mx-auto h-20 w-20 rounded-full bg-green-500/10 text-green-600 grid place-items-center ring-8 ring-green-500/5">
+              <CheckCircle2 className="h-10 w-10" />
+            </div>
+
+            <div>
+              <span className="inline-flex items-center gap-1 rounded-full bg-green-500/10 text-green-700 px-3 py-1 text-xs font-bold">
+                পেমেন্ট সফল ও কনফার্মড
+              </span>
+              <h1 className="mt-3 text-2xl md:text-4xl font-bold text-foreground">
+                ধন্যবাদ! আপনার এনরোলমেন্ট সফল হয়েছে 🎉
+              </h1>
+              <p className="mt-2 text-sm md:text-base text-muted-foreground">
+                আপনি <strong className="text-foreground">{course.title}</strong> কোর্সে সফলভাবে যুক্ত হয়েছেন।
+              </p>
+            </div>
+
+            {/* Quick Action Boxes */}
+            <div className="grid sm:grid-cols-2 gap-4 text-left pt-2">
+              {/* Box 1: Secret Group */}
+              <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-primary font-bold text-sm">
+                    💬 প্রাইভেট সিক্রেট গ্রুপ
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    কোর্সের সিক্রেট গ্রুপে যুক্ত হয়ে মেন্টর ও সহপাঠীদের সাথে কানেক্ট হন।
+                  </p>
+                </div>
+                <a
+                  href={secretGroupUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-xs font-semibold hover:bg-primary/90 transition-colors shadow"
+                >
+                  গোপন গ্রুপে যুক্ত হন ➔
+                </a>
+              </div>
+
+              {/* Box 2: Student Dashboard */}
+              <div className="rounded-xl border border-border bg-muted/40 p-4 flex flex-col justify-between">
+                <div>
+                  <div className="flex items-center gap-2 text-foreground font-bold text-sm">
+                    🔴 লাইভ ক্লাস ও ড্যাশবোর্ড
+                  </div>
+                  <p className="text-xs text-muted-foreground mt-1">
+                    আপনার ড্যাশবোর্ড থেকে লাইভ ক্লাসের Zoom/Meet লিঙ্ক ও রেকর্ডিং দেখুন।
+                  </p>
+                </div>
+                <Link
+                  to="/dashboard"
+                  className="mt-4 inline-flex items-center justify-center gap-1.5 rounded-lg border border-border bg-background px-4 py-2.5 text-xs font-semibold text-foreground hover:bg-accent transition-colors"
+                >
+                  ড্যাশবোর্ডে যান ➔
+                </Link>
+              </div>
+            </div>
+
+            <div className="text-xs text-muted-foreground pt-2 border-t border-border">
+              অর্ডার ট্র্যাকিং আইডি: <code className="bg-muted px-2 py-0.5 rounded font-mono">#ORD-{Date.now().toString().slice(-6)}</code>
+            </div>
+          </div>
         </div>
       </SiteLayout>
     );

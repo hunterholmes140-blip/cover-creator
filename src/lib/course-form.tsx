@@ -7,6 +7,13 @@ import { Field, Input, Textarea, Select, Button } from "@/components/admin/ui";
 import { ImageUpload } from "@/components/admin/ImageUpload";
 
 
+export type RecordingItem = {
+  id: string | number;
+  title: string;
+  date: string;
+  url: string;
+};
+
 export type CourseFormValue = {
   title: string;
   slug: string;
@@ -21,6 +28,11 @@ export type CourseFormValue = {
   category_slug: string;
   instructor: string;
   duration: string;
+  live_class_link?: string;
+  secret_group_link?: string;
+  class_routine?: string;
+  notice?: string;
+  recordings?: RecordingItem[];
   level: "beginner" | "intermediate" | "advanced";
   is_published: 0 | 1;
   is_featured: 0 | 1;
@@ -42,6 +54,11 @@ export const emptyCourse: CourseFormValue = {
   category_slug: "",
   instructor: "",
   duration: "",
+  live_class_link: "",
+  secret_group_link: "",
+  class_routine: "প্রতি রবি, মঙ্গল, বৃহস্পতি রাত ৯:০০ টা",
+  notice: "",
+  recordings: [],
   level: "beginner",
   is_published: 1,
   is_featured: 0,
@@ -147,6 +164,118 @@ export function CourseForm({
             <Input value={v.preview_video} onChange={(e) => set("preview_video", e.target.value)} />
           </Field>
         </div>
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-5 space-y-4">
+        <h3 className="font-semibold text-primary flex items-center gap-2">
+          🔴 লাইভ ক্লাস ও সিক্রেট গ্রুপ সেটআপ (Live Class & Secret Group Setup)
+        </h3>
+        <p className="text-xs text-muted-foreground">
+          পেমেন্ট বা এনরোল করার পর এই তথ্যগুলো শুধুমাত্র এই কোর্সে এনরোলড শিক্ষার্থীরা দেখতে পাবে।
+        </p>
+        <div className="grid gap-4 md:grid-cols-2">
+          <Field label="Zoom / Meet লাইভ ক্লাস লিংক" hint="যেমন: https://zoom.us/j/123456789">
+            <Input
+              value={v.live_class_link || ""}
+              onChange={(e) => set("live_class_link", e.target.value)}
+              placeholder="https://zoom.us/j/..."
+            />
+          </Field>
+
+          <Field label="প্রাইভেট সিক্রেট গ্রুপ লিংক" hint="যেমন: Facebook / WhatsApp Group URL">
+            <Input
+              value={v.secret_group_link || ""}
+              onChange={(e) => set("secret_group_link", e.target.value)}
+              placeholder="https://facebook.com/groups/..."
+            />
+          </Field>
+
+          <Field label="ক্লাসের সময়সূচী / রুটিন" hint="যেমন: প্রতি রবি, মঙ্গল, বৃহস্পতি রাত ৯:০০ টা">
+            <Input
+              value={v.class_routine || ""}
+              onChange={(e) => set("class_routine", e.target.value)}
+              placeholder="প্রতি রবি, মঙ্গল, বৃহস্পতি রাত ৯:০০ টা"
+            />
+          </Field>
+
+          <Field label="শিক্ষার্থীদের জন্য জরুরি নোটিশ">
+            <Input
+              value={v.notice || ""}
+              onChange={(e) => set("notice", e.target.value)}
+              placeholder="আগামীকালের ক্লাস রাত ৯:৩০ টায় শুরু হবে..."
+            />
+          </Field>
+        </div>
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-5 space-y-4">
+        <div className="flex items-center justify-between">
+          <h3 className="font-semibold flex items-center gap-2">
+            📹 ক্লাস রেকর্ডিং ও ফাইলস ({(v.recordings || []).length})
+          </h3>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              const recs = v.recordings || [];
+              set("recordings", [
+                ...recs,
+                { id: Date.now(), title: `ক্লাস ${recs.length + 1} রেকর্ডিং`, date: new Date().toLocaleDateString("bn-BD"), url: "" },
+              ]);
+            }}
+          >
+            + রেকর্ডিং যোগ
+          </Button>
+        </div>
+        {(v.recordings || []).length === 0 ? (
+          <p className="text-sm text-muted-foreground">এখনো কোনো ক্লাস রেকর্ডিং যোগ করা হয়নি।</p>
+        ) : (
+          <div className="space-y-3">
+            {(v.recordings || []).map((rec, idx) => (
+              <div key={rec.id} className="grid gap-2 md:grid-cols-[1fr_140px_1fr_auto] items-center rounded-md border border-border p-3 bg-muted/20">
+                <Input
+                  value={rec.title}
+                  onChange={(e) => {
+                    const next = [...(v.recordings || [])];
+                    next[idx] = { ...rec, title: e.target.value };
+                    set("recordings", next);
+                  }}
+                  placeholder="ক্লাস ১: এইচটিএমএল বেসিকস"
+                />
+                <Input
+                  value={rec.date}
+                  onChange={(e) => {
+                    const next = [...(v.recordings || [])];
+                    next[idx] = { ...rec, date: e.target.value };
+                    set("recordings", next);
+                  }}
+                  placeholder="তারিখ (যেমন: ২৫ জুলাই)"
+                />
+                <Input
+                  value={rec.url}
+                  onChange={(e) => {
+                    const next = [...(v.recordings || [])];
+                    next[idx] = { ...rec, url: e.target.value };
+                    set("recordings", next);
+                  }}
+                  placeholder="Drive/YouTube/Vimeo লিঙ্ক"
+                />
+                <Button
+                  type="button"
+                  variant="danger"
+                  size="sm"
+                  onClick={() => {
+                    const next = (v.recordings || []).filter((_, i) => i !== idx);
+                    set("recordings", next);
+                  }}
+                >
+                  মুছুন
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </section>
 
       <section className="rounded-xl border border-border bg-card p-5 space-y-4">
