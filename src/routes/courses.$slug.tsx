@@ -472,11 +472,12 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
     return () => { document.body.style.overflow = ""; };
   }, []);
 
+  const s: any = (settings as any)?.settings ?? settings;
   const numbers = useMemo<Record<string, string>>(() => ({
-    bkash: (settings as any)?.bkash_number || "01700-000000",
-    nagad: (settings as any)?.nagad_number || "01700-000000",
-    rocket: (settings as any)?.rocket_number || "01700-000000",
-  }), [settings]);
+    bkash: s?.bkash_number || "01700-000000",
+    nagad: s?.nagad_number || "01700-000000",
+    rocket: s?.rocket_number || "01700-000000",
+  }), [s]);
 
   const copyNumber = async () => {
     try {
