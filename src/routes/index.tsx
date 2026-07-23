@@ -449,6 +449,11 @@ function HomePage() {
               </Link>
             ))}
           </div>
+          <div className="mt-8 text-center">
+            <Link to="/blog" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+              সব আর্টিকেল <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
       </section>
 
