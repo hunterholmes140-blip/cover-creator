@@ -23,7 +23,7 @@ const categoriesQuery = queryOptions({
   queryFn: () => api<{ categories: any[] }>("courses/categories.php"),
 });
 
-export const Route = createFileRoute("/courses")({
+export const Route = createFileRoute("/courses/")({
   validateSearch: (s) => searchSchema.parse(s),
   loaderDeps: ({ search }) => search,
   head: () => ({

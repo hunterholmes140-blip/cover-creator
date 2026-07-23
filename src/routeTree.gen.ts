@@ -18,7 +18,6 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as FreeCoursesRouteImport } from './routes/free-courses'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as CoursesRouteImport } from './routes/courses'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AffiliateRouteImport } from './routes/affiliate'
@@ -26,6 +25,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as TrainersIndexRouteImport } from './routes/trainers.index'
+import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as TrainersSlugRouteImport } from './routes/trainers.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
@@ -123,11 +123,6 @@ const DashboardRoute = DashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CoursesRoute = CoursesRouteImport.update({
-  id: '/courses',
-  path: '/courses',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
@@ -163,6 +158,11 @@ const TrainersIndexRoute = TrainersIndexRouteImport.update({
   path: '/',
   getParentRoute: () => TrainersRoute,
 } as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -174,9 +174,9 @@ const TrainersSlugRoute = TrainersSlugRouteImport.update({
   getParentRoute: () => TrainersRoute,
 } as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => CoursesRoute,
+  id: '/courses/$slug',
+  path: '/courses/$slug',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const CheckoutSlugRoute = CheckoutSlugRouteImport.update({
   id: '/checkout/$slug',
@@ -431,7 +431,6 @@ export interface FileRoutesByFullPath {
   '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/faq': typeof FaqRoute
   '/free-courses': typeof FreeCoursesRoute
@@ -461,6 +460,7 @@ export interface FileRoutesByFullPath {
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/courses/': typeof CoursesIndexRoute
   '/trainers/': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
@@ -500,7 +500,6 @@ export interface FileRoutesByTo {
   '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/faq': typeof FaqRoute
   '/free-courses': typeof FreeCoursesRoute
@@ -529,6 +528,7 @@ export interface FileRoutesByTo {
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/courses': typeof CoursesIndexRoute
   '/trainers': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
@@ -570,7 +570,6 @@ export interface FileRoutesById {
   '/affiliate': typeof AffiliateRoute
   '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
-  '/courses': typeof CoursesRouteWithChildren
   '/dashboard': typeof DashboardRoute
   '/faq': typeof FaqRoute
   '/free-courses': typeof FreeCoursesRoute
@@ -600,6 +599,7 @@ export interface FileRoutesById {
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/courses/': typeof CoursesIndexRoute
   '/trainers/': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
@@ -642,7 +642,6 @@ export interface FileRouteTypes {
     | '/affiliate'
     | '/blog'
     | '/contact'
-    | '/courses'
     | '/dashboard'
     | '/faq'
     | '/free-courses'
@@ -672,6 +671,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/trainers/$slug'
     | '/admin/'
+    | '/courses/'
     | '/trainers/'
     | '/admin/blog/$slug'
     | '/admin/blog/new'
@@ -711,7 +711,6 @@ export interface FileRouteTypes {
     | '/affiliate'
     | '/blog'
     | '/contact'
-    | '/courses'
     | '/dashboard'
     | '/faq'
     | '/free-courses'
@@ -740,6 +739,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/trainers/$slug'
     | '/admin'
+    | '/courses'
     | '/trainers'
     | '/admin/blog/$slug'
     | '/admin/blog/new'
@@ -780,7 +780,6 @@ export interface FileRouteTypes {
     | '/affiliate'
     | '/blog'
     | '/contact'
-    | '/courses'
     | '/dashboard'
     | '/faq'
     | '/free-courses'
@@ -810,6 +809,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/trainers/$slug'
     | '/admin/'
+    | '/courses/'
     | '/trainers/'
     | '/admin/blog/$slug'
     | '/admin/blog/new'
@@ -851,7 +851,6 @@ export interface RootRouteChildren {
   AffiliateRoute: typeof AffiliateRoute
   BlogRoute: typeof BlogRouteWithChildren
   ContactRoute: typeof ContactRoute
-  CoursesRoute: typeof CoursesRouteWithChildren
   DashboardRoute: typeof DashboardRoute
   FaqRoute: typeof FaqRoute
   FreeCoursesRoute: typeof FreeCoursesRoute
@@ -863,6 +862,8 @@ export interface RootRouteChildren {
   TrainersRoute: typeof TrainersRouteWithChildren
   ApiContentDotphpRoute: typeof ApiContentDotphpRoute
   CheckoutSlugRoute: typeof CheckoutSlugRoute
+  CoursesSlugRoute: typeof CoursesSlugRoute
+  CoursesIndexRoute: typeof CoursesIndexRoute
   ApiAdminCategoriesDotphpRoute: typeof ApiAdminCategoriesDotphpRoute
   ApiAdminContentDotphpRoute: typeof ApiAdminContentDotphpRoute
   ApiAdminCoursesDotphpRoute: typeof ApiAdminCoursesDotphpRoute
@@ -952,13 +953,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/courses': {
-      id: '/courses'
-      path: '/courses'
-      fullPath: '/courses'
-      preLoaderRoute: typeof CoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/contact': {
       id: '/contact'
       path: '/contact'
@@ -1008,6 +1002,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TrainersIndexRouteImport
       parentRoute: typeof TrainersRoute
     }
+    '/courses/': {
+      id: '/courses/'
+      path: '/courses'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/': {
       id: '/admin/'
       path: '/'
@@ -1024,10 +1025,10 @@ declare module '@tanstack/react-router' {
     }
     '/courses/$slug': {
       id: '/courses/$slug'
-      path: '/$slug'
+      path: '/courses/$slug'
       fullPath: '/courses/$slug'
       preLoaderRoute: typeof CoursesSlugRouteImport
-      parentRoute: typeof CoursesRoute
+      parentRoute: typeof rootRouteImport
     }
     '/checkout/$slug': {
       id: '/checkout/$slug'
@@ -1434,17 +1435,6 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
-interface CoursesRouteChildren {
-  CoursesSlugRoute: typeof CoursesSlugRoute
-}
-
-const CoursesRouteChildren: CoursesRouteChildren = {
-  CoursesSlugRoute: CoursesSlugRoute,
-}
-
-const CoursesRouteWithChildren =
-  CoursesRoute._addFileChildren(CoursesRouteChildren)
-
 interface TrainersRouteChildren {
   TrainersSlugRoute: typeof TrainersSlugRoute
   TrainersIndexRoute: typeof TrainersIndexRoute
@@ -1466,7 +1456,6 @@ const rootRouteChildren: RootRouteChildren = {
   AffiliateRoute: AffiliateRoute,
   BlogRoute: BlogRouteWithChildren,
   ContactRoute: ContactRoute,
-  CoursesRoute: CoursesRouteWithChildren,
   DashboardRoute: DashboardRoute,
   FaqRoute: FaqRoute,
   FreeCoursesRoute: FreeCoursesRoute,
@@ -1478,6 +1467,8 @@ const rootRouteChildren: RootRouteChildren = {
   TrainersRoute: TrainersRouteWithChildren,
   ApiContentDotphpRoute: ApiContentDotphpRoute,
   CheckoutSlugRoute: CheckoutSlugRoute,
+  CoursesSlugRoute: CoursesSlugRoute,
+  CoursesIndexRoute: CoursesIndexRoute,
   ApiAdminCategoriesDotphpRoute: ApiAdminCategoriesDotphpRoute,
   ApiAdminContentDotphpRoute: ApiAdminContentDotphpRoute,
   ApiAdminCoursesDotphpRoute: ApiAdminCoursesDotphpRoute,
@@ -1504,3 +1495,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
