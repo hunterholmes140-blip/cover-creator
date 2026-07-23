@@ -113,7 +113,56 @@ export const FOOTER_CONTENT_DEFAULTS: FooterContent = {
   madeInText: "Made with ❤️ in Bangladesh",
 };
 
+export type AuthContent = {
+  loginTitle: string;
+  loginSubtitle: string;
+  loginEmailLabel: string;
+  loginPasswordLabel: string;
+  loginSubmitLabel: string;
+  loginSubmittingLabel: string;
+  loginFooterText: string;
+  loginFooterLinkLabel: string;
+  loginExtraHtml: string;
+
+  registerTitle: string;
+  registerSubtitle: string;
+  registerNameLabel: string;
+  registerEmailLabel: string;
+  registerPhoneLabel: string;
+  registerPasswordLabel: string;
+  registerSubmitLabel: string;
+  registerSubmittingLabel: string;
+  registerFooterText: string;
+  registerFooterLinkLabel: string;
+  registerExtraHtml: string;
+};
+
+export const AUTH_CONTENT_DEFAULTS: AuthContent = {
+  loginTitle: "লগইন",
+  loginSubtitle: "আপনার অ্যাকাউন্টে প্রবেশ করুন",
+  loginEmailLabel: "ইমেইল",
+  loginPasswordLabel: "পাসওয়ার্ড",
+  loginSubmitLabel: "লগইন করুন",
+  loginSubmittingLabel: "অপেক্ষা করুন...",
+  loginFooterText: "নতুন?",
+  loginFooterLinkLabel: "রেজিস্টার করুন",
+  loginExtraHtml: "",
+
+  registerTitle: "নতুন অ্যাকাউন্ট",
+  registerSubtitle: "ফ্রি রেজিস্টার করে শেখা শুরু করুন",
+  registerNameLabel: "পূর্ণ নাম",
+  registerEmailLabel: "ইমেইল",
+  registerPhoneLabel: "ফোন (ঐচ্ছিক)",
+  registerPasswordLabel: "পাসওয়ার্ড",
+  registerSubmitLabel: "রেজিস্টার করুন",
+  registerSubmittingLabel: "অপেক্ষা করুন...",
+  registerFooterText: "ইতিমধ্যে অ্যাকাউন্ট আছে?",
+  registerFooterLinkLabel: "লগইন",
+  registerExtraHtml: "",
+};
+
 export const CONTENT_KEYS = {
   HOME: "home",
   FOOTER: "footer",
+  AUTH: "auth",
 } as const;

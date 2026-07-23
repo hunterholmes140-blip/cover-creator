@@ -44,6 +44,7 @@ import { Route as AdminHeroRouteImport } from './routes/admin.hero'
 import { Route as AdminFooterRouteImport } from './routes/admin.footer'
 import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
 import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminAuthPagesRouteImport } from './routes/admin.auth-pages'
 import { Route as AdminTrainersIndexRouteImport } from './routes/admin.trainers.index'
 import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
 import { Route as AdminBlogIndexRouteImport } from './routes/admin.blog.index'
@@ -251,6 +252,11 @@ const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
   path: '/categories',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminAuthPagesRoute = AdminAuthPagesRouteImport.update({
+  id: '/auth-pages',
+  path: '/auth-pages',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminTrainersIndexRoute = AdminTrainersIndexRouteImport.update({
   id: '/trainers/',
   path: '/trainers/',
@@ -429,6 +435,7 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/trainers': typeof TrainersRouteWithChildren
+  '/admin/auth-pages': typeof AdminAuthPagesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/footer': typeof AdminFooterRoute
@@ -495,6 +502,7 @@ export interface FileRoutesByTo {
   '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
+  '/admin/auth-pages': typeof AdminAuthPagesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/footer': typeof AdminFooterRoute
@@ -564,6 +572,7 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/trainers': typeof TrainersRouteWithChildren
+  '/admin/auth-pages': typeof AdminAuthPagesRoute
   '/admin/categories': typeof AdminCategoriesRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/footer': typeof AdminFooterRoute
@@ -634,6 +643,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/trainers'
+    | '/admin/auth-pages'
     | '/admin/categories'
     | '/admin/faqs'
     | '/admin/footer'
@@ -700,6 +710,7 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/register'
     | '/terms'
+    | '/admin/auth-pages'
     | '/admin/categories'
     | '/admin/faqs'
     | '/admin/footer'
@@ -768,6 +779,7 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/trainers'
+    | '/admin/auth-pages'
     | '/admin/categories'
     | '/admin/faqs'
     | '/admin/footer'
@@ -1110,6 +1122,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCategoriesRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/auth-pages': {
+      id: '/admin/auth-pages'
+      path: '/auth-pages'
+      fullPath: '/admin/auth-pages'
+      preLoaderRoute: typeof AdminAuthPagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/trainers/': {
       id: '/admin/trainers/'
       path: '/trainers'
@@ -1331,6 +1350,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminAuthPagesRoute: typeof AdminAuthPagesRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
   AdminFaqsRoute: typeof AdminFaqsRoute
   AdminFooterRoute: typeof AdminFooterRoute
@@ -1356,6 +1376,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAuthPagesRoute: AdminAuthPagesRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
   AdminFaqsRoute: AdminFaqsRoute,
   AdminFooterRoute: AdminFooterRoute,

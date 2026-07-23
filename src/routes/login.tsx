@@ -2,6 +2,8 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { SiteLayout } from "@/components/site/Layout";
 import { api, setToken, setStoredUser } from "@/lib/api";
+import { useContent } from "@/lib/content-store";
+import { AUTH_CONTENT_DEFAULTS, CONTENT_KEYS } from "@/lib/content-defaults";
 
 export const Route = createFileRoute("/login")({
   head: () => ({
@@ -15,6 +17,7 @@ export const Route = createFileRoute("/login")({
 
 function LoginPage() {
   const nav = useNavigate();
+  const [c] = useContent(CONTENT_KEYS.AUTH, AUTH_CONTENT_DEFAULTS);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -43,21 +46,30 @@ function LoginPage() {
     <SiteLayout>
       <div className="mx-auto max-w-md px-4 py-12">
         <div className="rounded-2xl border border-border bg-card p-8 shadow-sm">
-          <h1 className="text-2xl font-bold">লগইন</h1>
-          <p className="mt-1 text-sm text-muted-foreground">আপনার অ্যাকাউন্টে প্রবেশ করুন</p>
+          <h1 className="text-2xl font-bold">{c.loginTitle}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">{c.loginSubtitle}</p>
           <form onSubmit={submit} className="mt-6 space-y-4">
-            <Field label="ইমেইল" type="email" value={email} onChange={setEmail} required />
-            <Field label="পাসওয়ার্ড" type="password" value={password} onChange={setPassword} required />
+            <Field label={c.loginEmailLabel} type="email" value={email} onChange={setEmail} required />
+            <Field label={c.loginPasswordLabel} type="password" value={password} onChange={setPassword} required />
             {err && <div className="rounded-md bg-destructive/10 text-destructive text-sm p-3">{err}</div>}
             <button
               disabled={loading}
               className="w-full rounded-lg bg-primary text-primary-foreground py-2.5 font-semibold hover:bg-primary/90 disabled:opacity-60"
             >
-              {loading ? "অপেক্ষা করুন..." : "লগইন করুন"}
+              {loading ? c.loginSubmittingLabel : c.loginSubmitLabel}
             </button>
           </form>
+          {c.loginExtraHtml?.trim() && (
+            <div
+              className="mt-6 text-sm text-muted-foreground prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{ __html: c.loginExtraHtml }}
+            />
+          )}
           <p className="mt-6 text-sm text-center text-muted-foreground">
-            নতুন? <Link to="/register" className="text-primary font-medium hover:underline">রেজিস্টার করুন</Link>
+            {c.loginFooterText}{" "}
+            <Link to="/register" className="text-primary font-medium hover:underline">
+              {c.loginFooterLinkLabel}
+            </Link>
           </p>
         </div>
       </div>
