@@ -77,7 +77,7 @@ function TiltCard({
         transition: "transform 300ms cubic-bezier(.2,.8,.2,1)",
         animationDelay: `${index * 90}ms`,
       }}
-      className="tilt-card group relative text-left rounded-2xl overflow-hidden border border-border bg-card shadow-lg hover:shadow-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 opacity-0 animate-fade-in [animation-fill-mode:forwards] will-change-transform"
+      className="tilt-card group relative text-left rounded-2xl overflow-hidden border border-border bg-card shadow-lg hover:shadow-2xl focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 animate-in fade-in slide-in-from-bottom-4 duration-700 fill-mode-both will-change-transform"
     >
       {/* Thumbnail layer */}
       <div
