@@ -1,0 +1,58 @@
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { ArrowLeft } from "lucide-react";
+import { useCourses } from "@/lib/admin-store";
+import { CourseForm, emptyCourse, type CourseFormValue } from "@/lib/course-form";
+import { PageHeader, Button, useToast } from "@/components/admin/ui";
+
+export const Route = createFileRoute("/admin/courses/$slug")({
+  component: EditCoursePage,
+});
+
+function EditCoursePage() {
+  const { slug } = Route.useParams();
+  const { items, update } = useCourses();
+  const toast = useToast();
+  const navigate = useNavigate();
+  const course = items.find((c: any) => c.slug === slug);
+
+  if (!course) {
+    return (
+      <div className="max-w-2xl mx-auto">
+        <PageHeader title="কোর্স পাওয়া যায়নি" />
+        <Link to="/admin/courses">
+          <Button variant="secondary">
+            <ArrowLeft className="h-4 w-4" /> কোর্স লিস্টে ফিরে যান
+          </Button>
+        </Link>
+      </div>
+    );
+  }
+
+  const initial: CourseFormValue = { ...emptyCourse, ...course };
+
+  return (
+    <div className="max-w-4xl mx-auto">
+      <PageHeader
+        title="কোর্স এডিট"
+        subtitle={course.title}
+        actions={
+          <Link to="/admin/courses">
+            <Button variant="secondary">
+              <ArrowLeft className="h-4 w-4" /> ফিরে যান
+            </Button>
+          </Link>
+        }
+      />
+      <CourseForm
+        initial={initial}
+        submitLabel="আপডেট করুন"
+        onSubmit={(v) => {
+          update(course.id, v);
+          toast.show("আপডেট হয়েছে");
+          setTimeout(() => navigate({ to: "/admin/courses" }), 500);
+        }}
+      />
+      {toast.node}
+    </div>
+  );
+}
