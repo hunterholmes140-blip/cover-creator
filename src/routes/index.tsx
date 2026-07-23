@@ -181,7 +181,7 @@ function HomePage() {
       </section>
 
       {/* MENTOR + TRAINERS */}
-      <section className="border-y border-border bg-background">
+      <section className="border-y border-border bg-gradient-to-b from-primary/5 via-accent/40 to-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold tracking-widest text-primary uppercase">Founder</span>
