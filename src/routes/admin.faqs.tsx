@@ -2,20 +2,29 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useFaqs } from "@/lib/admin-store";
 import { PageHeader, Card, Field, Input, Textarea, Button, useToast } from "@/components/admin/ui";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Save } from "lucide-react";
 
 export const Route = createFileRoute("/admin/faqs")({
   component: FaqsAdmin,
 });
 
 function FaqsAdmin() {
-  const { items, add, update, remove } = useFaqs();
+  const { items, add, update, remove, saveNow } = useFaqs();
   const toast = useToast();
   const [q, setQ] = useState(""); const [a, setA] = useState("");
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <PageHeader title="FAQ" subtitle="সাধারণ প্রশ্ন ও উত্তর — হোমপেজ ও /faq পেজে দেখাবে।" />
+      <PageHeader
+        title="FAQ"
+        subtitle="সাধারণ প্রশ্ন ও উত্তর — হোমপেজ ও /faq পেজে দেখাবে।"
+        actions={
+          <Button onClick={async () => { await saveNow(); toast.show("সব FAQ সেভ হয়েছে"); }}>
+            <Save className="h-4 w-4" /> সব সেভ করুন
+          </Button>
+        }
+      />
+
 
       <Card>
         <div className="grid gap-3">

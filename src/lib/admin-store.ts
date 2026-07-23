@@ -16,11 +16,61 @@ import {
 
 type Listener = () => void;
 
+// ---- Remote sync (uses generic content KV: /api/content.php + /api/admin/content.php) ----
+function detectLive(): boolean {
+  const envUrl = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
+  if (envUrl) return true;
+  if (typeof window === "undefined") return false;
+  const h = window.location.hostname;
+  return !(h.includes("lovableproject.com") || h.startsWith("id-preview--"));
+}
+const USE_REMOTE = detectLive();
+const API_URL =
+  ((import.meta.env.VITE_API_URL as string | undefined) ?? "").replace(/\/$/, "") ||
+  (USE_REMOTE ? "/api" : "");
+
+async function fetchRemoteList(key: string): Promise<any[] | undefined> {
+  try {
+    const res = await fetch(`${API_URL}/content.php?key=${encodeURIComponent(key)}`);
+    if (!res.ok) return undefined;
+    const json = await res.json();
+    const v = json?.data?.value ?? json?.value;
+    return Array.isArray(v) ? v : undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+async function saveRemoteList(key: string, value: any[]) {
+  try {
+    const token = typeof window !== "undefined" ? localStorage.getItem("nextscale_token") : null;
+    await fetch(`${API_URL}/admin/content.php`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+      body: JSON.stringify({ key, value }),
+    });
+  } catch {}
+}
+
 class Collection<T extends { id: any }> {
   private items: T[];
   private listeners = new Set<Listener>();
+  private saveTimer: any = null;
   constructor(private key: string, private seed: T[]) {
     this.items = this.load();
+    if (USE_REMOTE && typeof window !== "undefined") {
+      // Hydrate from server once — same key is used by admin and public pages.
+      fetchRemoteList(this.key).then((v) => {
+        if (v && Array.isArray(v)) {
+          this.items = v as T[];
+          try { window.localStorage.setItem(this.key, JSON.stringify(this.items)); } catch {}
+          this.listeners.forEach((l) => l());
+        }
+      });
+    }
   }
   private load(): T[] {
     if (typeof window === "undefined") return this.seed;
@@ -35,6 +85,12 @@ class Collection<T extends { id: any }> {
       window.localStorage.setItem(this.key, JSON.stringify(this.items));
     } catch {}
     this.listeners.forEach((l) => l());
+    if (USE_REMOTE) {
+      // Debounce so rapid inline edits become one network write.
+      if (this.saveTimer) clearTimeout(this.saveTimer);
+      const snapshot = this.items;
+      this.saveTimer = setTimeout(() => saveRemoteList(this.key, snapshot), 400);
+    }
   }
   getAll() {
     return this.items;
@@ -74,6 +130,12 @@ class Collection<T extends { id: any }> {
     this.items = JSON.parse(JSON.stringify(this.seed));
     this.persist();
   }
+  /** Force an immediate remote save (for explicit "Save" buttons). */
+  async saveNow() {
+    if (!USE_REMOTE) return;
+    if (this.saveTimer) { clearTimeout(this.saveTimer); this.saveTimer = null; }
+    await saveRemoteList(this.key, this.items);
+  }
   subscribe(l: Listener) {
     this.listeners.add(l);
     return () => {
@@ -96,6 +158,7 @@ function useCollection<T extends { id: any }>(c: Collection<T>) {
     remove: (id: any) => c.remove(id),
     replaceAll: (next: T[]) => c.replaceAll(next),
     reset: () => c.reset(),
+    saveNow: () => c.saveNow(),
   };
 }
 
