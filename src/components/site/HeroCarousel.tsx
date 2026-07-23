@@ -34,7 +34,6 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
     return () => clearInterval(t);
   }, [total, open]);
 
-  // Esc to close modal
   useEffect(() => {
     if (!open) return;
     const onKey = (e: KeyboardEvent) => {
@@ -43,10 +42,11 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
       if (e.key === "ArrowRight") setIdx((i) => (i + 1) % total);
     };
     window.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => {
       window.removeEventListener("keydown", onKey);
-      document.body.style.overflow = "";
+      document.body.style.overflow = prev;
     };
   }, [open, total]);
 
@@ -55,13 +55,33 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
   const vid = ytId(current.youtube_url);
 
   return (
-    <>
-      {/* Small frame — muted preview, click to enlarge */}
+    <div className="w-full max-w-lg mx-auto">
+      {/* Heading OUTSIDE the frame */}
+      <div className="mb-4 text-center lg:text-left min-h-[68px]">
+        <h3
+          key={`h-${current.id}`}
+          className="animate-in fade-in slide-in-from-bottom-2 duration-500 text-xl md:text-2xl font-bold leading-snug text-foreground"
+          style={{ fontFamily: '"Hind Siliguri", var(--font-sans)' }}
+        >
+          {current.heading}
+        </h3>
+        {current.subheading && (
+          <p
+            key={`s-${current.id}`}
+            className="animate-in fade-in duration-700 mt-1 text-sm text-muted-foreground"
+            style={{ fontFamily: '"Hind Siliguri", var(--font-sans)' }}
+          >
+            {current.subheading}
+          </p>
+        )}
+      </div>
+
+      {/* Video frame — click to enlarge */}
       <button
         type="button"
         onClick={() => setOpen(true)}
         aria-label="ভিডিও বড় করে দেখুন"
-        className="absolute inset-0 bg-black group cursor-zoom-in"
+        className="relative block w-full aspect-video rounded-3xl overflow-hidden shadow-2xl ring-1 ring-primary/20 bg-black group cursor-zoom-in"
       >
         {vid && (
           <iframe
@@ -72,31 +92,7 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
             allow="autoplay; encrypted-media"
           />
         )}
-
-        {/* gradient */}
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/45" />
-
-        {/* heading overlay */}
-        <div className="absolute inset-x-0 top-0 p-4 md:p-5 text-left">
-          <h3
-            key={`h-${current.id}`}
-            className="animate-in fade-in slide-in-from-top-3 duration-500 text-white text-lg md:text-2xl font-bold leading-tight drop-shadow-lg line-clamp-2"
-            style={{ fontFamily: '"Hind Siliguri", var(--font-sans)' }}
-          >
-            {current.heading}
-          </h3>
-          {current.subheading && (
-            <p
-              key={`s-${current.id}`}
-              className="animate-in fade-in duration-700 mt-1 text-white/85 text-xs md:text-sm line-clamp-2"
-              style={{ fontFamily: '"Hind Siliguri", var(--font-sans)' }}
-            >
-              {current.subheading}
-            </p>
-          )}
-        </div>
-
-        {/* play badge — hint that click enlarges */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute inset-0 grid place-items-center">
           <div className="h-14 w-14 md:h-16 md:w-16 rounded-full bg-white/15 backdrop-blur ring-2 ring-white/70 grid place-items-center transition-all duration-300 group-hover:scale-110 group-hover:bg-primary/80">
             <Play className="h-6 w-6 md:h-7 md:w-7 text-white fill-white ml-0.5" />
@@ -104,76 +100,78 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         </div>
       </button>
 
-      {/* Enlarged modal — sound ON, controls, nav */}
+      {/* Enlarged modal */}
       {open && (
         <div
-          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm animate-in fade-in duration-200"
+          className="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm animate-in fade-in duration-200 flex items-center justify-center p-4 md:p-10"
           onClick={() => setOpen(false)}
         >
+          {/* Close button — top-right of viewport */}
           <button
             type="button"
-            onClick={() => setOpen(false)}
+            onClick={(e) => { e.stopPropagation(); setOpen(false); }}
             aria-label="বন্ধ করুন"
-            className="absolute top-4 right-4 h-11 w-11 rounded-full bg-white/10 hover:bg-white/25 text-white grid place-items-center backdrop-blur transition"
+            className="fixed top-4 right-4 z-[110] h-12 w-12 rounded-full bg-white text-black hover:bg-white/90 grid place-items-center shadow-2xl transition"
           >
-            <X className="h-5 w-5" />
+            <X className="h-6 w-6" />
           </button>
 
           <div
-            className="absolute inset-0 flex items-center justify-center p-4 md:p-10"
+            className="relative w-full max-w-6xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="relative w-full max-w-6xl aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black">
-              {vid && (
-                <iframe
-                  key={`big-${current.id}`}
-                  className="absolute inset-0 h-full w-full"
-                  src={`https://www.youtube.com/embed/${vid}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1`}
-                  title={current.heading}
-                  allow="autoplay; encrypted-media; fullscreen"
-                  allowFullScreen
-                />
-              )}
-            </div>
-
-            {/* Modal nav */}
-            {total > 1 && (
-              <>
-                <button
-                  type="button"
-                  onClick={() => setIdx((i) => (i - 1 + total) % total)}
-                  aria-label="আগের"
-                  className="absolute left-3 md:left-8 top-1/2 -translate-y-1/2 h-11 w-11 md:h-12 md:w-12 rounded-full bg-white/10 hover:bg-white/25 text-white grid place-items-center backdrop-blur transition"
-                >
-                  <ChevronLeft className="h-6 w-6" />
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setIdx((i) => (i + 1) % total)}
-                  aria-label="পরের"
-                  className="absolute right-3 md:right-8 top-1/2 -translate-y-1/2 h-11 w-11 md:h-12 md:w-12 rounded-full bg-white/10 hover:bg-white/25 text-white grid place-items-center backdrop-blur transition"
-                >
-                  <ChevronRight className="h-6 w-6" />
-                </button>
-
-                <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2">
-                  {slides.map((s, i) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      onClick={() => setIdx(i)}
-                      aria-label={`স্লাইড ${i + 1}`}
-                      className={`h-1.5 rounded-full transition-all ${
-                        i === idx ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </>
+            {vid && (
+              <iframe
+                key={`big-${current.id}`}
+                className="absolute inset-0 h-full w-full"
+                src={`https://www.youtube.com/embed/${vid}?autoplay=1&mute=0&rel=0&modestbranding=1&playsinline=1`}
+                title={current.heading}
+                allow="autoplay; encrypted-media; fullscreen"
+                allowFullScreen
+              />
             )}
           </div>
+
+          {/* Modal nav */}
+          {total > 1 && (
+            <>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setIdx((i) => (i - 1 + total) % total); }}
+                aria-label="আগের"
+                className="fixed left-3 md:left-8 top-1/2 -translate-y-1/2 z-[105] h-11 w-11 md:h-12 md:w-12 rounded-full bg-white/10 hover:bg-white/25 text-white grid place-items-center backdrop-blur transition"
+              >
+                <ChevronLeft className="h-6 w-6" />
+              </button>
+              <button
+                type="button"
+                onClick={(e) => { e.stopPropagation(); setIdx((i) => (i + 1) % total); }}
+                aria-label="পরের"
+                className="fixed right-3 md:right-8 top-1/2 -translate-y-1/2 z-[105] h-11 w-11 md:h-12 md:w-12 rounded-full bg-white/10 hover:bg-white/25 text-white grid place-items-center backdrop-blur transition"
+              >
+                <ChevronRight className="h-6 w-6" />
+              </button>
+
+              <div
+                className="fixed bottom-6 left-1/2 -translate-x-1/2 z-[105] flex gap-2"
+                onClick={(e) => e.stopPropagation()}
+              >
+                {slides.map((s, i) => (
+                  <button
+                    key={s.id}
+                    type="button"
+                    onClick={(e) => { e.stopPropagation(); setIdx(i); }}
+                    aria-label={`স্লাইড ${i + 1}`}
+                    className={`h-1.5 rounded-full transition-all ${
+                      i === idx ? "w-8 bg-white" : "w-2 bg-white/50 hover:bg-white/80"
+                    }`}
+                  />
+                ))}
+              </div>
+            </>
+          )}
         </div>
       )}
-    </>
+    </div>
   );
 }
