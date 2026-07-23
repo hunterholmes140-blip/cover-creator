@@ -453,9 +453,13 @@ function HomePage() {
               </Link>
             ))}
           </div>
-          <div className="mt-8 text-center">
-            <Link to="/blog" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-              সব আর্টিকেল <ArrowRight className="h-4 w-4" />
+          <div className="mt-10 text-center">
+            <Link
+              to="/blog"
+              className="group inline-flex items-center gap-2 rounded-full bg-primary text-primary-foreground px-8 py-4 text-base md:text-lg font-semibold shadow-lg shadow-primary/25 ring-1 ring-primary/20 hover:bg-primary/90 hover:shadow-xl hover:shadow-primary/30 hover:-translate-y-0.5 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-primary/40 transition-all duration-200"
+            >
+              সব আর্টিকেল দেখুন
+              <ArrowRight className="h-5 w-5 transition-transform group-hover:translate-x-1" />
             </Link>
           </div>
         </div>
