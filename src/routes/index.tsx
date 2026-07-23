@@ -193,114 +193,92 @@ function HomePage() {
 
       {/* MENTOR + TRAINERS */}
       <section className="border-y border-border bg-gradient-to-br from-primary/15 via-primary/5 to-accent">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
+        <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
           <div className="text-center max-w-2xl mx-auto">
-            <span className="text-xs font-bold tracking-widest text-primary uppercase">Founder</span>
-            <h2 className="mt-2 text-2xl md:text-3xl font-bold">আমাদের সম্পর্কে জানতে চান?</h2>
+            <span className="text-xs font-bold tracking-widest text-primary uppercase">Founder & Team</span>
+            <h2 className="mt-2 text-2xl md:text-3xl font-bold">আমাদের মেন্টর ও ট্রেনার</h2>
           </div>
 
           {(() => {
             const mentor = trainers.trainers.find((t: any) => t.is_mentor) ?? trainers.trainers[0];
             const rest = trainers.trainers.filter((t: any) => t.id !== mentor.id);
+
             const TrainerCard = ({ t, mentor: isMentor = false }: { t: any; mentor?: boolean }) => {
               const img = TRAINER_IMAGES[t.avatar];
               return (
                 <Link
                   to="/trainers/$slug"
                   params={{ slug: t.slug }}
-                  className={`group relative flex flex-col overflow-hidden rounded-2xl border bg-card shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 ${
-                    isMentor ? "border-amber-400/70 ring-2 ring-amber-300/40" : "border-border hover:border-primary/50"
+                  className={`group relative flex items-center gap-3 rounded-full border bg-card/90 backdrop-blur pl-1.5 pr-4 py-1.5 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 ${
+                    isMentor ? "border-amber-400/70 ring-1 ring-amber-300/50" : "border-border hover:border-primary/50"
                   }`}
                 >
-                  {/* Image */}
-                  <div className="relative aspect-[4/5] overflow-hidden bg-muted">
+                  {/* Circular avatar */}
+                  <div className="relative h-14 w-14 shrink-0 rounded-full overflow-hidden bg-muted ring-2 ring-background">
                     {img ? (
                       <img
                         src={img}
                         alt={t.name}
                         loading="lazy"
-                        width={768}
-                        height={768}
-                        className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        width={128}
+                        height={128}
+                        className="h-full w-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     ) : (
-                      <div className="h-full w-full grid place-items-center bg-gradient-to-br from-primary to-primary/60 text-primary-foreground text-5xl font-bold">
+                      <div className="h-full w-full grid place-items-center bg-gradient-to-br from-primary to-primary/60 text-primary-foreground font-bold">
                         {t.name.charAt(0)}
                       </div>
                     )}
-                    {/* Gradient overlay */}
-                    <div className="absolute inset-x-0 bottom-0 h-2/3 bg-gradient-to-t from-black/85 via-black/40 to-transparent" />
-
-                    {/* Mentor crown */}
                     {isMentor && (
-                      <div className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 text-[10px] font-bold text-white shadow-lg">
-                        <Crown className="h-3 w-3" /> প্রধান মেন্টর
+                      <div className="absolute -top-0.5 -right-0.5 h-5 w-5 rounded-full bg-amber-500 grid place-items-center shadow ring-2 ring-card">
+                        <Crown className="h-2.5 w-2.5 text-white" />
                       </div>
                     )}
-                    {/* Rating pill */}
-                    <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/95 backdrop-blur px-2 py-0.5 text-[11px] font-semibold text-amber-600 shadow">
-                      <Star className="h-3 w-3 fill-current" /> {t.rating}
-                    </div>
-
-                    {/* Name over image */}
-                    <div className="absolute inset-x-0 bottom-0 p-4 text-white">
-                      <div className="flex items-center gap-1">
-                        <h4 className="font-bold text-lg leading-tight">{t.name}</h4>
-                        <BadgeCheck className="h-4 w-4 text-sky-300 shrink-0" />
-                      </div>
-                      <p className="text-[11px] text-white/85 mt-0.5 line-clamp-1">{t.title}</p>
-                    </div>
                   </div>
 
-                  {/* Footer */}
-                  <div className="p-4">
-                    <div className="flex flex-wrap gap-1.5">
-                      {(t.expertise ?? []).slice(0, 3).map((s: string) => (
-                        <span
-                          key={s}
-                          className="rounded-md bg-primary/10 text-primary px-2 py-0.5 text-[10px] font-medium"
-                        >
-                          {s}
-                        </span>
-                      ))}
+                  {/* Info */}
+                  <div className="min-w-0 flex-1">
+                    <div className="flex items-center gap-1">
+                      <h4 className="font-semibold text-sm truncate">{t.name}</h4>
+                      <BadgeCheck className="h-3.5 w-3.5 text-primary shrink-0" />
                     </div>
-                    <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground">
-                      <span className="inline-flex items-center gap-1">
-                        <Users className="h-3.5 w-3.5" /> {toBn(t.students)}+ শিক্ষার্থী
-                      </span>
-                      <span className="inline-flex items-center gap-1 text-primary font-medium group-hover:gap-2 transition-all">
-                        প্রোফাইল <ArrowRight className="h-3.5 w-3.5" />
-                      </span>
-                    </div>
+                    <p className="text-[11px] text-muted-foreground truncate">{t.title}</p>
+                  </div>
+
+                  {/* Rating */}
+                  <div className="flex items-center gap-0.5 text-amber-500 shrink-0">
+                    <Star className="h-3 w-3 fill-current" />
+                    <span className="text-[11px] font-semibold text-foreground">{t.rating}</span>
                   </div>
                 </Link>
               );
             };
+
             return (
               <>
-                {/* Mentor on top — same size, centered */}
-                <div className="mt-6 max-w-xs mx-auto">
-                  <TrainerCard t={mentor} mentor />
+                {/* Mentor pill on top, centered */}
+                <div className="mt-8 flex justify-center">
+                  <div className="w-full max-w-sm">
+                    <TrainerCard t={mentor} mentor />
+                  </div>
                 </div>
 
-                {/* Trainers below */}
-                <div className="mt-10 flex items-end justify-between">
-                  <div>
-                    <h3 className="text-xl md:text-2xl font-bold">আমাদের ট্রেনার</h3>
-                    <p className="mt-1 text-sm text-muted-foreground">ইন্ডাস্ট্রি এক্সপার্টদের সাথে পরিচিত হোন</p>
-                  </div>
-                  <Link to="/trainers" className="hidden md:inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
-                    সব ট্রেনার <ArrowRight className="h-4 w-4" />
-                  </Link>
+                {/* Trainer pills grid */}
+                <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-3 max-w-4xl mx-auto">
+                  {rest.slice(0, 6).map((t: any) => <TrainerCard key={t.id} t={t} />)}
                 </div>
-                <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {rest.slice(0, 4).map((t: any) => <TrainerCard key={t.id} t={t} />)}
+
+                <div className="mt-6 text-center">
+                  <Link to="/trainers" className="inline-flex items-center gap-1 text-sm font-medium text-primary hover:underline">
+                    সব ট্রেনার দেখুন <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
               </>
             );
           })()}
         </div>
       </section>
+
 
       {/* TESTIMONIALS */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
