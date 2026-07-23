@@ -20,6 +20,28 @@ export const MOCK_SETTINGS: Record<string, string> = {
   rocket_number: "01700-000000",
 };
 
+// হিরো সেকশনের ভিডিও স্লাইড (এডমিন প্যানেল থেকে YouTube লিংক দিয়ে ম্যানেজ হবে)
+export const MOCK_HERO_VIDEOS = [
+  {
+    id: 1,
+    heading: "আপনার ভবিষ্যৎ শুরু হোক এখান থেকে",
+    subheading: "ইন্ডাস্ট্রি এক্সপার্টদের কাছ থেকে শিখুন আধুনিক স্কিল",
+    youtube_url: "https://www.youtube.com/watch?v=aqz-KE-bpKQ",
+  },
+  {
+    id: 2,
+    heading: "ঘরে বসেই প্রফেশনাল ক্যারিয়ার",
+    subheading: "৫০+ প্রিমিয়াম কোর্স, লাইফটাইম access, সার্টিফিকেট সহ",
+    youtube_url: "https://www.youtube.com/watch?v=ScMzIvxBSi4",
+  },
+  {
+    id: 3,
+    heading: "লাইভ ক্লাস ও রেকর্ডেড ভিডিও",
+    subheading: "নিজের গতিতে শিখুন, যেকোনো ডিভাইস থেকে",
+    youtube_url: "https://www.youtube.com/watch?v=jNQXAC9IVRw",
+  },
+];
+
 export const MOCK_COURSES = [
   {
     id: 1,
