@@ -6,7 +6,7 @@ import { taka } from "@/lib/format";
 import { resolveBadge, BADGE_STYLES } from "@/lib/course-badges";
 import { PageHeader, Card, Input, Button, ConfirmDialog, useToast, Empty, Badge } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/admin/courses")({
+export const Route = createFileRoute("/admin/courses/")({
   component: CoursesList,
 });
 

@@ -4,7 +4,7 @@ import { Plus, Trash2, Pencil } from "lucide-react";
 import { useBlog } from "@/lib/admin-store";
 import { PageHeader, Card, Button, ConfirmDialog, useToast, Empty } from "@/components/admin/ui";
 
-export const Route = createFileRoute("/admin/blog")({
+export const Route = createFileRoute("/admin/blog/")({
   component: BlogList,
 });
 
