@@ -7,6 +7,20 @@
 // ============================================================
 
 import { MOCK_COURSES, MOCK_CATEGORIES, MOCK_SETTINGS, MOCK_TRAINERS, MOCK_TESTIMONIALS, MOCK_FAQS, MOCK_POSTS } from "./mock-data";
+import {
+  coursesStore, categoriesStore, trainersStore, blogStore,
+  testimonialsStore, faqsStore,
+} from "./admin-store";
+
+// In preview (no VITE_API_URL) we serve data from the admin-store so anything
+// edited in /admin/* immediately shows up on the public site. Falls back to
+// the original mock arrays when a store hasn't been seeded/hydrated yet.
+function fromStore<T>(getter: () => T[], fallback: T[]): T[] {
+  try {
+    const items = getter();
+    return items && items.length ? items : fallback;
+  } catch { return fallback; }
+}
 
 const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
 const USE_MOCK = !API_URL;
