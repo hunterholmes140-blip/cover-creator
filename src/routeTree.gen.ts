@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TrainersRouteImport } from './routes/trainers'
 import { Route as RegisterRouteImport } from './routes/register'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as FaqRouteImport } from './routes/faq'
@@ -24,6 +25,11 @@ import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 
+const TrainersRoute = TrainersRouteImport.update({
+  id: '/trainers',
+  path: '/trainers',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
@@ -70,14 +76,14 @@ const IndexRoute = IndexRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const TrainersIndexRoute = TrainersIndexRouteImport.update({
-  id: '/trainers/',
-  path: '/trainers/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => TrainersRoute,
 } as any)
 const TrainersSlugRoute = TrainersSlugRouteImport.update({
-  id: '/trainers/$slug',
-  path: '/trainers/$slug',
-  getParentRoute: () => rootRouteImport,
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => TrainersRoute,
 } as any)
 const CoursesSlugRoute = CoursesSlugRouteImport.update({
   id: '/$slug',
@@ -105,6 +111,7 @@ export interface FileRoutesByFullPath {
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/trainers': typeof TrainersRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -138,6 +145,7 @@ export interface FileRoutesById {
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
+  '/trainers': typeof TrainersRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
@@ -156,6 +164,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/login'
     | '/register'
+    | '/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
@@ -188,6 +197,7 @@ export interface FileRouteTypes {
     | '/faq'
     | '/login'
     | '/register'
+    | '/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
@@ -205,13 +215,19 @@ export interface RootRouteChildren {
   FaqRoute: typeof FaqRoute
   LoginRoute: typeof LoginRoute
   RegisterRoute: typeof RegisterRoute
+  TrainersRoute: typeof TrainersRouteWithChildren
   CheckoutSlugRoute: typeof CheckoutSlugRoute
-  TrainersSlugRoute: typeof TrainersSlugRoute
-  TrainersIndexRoute: typeof TrainersIndexRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/trainers': {
+      id: '/trainers'
+      path: '/trainers'
+      fullPath: '/trainers'
+      preLoaderRoute: typeof TrainersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/register': {
       id: '/register'
       path: '/register'
@@ -277,17 +293,17 @@ declare module '@tanstack/react-router' {
     }
     '/trainers/': {
       id: '/trainers/'
-      path: '/trainers'
+      path: '/'
       fullPath: '/trainers/'
       preLoaderRoute: typeof TrainersIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof TrainersRoute
     }
     '/trainers/$slug': {
       id: '/trainers/$slug'
-      path: '/trainers/$slug'
+      path: '/$slug'
       fullPath: '/trainers/$slug'
       preLoaderRoute: typeof TrainersSlugRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof TrainersRoute
     }
     '/courses/$slug': {
       id: '/courses/$slug'
@@ -334,6 +350,20 @@ const CoursesRouteChildren: CoursesRouteChildren = {
 const CoursesRouteWithChildren =
   CoursesRoute._addFileChildren(CoursesRouteChildren)
 
+interface TrainersRouteChildren {
+  TrainersSlugRoute: typeof TrainersSlugRoute
+  TrainersIndexRoute: typeof TrainersIndexRoute
+}
+
+const TrainersRouteChildren: TrainersRouteChildren = {
+  TrainersSlugRoute: TrainersSlugRoute,
+  TrainersIndexRoute: TrainersIndexRoute,
+}
+
+const TrainersRouteWithChildren = TrainersRoute._addFileChildren(
+  TrainersRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
@@ -344,10 +374,19 @@ const rootRouteChildren: RootRouteChildren = {
   FaqRoute: FaqRoute,
   LoginRoute: LoginRoute,
   RegisterRoute: RegisterRoute,
+  TrainersRoute: TrainersRouteWithChildren,
   CheckoutSlugRoute: CheckoutSlugRoute,
-  TrainersSlugRoute: TrainersSlugRoute,
-  TrainersIndexRoute: TrainersIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
