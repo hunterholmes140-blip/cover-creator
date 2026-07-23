@@ -20,7 +20,6 @@ export function getPool(): mysql.Pool {
   }
   pool = mysql.createPool({
     host,
-    family: 4,
     port: Number(process.env.DB_PORT || 3306),
     user,
     password,
