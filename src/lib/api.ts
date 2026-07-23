@@ -149,5 +149,26 @@ async function mockResponse<T>(path: string, opts: any): Promise<T> {
     return { message: "অর্ডার সাবমিট হয়েছে (ডেমো)।", order_id: 999 } as any;
   }
 
+  if (p === "content/trainers.php") {
+    const slug = opts.query?.slug;
+    if (slug) {
+      const t = MOCK_TRAINERS.find((x) => x.slug === slug);
+      if (!t) throw new ApiError("ট্রেনার পাওয়া যায়নি", 404);
+      return { trainer: t, courses: MOCK_COURSES.filter((c) => c.instructor === t.name) } as T;
+    }
+    return { trainers: MOCK_TRAINERS } as T;
+  }
+  if (p === "content/testimonials.php") return { testimonials: MOCK_TESTIMONIALS } as T;
+  if (p === "content/faqs.php") return { faqs: MOCK_FAQS } as T;
+  if (p === "content/posts.php") {
+    const slug = opts.query?.slug;
+    if (slug) {
+      const post = MOCK_POSTS.find((x) => x.slug === slug);
+      if (!post) throw new ApiError("আর্টিকেল পাওয়া যায়নি", 404);
+      return { post } as T;
+    }
+    return { posts: MOCK_POSTS } as T;
+  }
+
   throw new ApiError("ডেমো মোডে এই endpoint সাপোর্ট করে না।", 404);
 }
