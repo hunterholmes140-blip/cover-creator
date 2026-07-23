@@ -23,6 +23,7 @@ import appCss from "../styles.css?url";
 import faviconAsset from "../assets/favicon-mark.png.asset.json";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { SiteSettingsProvider } from "../lib/site-settings";
+import { MarketingProvider } from "../lib/marketing";
 
 
 function NotFoundComponent() {
@@ -131,8 +132,10 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <SiteSettingsProvider>
-        {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-        <Outlet />
+        <MarketingProvider>
+          {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
+          <Outlet />
+        </MarketingProvider>
       </SiteSettingsProvider>
     </QueryClientProvider>
 

@@ -9,6 +9,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { api, ApiError, getStoredUser } from "@/lib/api";
 import { taka, toBn } from "@/lib/format";
 import { useSiteSettings } from "@/lib/site-settings";
+import { track } from "@/lib/marketing";
 
 const detailQuery = (slug: string) =>
   queryOptions({
@@ -75,6 +76,29 @@ function CourseDetailPage() {
     : 0;
 
   const [showEnroll, setShowEnroll] = useState(false);
+
+  // Facebook Pixel: ViewContent
+  useEffect(() => {
+    track("ViewContent", {
+      content_ids: [String(course.id)],
+      content_name: course.title,
+      content_type: "product",
+      content_category: course.category_name || undefined,
+      value: Number(price) || 0,
+      currency: "BDT",
+    });
+  }, [course.id, course.title, course.category_name, price]);
+
+  const openEnroll = () => {
+    track("InitiateCheckout", {
+      content_ids: [String(course.id)],
+      content_name: course.title,
+      value: Number(price) || 0,
+      currency: "BDT",
+      num_items: 1,
+    });
+    setShowEnroll(true);
+  };
 
   const scrollTo = (id: string) => {
     const el = document.getElementById(id);
@@ -186,7 +210,7 @@ function CourseDetailPage() {
                 </Link>
               ) : (
                 <button
-                  onClick={() => setShowEnroll(true)}
+                  onClick={openEnroll}
                   className="ml-auto rounded-lg bg-primary text-primary-foreground px-5 py-2.5 font-semibold"
                 >
                   এখনই এনরোল করুন
@@ -203,7 +227,7 @@ function CourseDetailPage() {
               hasDiscount={!!hasDiscount}
               discountPct={discountPct}
               enrolled={enrolled}
-              onEnroll={() => setShowEnroll(true)}
+              onEnroll={openEnroll}
             />
           </aside>
         </div>
@@ -362,7 +386,7 @@ function CourseDetailPage() {
           </Link>
         ) : (
           <button
-            onClick={() => setShowEnroll(true)}
+            onClick={openEnroll}
             className="flex-1 rounded-lg bg-primary text-primary-foreground py-3 font-semibold"
           >
             এনরোল করুন
@@ -497,6 +521,14 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
         method: "POST",
         auth: true,
         body: { course_id: course.id, payment_method: method, ...f },
+      });
+      track("Purchase", {
+        content_ids: [String(course.id)],
+        content_name: course.title,
+        content_type: "product",
+        value: Number(amount) || 0,
+        currency: "BDT",
+        num_items: 1,
       });
       setMsg("অর্ডার সাবমিট হয়েছে! এডমিন verify করার পর কোর্স access পাবেন।");
     } catch (e: any) {
