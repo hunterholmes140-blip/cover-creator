@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePages } from "@/lib/admin-store";
 import { PageHeader, Card, Field, Input, Textarea, Button, useToast } from "@/components/admin/ui";
 
@@ -10,9 +10,18 @@ export const Route = createFileRoute("/admin/pages")({
 function PagesAdmin() {
   const { items, update } = usePages();
   const toast = useToast();
-  const [selected, setSelected] = useState<any>(items[0] ?? null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [selected, setSelected] = useState<any>(null);
 
-  if (!selected && items.length > 0) setSelected(items[0]);
+  useEffect(() => {
+    if (!selectedId && items.length > 0) setSelectedId(items[0].id);
+  }, [items, selectedId]);
+
+  useEffect(() => {
+    const found = items.find((p: any) => p.id === selectedId);
+    if (found) setSelected({ ...found });
+  }, [selectedId, items]);
+
 
   return (
     <div className="max-w-6xl mx-auto">
