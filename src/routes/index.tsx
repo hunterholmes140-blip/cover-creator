@@ -5,6 +5,8 @@ import { useState } from "react";
 import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
+import { MOCK_HERO_VIDEOS } from "@/lib/mock-data";
+import { HeroCarousel } from "@/components/site/HeroCarousel";
 import { toBn } from "@/lib/format";
 import trainer1 from "@/assets/trainer-1.png";
 import trainer2 from "@/assets/trainer-2.png";
@@ -79,51 +81,22 @@ function HomePage() {
 
   return (
     <SiteLayout>
-      {/* HERO */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-primary/5 via-background to-accent/50 border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 md:py-10 grid lg:grid-cols-2 gap-12 items-center">
-          <div>
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-medium">
-              <Sparkles className="h-3.5 w-3.5" /> নতুন কোর্স যোগ হয়েছে
-            </span>
-            <h1 className="mt-4 text-4xl md:text-5xl lg:text-6xl font-bold leading-tight text-foreground">
-              আপনার ভবিষ্যৎ শুরু হোক <span className="text-primary">এখান থেকে</span>
-            </h1>
-            <p className="mt-5 text-lg text-muted-foreground max-w-xl">
-              ইন্ডাস্ট্রি এক্সপার্টদের কাছ থেকে শিখুন আধুনিক স্কিল। ঘরে বসেই ক্যারিয়ার গড়ুন প্রফেশনাল কোর্সে।
-            </p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to="/courses" className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-6 py-3 text-base font-semibold hover:bg-primary/90 transition-colors">
-                সব কোর্স দেখুন <ArrowRight className="h-4 w-4" />
-              </Link>
-              <Link to="/about" className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-6 py-3 text-base font-semibold hover:bg-accent transition-colors">
-                আমাদের সম্পর্কে
-              </Link>
-            </div>
-          </div>
+      {/* HERO — YouTube ভিডিও ক্যারুসেল (এডমিন প্যানেল থেকে ম্যানেজ) */}
+      <HeroCarousel slides={MOCK_HERO_VIDEOS} />
 
-          <div className="relative">
-            <div className="relative aspect-video max-w-lg mx-auto rounded-3xl overflow-hidden shadow-2xl ring-1 ring-primary/20 bg-black">
-              <video
-                src="https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4"
-                poster="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=1200&auto=format&fit=crop&q=70"
-                autoPlay
-                muted
-                loop
-                playsInline
-                className="h-full w-full object-cover"
-              />
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white">
-                <div>
-                  <div className="text-xs opacity-80">চলছে</div>
-                  <div className="text-xl font-bold leading-tight">লাইভ ক্লাস প্রিভিউ</div>
-                </div>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/90 px-3 py-1.5 text-xs font-semibold shadow-lg">
-                  <span className="h-1.5 w-1.5 rounded-full bg-white animate-pulse" /> {toBn(featured.courses.length)}টি কোর্স
-                </span>
-              </div>
-            </div>
+      {/* CTA স্ট্রিপ */}
+      <section className="border-b border-border bg-gradient-to-r from-primary/5 via-background to-accent/40">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 flex flex-wrap items-center justify-between gap-4">
+          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Sparkles className="h-4 w-4 text-primary" /> নতুন কোর্স যোগ হয়েছে — এখনই এনরোল করুন
+          </div>
+          <div className="flex flex-wrap gap-3">
+            <Link to="/courses" className="inline-flex items-center gap-2 rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold hover:bg-primary/90 transition-colors">
+              সব কোর্স দেখুন <ArrowRight className="h-4 w-4" />
+            </Link>
+            <Link to="/about" className="inline-flex items-center gap-2 rounded-lg border border-border bg-background px-5 py-2.5 text-sm font-semibold hover:bg-accent transition-colors">
+              আমাদের সম্পর্কে
+            </Link>
           </div>
         </div>
       </section>
