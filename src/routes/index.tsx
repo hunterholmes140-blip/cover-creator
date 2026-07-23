@@ -9,6 +9,8 @@ import { MOCK_HERO_VIDEOS, MOCK_VIDEO_GALLERY } from "@/lib/mock-data";
 import { HeroCarousel } from "@/components/site/HeroCarousel";
 import VideoGallery from "@/components/site/VideoGallery";
 import { toBn } from "@/lib/format";
+import { useContent } from "@/lib/content-store";
+import { HOME_CONTENT_DEFAULTS, CONTENT_KEYS } from "@/lib/content-defaults";
 import trainer1 from "@/assets/trainer-1.png";
 import trainer2 from "@/assets/trainer-2.png";
 import trainer3 from "@/assets/trainer-3.png";
