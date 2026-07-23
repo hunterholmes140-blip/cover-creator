@@ -6,7 +6,7 @@
 // Lovable প্রিভিউতে PHP নেই → fetch fail হলে mock data দেখাই
 // ============================================================
 
-import { MOCK_COURSES, MOCK_CATEGORIES, MOCK_SETTINGS } from "./mock-data";
+import { MOCK_COURSES, MOCK_CATEGORIES, MOCK_SETTINGS, MOCK_TRAINERS, MOCK_TESTIMONIALS, MOCK_FAQS, MOCK_POSTS } from "./mock-data";
 
 const API_URL = (import.meta.env.VITE_API_URL as string | undefined) ?? "";
 const USE_MOCK = !API_URL;
