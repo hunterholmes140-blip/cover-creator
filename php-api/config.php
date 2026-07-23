@@ -4,15 +4,14 @@
 // এই ফাইলে আপনার Hostinger DB credentials বসান
 // ============================================================
 
-// -------- Database Credentials (Hostinger থেকে নিন) --------
+// -------- Database Credentials (Hostinger) --------
 define('DB_HOST', 'localhost');
-define('DB_NAME', 'your_database_name');
-define('DB_USER', 'your_database_user');
-define('DB_PASS', 'your_database_password');
+define('DB_NAME', 'u399219073_course');
+define('DB_USER', 'u399219073_course');
+define('DB_PASS', 'Foyej2022@#');
 
 // -------- Frontend URL (CORS) --------
-// আপনার ডোমেইন বসান — dev এ '*' রাখতে পারেন
-define('ALLOWED_ORIGIN', '*');
+define('ALLOWED_ORIGIN', 'https://vencon.com.bd');
 
 // -------- Upload directory --------
 define('UPLOAD_DIR', __DIR__ . '/../uploads/');
