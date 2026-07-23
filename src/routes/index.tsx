@@ -181,7 +181,7 @@ function HomePage() {
       </section>
 
       {/* MENTOR + TRAINERS */}
-      <section className="bg-muted/30 border-y border-border">
+      <section className="border-y border-border bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-14">
           <div className="text-center max-w-2xl mx-auto">
             <span className="text-xs font-bold tracking-widest text-primary uppercase">Founder</span>
@@ -191,38 +191,36 @@ function HomePage() {
           {(() => {
             const mentor = trainers.trainers.find((t: any) => t.is_mentor) ?? trainers.trainers[0];
             const rest = trainers.trainers.filter((t: any) => t.id !== mentor.id);
+            const TrainerCard = ({ t, mentor: isMentor = false }: { t: any; mentor?: boolean }) => (
+              <Link
+                to="/trainers/$slug"
+                params={{ slug: t.slug }}
+                className={`group rounded-xl border bg-card p-5 text-center hover:shadow-lg transition-all ${isMentor ? "border-amber-500/60 ring-1 ring-amber-500/30" : "border-border hover:border-primary/40"}`}
+              >
+                {isMentor && (
+                  <span className="inline-block mb-3 rounded-full bg-amber-500 text-white px-2.5 py-0.5 text-[10px] font-bold">
+                    ⭐ প্রধান মেন্টর
+                  </span>
+                )}
+                <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-primary to-primary/60 grid place-items-center text-primary-foreground text-3xl font-bold">
+                  {t.name.charAt(0)}
+                </div>
+                <h4 className="mt-4 font-semibold group-hover:text-primary">{t.name}</h4>
+                <p className="text-xs text-muted-foreground mt-1">{t.title}</p>
+                <div className="mt-3 flex items-center justify-center gap-3 text-xs text-muted-foreground">
+                  <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {toBn(t.students)}+</span>
+                  <span className="inline-flex items-center gap-1 text-amber-500"><Star className="h-3 w-3 fill-current" /> {t.rating}</span>
+                </div>
+              </Link>
+            );
             return (
               <>
-                <Link
-                  to="/trainers/$slug"
-                  params={{ slug: mentor.slug }}
-                  className="mt-10 block rounded-2xl border border-border bg-card overflow-hidden hover:shadow-xl hover:border-primary/40 transition-all group"
-                >
-                  <div className="grid md:grid-cols-2 gap-0">
-                    <div className="relative aspect-square md:aspect-auto bg-gradient-to-br from-primary via-primary/80 to-primary/50 grid place-items-center min-h-[320px]">
-                      <div className="h-40 w-40 md:h-56 md:w-56 rounded-full bg-background/10 backdrop-blur grid place-items-center text-primary-foreground text-7xl font-bold border-4 border-background/20">
-                        {mentor.name.charAt(0)}
-                      </div>
-                      <span className="absolute top-4 left-4 rounded-full bg-amber-500 text-white px-3 py-1 text-xs font-bold shadow-lg">
-                        ⭐ প্রধান মেন্টর
-                      </span>
-                    </div>
-                    <div className="p-6 md:p-10 flex flex-col justify-center">
-                      <h3 className="text-2xl md:text-3xl font-bold group-hover:text-primary transition-colors">{mentor.name}</h3>
-                      <p className="mt-2 text-primary font-semibold">{mentor.title}</p>
-                      <p className="mt-4 text-muted-foreground leading-relaxed line-clamp-4">{mentor.bio}</p>
-                      <div className="mt-5 flex flex-wrap gap-4 text-sm">
-                        <span className="inline-flex items-center gap-1.5"><Users className="h-4 w-4 text-primary" /> {toBn(mentor.students)}+ শিক্ষার্থী</span>
-                        <span className="inline-flex items-center gap-1.5"><BookOpen className="h-4 w-4 text-primary" /> {toBn(mentor.courses)}টি কোর্স</span>
-                        <span className="inline-flex items-center gap-1.5 text-amber-500"><Star className="h-4 w-4 fill-current" /> {mentor.rating}</span>
-                      </div>
-                      <span className="mt-6 inline-flex items-center gap-1 text-sm font-semibold text-primary">
-                        বিস্তারিত প্রোফাইল দেখুন <ArrowRight className="h-4 w-4" />
-                      </span>
-                    </div>
-                  </div>
-                </Link>
+                {/* Mentor on top — same size, centered */}
+                <div className="mt-10 max-w-xs mx-auto">
+                  <TrainerCard t={mentor} mentor />
+                </div>
 
+                {/* Trainers below */}
                 <div className="mt-12 flex items-end justify-between">
                   <div>
                     <h3 className="text-xl md:text-2xl font-bold">আমাদের ট্রেনার</h3>
@@ -233,24 +231,7 @@ function HomePage() {
                   </Link>
                 </div>
                 <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
-                  {rest.slice(0, 4).map((t: any) => (
-                    <Link
-                      key={t.id}
-                      to="/trainers/$slug"
-                      params={{ slug: t.slug }}
-                      className="group rounded-xl border border-border bg-card p-5 text-center hover:shadow-lg hover:border-primary/40 transition-all"
-                    >
-                      <div className="mx-auto h-20 w-20 rounded-full bg-gradient-to-br from-primary to-primary/60 grid place-items-center text-primary-foreground text-3xl font-bold">
-                        {t.name.charAt(0)}
-                      </div>
-                      <h4 className="mt-4 font-semibold group-hover:text-primary">{t.name}</h4>
-                      <p className="text-xs text-muted-foreground mt-1">{t.title}</p>
-                      <div className="mt-3 flex items-center justify-center gap-3 text-xs text-muted-foreground">
-                        <span className="inline-flex items-center gap-1"><Users className="h-3 w-3" /> {toBn(t.students)}+</span>
-                        <span className="inline-flex items-center gap-1 text-amber-500"><Star className="h-3 w-3 fill-current" /> {t.rating}</span>
-                      </div>
-                    </Link>
-                  ))}
+                  {rest.slice(0, 4).map((t: any) => <TrainerCard key={t.id} t={t} />)}
                 </div>
               </>
             );
