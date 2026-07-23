@@ -19,6 +19,7 @@ import { Route as ContactRouteImport } from './routes/contact'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TrainersIndexRouteImport } from './routes/trainers.index'
 import { Route as TrainersSlugRouteImport } from './routes/trainers.$slug'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
 import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
@@ -74,6 +75,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TrainersIndexRoute = TrainersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TrainersRoute,
+} as any)
 const TrainersSlugRoute = TrainersSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
@@ -110,6 +116,7 @@ export interface FileRoutesByFullPath {
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/trainers/': typeof TrainersIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -121,11 +128,11 @@ export interface FileRoutesByTo {
   '/faq': typeof FaqRoute
   '/login': typeof LoginRoute
   '/register': typeof RegisterRoute
-  '/trainers': typeof TrainersRouteWithChildren
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/trainers': typeof TrainersIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -143,6 +150,7 @@ export interface FileRoutesById {
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
+  '/trainers/': typeof TrainersIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -161,6 +169,7 @@ export interface FileRouteTypes {
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/trainers/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -172,11 +181,11 @@ export interface FileRouteTypes {
     | '/faq'
     | '/login'
     | '/register'
-    | '/trainers'
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/trainers'
   id:
     | '__root__'
     | '/'
@@ -193,6 +202,7 @@ export interface FileRouteTypes {
     | '/checkout/$slug'
     | '/courses/$slug'
     | '/trainers/$slug'
+    | '/trainers/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -281,6 +291,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/trainers/': {
+      id: '/trainers/'
+      path: '/'
+      fullPath: '/trainers/'
+      preLoaderRoute: typeof TrainersIndexRouteImport
+      parentRoute: typeof TrainersRoute
+    }
     '/trainers/$slug': {
       id: '/trainers/$slug'
       path: '/$slug'
@@ -335,10 +352,12 @@ const CoursesRouteWithChildren =
 
 interface TrainersRouteChildren {
   TrainersSlugRoute: typeof TrainersSlugRoute
+  TrainersIndexRoute: typeof TrainersIndexRoute
 }
 
 const TrainersRouteChildren: TrainersRouteChildren = {
   TrainersSlugRoute: TrainersSlugRoute,
+  TrainersIndexRoute: TrainersIndexRoute,
 }
 
 const TrainersRouteWithChildren = TrainersRoute._addFileChildren(
