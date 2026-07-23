@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Plus, Search, Star, Trash2, Pencil, Eye, EyeOff } from "lucide-react";
-import { useCourses } from "@/lib/admin-store";
+import { useLiveCourses } from "@/lib/live-store";
 import { taka } from "@/lib/format";
 import { resolveBadge, BADGE_STYLES } from "@/lib/course-badges";
 import { PageHeader, Card, Input, Button, ConfirmDialog, useToast, Empty, Badge } from "@/components/admin/ui";
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/admin/courses")({
 });
 
 function CoursesList() {
-  const { items, update, remove } = useCourses();
+  const { items, update, remove, loading, error } = useLiveCourses();
   const toast = useToast();
   const [q, setQ] = useState("");
   const [confirmId, setConfirmId] = useState<any>(null);
@@ -48,7 +48,15 @@ function CoursesList() {
         </div>
       </div>
 
-      {filtered.length === 0 ? (
+      {error && (
+        <div className="mb-4 rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
+          {error}
+        </div>
+      )}
+
+      {loading && items.length === 0 ? (
+        <Card><div className="p-6 text-sm text-muted-foreground text-center">লোড হচ্ছে…</div></Card>
+      ) : filtered.length === 0 ? (
         <Empty
           title="কোনো কোর্স নেই।"
           action={
@@ -149,9 +157,9 @@ function CoursesList() {
       <ConfirmDialog
         open={confirmId !== null}
         onClose={() => setConfirmId(null)}
-        onConfirm={() => {
-          remove(confirmId);
-          toast.show("কোর্স ডিলিট হয়েছে");
+        onConfirm={async () => {
+          try { await remove(confirmId); toast.show("কোর্স ডিলিট হয়েছে"); }
+          catch (e: any) { toast.show(e?.message || "ডিলিট ব্যর্থ"); }
         }}
         message="এই কোর্সটি ডিলিট করলে সব লেসনও মুছে যাবে।"
       />

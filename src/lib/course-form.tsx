@@ -1,6 +1,7 @@
 // শেয়ার্ড কোর্স ফর্ম — new এবং edit উভয় পেজে ব্যবহার হয়।
 import { useState } from "react";
-import { useCategories, makeSlug } from "@/lib/admin-store";
+import { makeSlug } from "@/lib/admin-store";
+import { useLiveCategories } from "@/lib/live-store";
 import { BADGE_PRESETS, BADGE_STYLES, type BadgeVariant } from "@/lib/course-badges";
 import { Field, Input, Textarea, Select, Button } from "@/components/admin/ui";
 
@@ -55,7 +56,7 @@ export function CourseForm({
   onSubmit: (v: CourseFormValue) => void;
   submitLabel?: string;
 }) {
-  const { items: categories } = useCategories();
+  const { items: categories } = useLiveCategories();
   const [v, setV] = useState<CourseFormValue>(initial);
   const set = <K extends keyof CourseFormValue>(k: K, val: CourseFormValue[K]) =>
     setV((p) => ({ ...p, [k]: val }));
