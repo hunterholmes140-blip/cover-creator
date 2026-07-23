@@ -392,9 +392,13 @@ function HomePage() {
               </div>
               <p className="mt-4 text-sm text-foreground/90 leading-relaxed flex-1">"{t.comment}"</p>
               <div className="mt-5 pt-4 border-t border-border flex items-center gap-3">
-                <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.avatar_color} grid place-items-center text-white font-bold`}>
-                  {t.name.charAt(0)}
-                </div>
+                {t.avatar_image ? (
+                  <img src={t.avatar_image} alt={t.name} loading="lazy" className="h-10 w-10 rounded-full object-cover" />
+                ) : (
+                  <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.avatar_color} grid place-items-center text-white font-bold`}>
+                    {t.name.charAt(0)}
+                  </div>
+                )}
                 <div>
                   <div className="font-semibold text-sm">{t.name}</div>
                   <div className="text-xs text-muted-foreground">{t.role}</div>
