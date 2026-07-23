@@ -114,23 +114,24 @@ async function mockResponse<T>(path: string, opts: any): Promise<T> {
   const p = path.replace(/^\//, "");
 
   if (p === "courses/list.php") {
-    let list = [...MOCK_COURSES];
-    if (opts.query?.featured) list = list.filter((c) => c.is_featured);
-    if (opts.query?.category) list = list.filter((c) => c.category_slug === opts.query.category);
+    let list = fromStore(() => coursesStore.getAll(), MOCK_COURSES as any);
+    if (opts.query?.featured) list = list.filter((c: any) => c.is_featured);
+    if (opts.query?.category) list = list.filter((c: any) => c.category_slug === opts.query.category);
     if (opts.query?.search) {
       const q = String(opts.query.search).toLowerCase();
-      list = list.filter((c) => c.title.toLowerCase().includes(q));
+      list = list.filter((c: any) => c.title.toLowerCase().includes(q));
     }
     return { courses: list } as T;
   }
 
   if (p === "courses/categories.php") {
-    return { categories: MOCK_CATEGORIES } as T;
+    return { categories: fromStore(() => categoriesStore.getAll(), MOCK_CATEGORIES as any) } as T;
   }
 
   if (p === "courses/detail.php") {
     const slug = opts.query?.slug;
-    const course = MOCK_COURSES.find((c) => c.slug === slug);
+    const list = fromStore(() => coursesStore.getAll(), MOCK_COURSES as any);
+    const course = list.find((c: any) => c.slug === slug);
     if (!course) throw new ApiError("কোর্স পাওয়া যায়নি", 404);
     return {
       course,
@@ -164,24 +165,32 @@ async function mockResponse<T>(path: string, opts: any): Promise<T> {
   }
 
   if (p === "content/trainers.php") {
+    const list = fromStore(() => trainersStore.getAll(), MOCK_TRAINERS as any);
     const slug = opts.query?.slug;
     if (slug) {
-      const t = MOCK_TRAINERS.find((x) => x.slug === slug);
+      const t = list.find((x: any) => x.slug === slug);
       if (!t) throw new ApiError("ট্রেনার পাওয়া যায়নি", 404);
-      return { trainer: t, courses: MOCK_COURSES.filter((c) => c.instructor === t.name) } as T;
+      const courses = fromStore(() => coursesStore.getAll(), MOCK_COURSES as any)
+        .filter((c: any) => c.instructor === t.name);
+      return { trainer: t, courses } as T;
     }
-    return { trainers: MOCK_TRAINERS } as T;
+    return { trainers: list } as T;
   }
-  if (p === "content/testimonials.php") return { testimonials: MOCK_TESTIMONIALS } as T;
-  if (p === "content/faqs.php") return { faqs: MOCK_FAQS } as T;
+  if (p === "content/testimonials.php") {
+    return { testimonials: fromStore(() => testimonialsStore.getAll(), MOCK_TESTIMONIALS as any) } as T;
+  }
+  if (p === "content/faqs.php") {
+    return { faqs: fromStore(() => faqsStore.getAll(), MOCK_FAQS as any) } as T;
+  }
   if (p === "content/posts.php") {
+    const list = fromStore(() => blogStore.getAll(), MOCK_POSTS as any);
     const slug = opts.query?.slug;
     if (slug) {
-      const post = MOCK_POSTS.find((x) => x.slug === slug);
+      const post = list.find((x: any) => x.slug === slug);
       if (!post) throw new ApiError("আর্টিকেল পাওয়া যায়নি", 404);
       return { post } as T;
     }
-    return { posts: MOCK_POSTS } as T;
+    return { posts: list } as T;
   }
 
   throw new ApiError("ডেমো মোডে এই endpoint সাপোর্ট করে না।", 404);
