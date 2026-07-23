@@ -244,52 +244,53 @@ function HomePage() {
                   className="group relative flex flex-col items-center text-center pt-6"
                 >
                   {/* Circle + PNG cutout */}
-                  <div className="relative w-full max-w-[220px] aspect-square">
+                  <div className="relative w-full max-w-[200px] aspect-square">
                     {/* Outer dashed decorative ring */}
                     <div
-                      className={`absolute inset-x-0 bottom-0 top-[12%] rounded-full border-2 border-dashed transition-transform duration-700 group-hover:rotate-45 ${
+                      className={`absolute inset-0 rounded-full border-2 border-dashed transition-transform duration-700 group-hover:rotate-45 ${
                         isMentor ? "border-amber-400/60" : "border-primary/40"
                       }`}
                       style={{ transform: "scale(1.08)" }}
                     />
                     {/* Soft glow */}
                     <div
-                      className={`absolute inset-x-0 bottom-0 top-[15%] rounded-full blur-2xl opacity-60 transition-opacity duration-500 group-hover:opacity-90 ${
+                      className={`absolute inset-0 rounded-full blur-2xl opacity-60 transition-opacity duration-500 group-hover:opacity-90 ${
                         isMentor ? "bg-amber-400/50" : "bg-primary/40"
                       }`}
                     />
-                    {/* Solid colored circle */}
+                    {/* Solid colored circle — clips PNG inside */}
                     <div
-                      className={`absolute inset-x-0 bottom-0 top-[15%] rounded-full shadow-xl ring-4 ring-white transition-transform duration-500 group-hover:scale-[1.04] ${
+                      className={`absolute inset-0 overflow-hidden rounded-full shadow-xl ring-4 ring-white transition-transform duration-500 group-hover:scale-[1.04] ${
                         isMentor
                           ? "bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500"
                           : "bg-gradient-to-br from-primary via-primary to-primary/70"
                       }`}
-                    />
+                    >
+                      {img ? (
+                        <img
+                          src={img}
+                          alt={t.name}
+                          loading="lazy"
+                          className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom transition-transform duration-500 group-hover:scale-105"
+                        />
+                      ) : (
+                        <div className="absolute inset-0 grid place-items-center text-white text-6xl font-bold">
+                          {t.name.charAt(0)}
+                        </div>
+                      )}
+                    </div>
                     {/* Mentor crown badge */}
                     {isMentor && (
-                      <div className="absolute top-0 right-3 z-20 h-9 w-9 rounded-full bg-white shadow-lg ring-2 ring-amber-200 grid place-items-center">
+                      <div className="absolute -top-1 right-1 z-20 h-9 w-9 rounded-full bg-white shadow-lg ring-2 ring-amber-200 grid place-items-center">
                         <Crown className="h-4 w-4 text-amber-500" />
                       </div>
                     )}
                     {/* Rating pill */}
-                    <div className="absolute bottom-2 right-0 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-amber-600 shadow-lg ring-1 ring-amber-100">
+                    <div className="absolute -bottom-1 right-1 z-20 inline-flex items-center gap-0.5 rounded-full bg-white px-2.5 py-1 text-[11px] font-bold text-amber-600 shadow-lg ring-1 ring-amber-100">
                       <Star className="h-3 w-3 fill-current" /> {t.rating}
                     </div>
-                    {/* PNG cutout */}
-                    {img ? (
-                      <img
-                        src={img}
-                        alt={t.name}
-                        loading="lazy"
-                        className="relative z-10 mx-auto h-full w-auto object-contain object-bottom drop-shadow-2xl transition-transform duration-500 group-hover:-translate-y-2"
-                      />
-                    ) : (
-                      <div className="absolute inset-x-0 bottom-0 mx-auto h-[80%] w-[80%] grid place-items-center text-white text-6xl font-bold">
-                        {t.name.charAt(0)}
-                      </div>
-                    )}
                   </div>
+
 
                   {/* Script name */}
                   <h4
