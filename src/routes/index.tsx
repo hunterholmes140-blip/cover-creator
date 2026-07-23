@@ -173,19 +173,19 @@ function HomePage() {
       {/* CATEGORIES */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold">জনপ্রিয় ক্যাটেগরি</h2>
-          <p className="mt-2 text-muted-foreground">আপনার পছন্দের বিষয় বেছে নিন</p>
+          <h2 className="text-2xl md:text-3xl font-bold">{c.sectionCategoriesTitle}</h2>
+          <p className="mt-2 text-muted-foreground">{c.sectionCategoriesSubtitle}</p>
         </div>
         <div className="mt-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-          {cats.categories.map((c) => (
+          {cats.categories.map((cat) => (
             <Link
-              key={c.id}
+              key={cat.id}
               to="/courses"
-              search={{ category: c.slug }}
+              search={{ category: cat.slug }}
               className="rounded-xl border border-border bg-card p-5 hover:border-primary hover:shadow-md transition-all group"
             >
-              <div className="text-3xl">{["💻", "🎨", "📈", "🎬"][c.id % 4] ?? "📚"}</div>
-              <div className="mt-3 font-semibold group-hover:text-primary">{c.name}</div>
+              <div className="text-3xl">{["💻", "🎨", "📈", "🎬"][cat.id % 4] ?? "📚"}</div>
+              <div className="mt-3 font-semibold group-hover:text-primary">{cat.name}</div>
             </Link>
           ))}
         </div>
@@ -194,8 +194,8 @@ function HomePage() {
       {/* FEATURED COURSES */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold">ফিচার্ড কোর্স</h2>
-          <p className="mt-2 text-muted-foreground">সবচেয়ে জনপ্রিয় কোর্সগুলো</p>
+          <h2 className="text-2xl md:text-3xl font-bold">{c.sectionFeaturedTitle}</h2>
+          <p className="mt-2 text-muted-foreground">{c.sectionFeaturedSubtitle}</p>
         </div>
         <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {featured.courses.map((c) => <CourseCard key={c.id} course={c} />)}
@@ -236,17 +236,17 @@ function HomePage() {
           {/* Section header with side lines */}
           <div className="flex flex-col items-center text-center">
             <span className="text-[11px] font-bold tracking-[0.25em] text-primary uppercase">
-              Founder & Team
+              {c.sectionMentorEyebrow}
             </span>
             <div className="mt-3 flex items-center gap-3">
               <span className="h-px w-10 bg-gradient-to-r from-transparent to-primary/60" />
               <h2 className="text-2xl md:text-3xl font-bold">
-                আমাদের মেন্টর ও ট্রেনার
+                {c.sectionMentorTitle}
               </h2>
               <span className="h-px w-10 bg-gradient-to-l from-transparent to-primary/60" />
             </div>
             <p className="mt-2 max-w-md text-sm text-muted-foreground">
-              ইন্ডাস্ট্রি-অভিজ্ঞ প্রফেশনালদের কাছ থেকে সরাসরি শিখুন
+              {c.sectionMentorSubtitle}
             </p>
           </div>
 
@@ -398,8 +398,8 @@ function HomePage() {
       {/* TESTIMONIALS */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="text-center max-w-2xl mx-auto">
-          <h2 className="text-2xl md:text-3xl font-bold">শিক্ষার্থীদের মতামত</h2>
-          <p className="mt-2 text-muted-foreground">যারা আমাদের কোর্সে ক্যারিয়ার গড়েছেন — তাদের গল্প।</p>
+          <h2 className="text-2xl md:text-3xl font-bold">{c.sectionTestimonialsTitle}</h2>
+          <p className="mt-2 text-muted-foreground">{c.sectionTestimonialsSubtitle}</p>
         </div>
         <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {testimonials.testimonials.map((t) => (
@@ -432,8 +432,8 @@ function HomePage() {
       <section className="bg-muted/30 border-y border-border">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
           <div className="text-center max-w-2xl mx-auto">
-            <h2 className="text-2xl md:text-3xl font-bold">সাম্প্রতিক আর্টিকেল</h2>
-            <p className="mt-2 text-muted-foreground">শিক্ষা ও ক্যারিয়ার সংক্রান্ত লেখা</p>
+            <h2 className="text-2xl md:text-3xl font-bold">{c.sectionBlogTitle}</h2>
+            <p className="mt-2 text-muted-foreground">{c.sectionBlogSubtitle}</p>
           </div>
           <div className="mt-6 grid md:grid-cols-3 gap-5">
             {posts.posts.slice(0, 3).map((p) => (
@@ -511,7 +511,7 @@ function HomePage() {
               className="inline-flex items-center gap-2 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-semibold shadow-sm animate-fade-in"
               style={{ transform: "translateZ(30px)" }}
             >
-              <PlayCircle className="h-3.5 w-3.5" /> ভিডিও গ্যালারি
+              <PlayCircle className="h-3.5 w-3.5" /> {c.sectionVideoEyebrow}
             </span>
             <h2
               className="mt-3 text-3xl md:text-4xl font-bold tracking-tight animate-fade-in"
@@ -522,13 +522,13 @@ function HomePage() {
                 animationFillMode: "both",
               }}
             >
-              আমাদের ভিডিও লাইব্রেরি
+              {c.sectionVideoTitle}
             </h2>
             <p
               className="mt-2 text-muted-foreground animate-fade-in"
               style={{ animationDelay: "160ms", animationFillMode: "both" }}
             >
-              কোর্স পরিচিতি, শিক্ষার্থীদের গল্প ও দরকারি টিপস — এক জায়গায়
+              {c.sectionVideoSubtitle}
             </p>
           </div>
 
@@ -554,8 +554,8 @@ function HomePage() {
       {/* FAQ */}
       <section className="mx-auto max-w-3xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="text-center">
-          <h2 className="text-2xl md:text-3xl font-bold">সাধারণ প্রশ্নাবলী</h2>
-          <p className="mt-2 text-muted-foreground">যা আপনি জানতে চাইতে পারেন</p>
+          <h2 className="text-2xl md:text-3xl font-bold">{c.sectionFaqTitle}</h2>
+          <p className="mt-2 text-muted-foreground">{c.sectionFaqSubtitle}</p>
         </div>
         <div className="mt-8 space-y-3">
           {faqs.faqs.slice(0, 5).map((f, i) => (
@@ -585,13 +585,11 @@ function HomePage() {
       {/* CTA */}
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
         <div className="rounded-2xl bg-gradient-to-br from-primary to-primary/80 text-primary-foreground p-8 md:p-12 text-center">
-          <h2 className="text-2xl md:text-3xl font-bold">আজই শুরু করুন আপনার শেখার যাত্রা</h2>
-          <p className="mt-3 opacity-90 max-w-2xl mx-auto">
-            হাজারো শিক্ষার্থীর সাথে যোগ দিন এবং গড়ুন আপনার স্বপ্নের ক্যারিয়ার।
-          </p>
-          <Link to="/register" className="mt-6 inline-flex items-center gap-2 rounded-lg bg-background text-foreground px-6 py-3 font-semibold hover:bg-background/90">
-            ফ্রি রেজিস্টার করুন <ArrowRight className="h-4 w-4" />
-          </Link>
+          <h2 className="text-2xl md:text-3xl font-bold">{c.finalCtaTitle}</h2>
+          <p className="mt-3 opacity-90 max-w-2xl mx-auto">{c.finalCtaSubtitle}</p>
+          <a href={c.finalCtaHref} className="mt-6 inline-flex items-center gap-2 rounded-lg bg-background text-foreground px-6 py-3 font-semibold hover:bg-background/90">
+            {c.finalCtaButton} <ArrowRight className="h-4 w-4" />
+          </a>
         </div>
       </section>
     </SiteLayout>
