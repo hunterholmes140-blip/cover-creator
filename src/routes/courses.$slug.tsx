@@ -525,6 +525,7 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
       const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
       const res = await epsInitializePayment(epsConfig, {
+        courseId: course.id,
         customerOrderId: orderId,
         merchantTransactionId: txId,
         totalAmount: amount,

@@ -58,6 +58,7 @@ function CheckoutPage() {
       const currentUrl = typeof window !== "undefined" ? window.location.href : "";
 
       const res = await epsInitializePayment(epsConfig, {
+        courseId: course.id,
         customerOrderId: orderId,
         merchantTransactionId: txId,
         totalAmount: amount,

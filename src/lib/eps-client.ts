@@ -131,10 +131,32 @@ export type EpsInitPaymentInput = {
 
 export async function epsInitializePayment(
   config: EpsConfig,
-  input: EpsInitPaymentInput
+  input: EpsInitPaymentInput & { courseId?: number }
 ): Promise<{ redirectUrl: string; transactionId: string }> {
+  // Call server-side API endpoint (/api/payment/eps-init.php) to avoid browser CORS restriction
+  try {
+    const { api } = await import("./api");
+    const res = await api<{ redirectUrl: string; transactionId: string }>("payment/eps-init.php", {
+      method: "POST",
+      auth: true,
+      body: {
+        course_id: input.courseId,
+        order_no: input.customerOrderId,
+        tx_id: input.merchantTransactionId,
+      },
+    });
+    if (res && res.redirectUrl) {
+      return res;
+    }
+  } catch (err: any) {
+    // If error is ApiError from server (e.g. credentials not configured or DB response)
+    if (err && err.message && !err.message.includes("404") && !err.message.includes("সাপোর্ট করে না")) {
+      throw err;
+    }
+  }
+
   if (!config.merchant_id || !config.store_id || !config.hash_key) {
-    throw new Error("EPS Merchant ID, Store ID এবং Hash Key সেট করা নেই।");
+    throw new Error("EPS Merchant ID, Store ID এবং Hash Key সেট করা নেই। এডমিন প্যানেলে ক্রেডেনশিয়াল সেট করুন।");
   }
 
   // Step 1: Get Token

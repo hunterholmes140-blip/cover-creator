@@ -1,0 +1,159 @@
+import { createFileRoute } from "@tanstack/react-router";
+import crypto from "node:crypto";
+import { qOne, exec } from "@/lib/db.server";
+import { handle, ok, fail, requireUser } from "@/lib/auth.server";
+
+function hmacSha512Base64(hashKey: string, textToHash: string): string {
+  if (!hashKey || !textToHash) return "";
+  return crypto.createHmac("sha512", hashKey).update(textToHash, "utf8").digest("base64");
+}
+
+export const Route = createFileRoute("/api/payment/eps-init.php")({
+  server: {
+    handlers: {
+      POST: async ({ request }) =>
+        handle(async () => {
+          const user = requireUser(request);
+          const body = await request.json().catch(() => ({}));
+          const course_id = Number(body.course_id);
+          if (!course_id) return fail(400, "কোর্স সিলেক্ট করুন");
+
+          const course = await qOne<any>(
+            `SELECT id, title, price, discount_price FROM courses WHERE id = ? AND is_published = 1`,
+            [course_id]
+          );
+          if (!course) return fail(404, "কোর্স পাওয়া যায়নি");
+
+          const amount = course.discount_price ?? course.price;
+          const orderNo = `ORD-${Date.now().toString().slice(-6)}`;
+          const txId = `TXN${Date.now()}`;
+
+          // Fetch EPS Settings from database (site_content table)
+          let epsConfig = {
+            enabled: 1,
+            is_sandbox: 1,
+            username: "",
+            password: "",
+            merchant_id: "",
+            store_id: "",
+            hash_key: "",
+          };
+
+          const row = await qOne<any>(
+            `SELECT content_json FROM site_content WHERE content_key = 'eps_settings' LIMIT 1`
+          );
+          if (row?.content_json) {
+            try {
+              epsConfig = { ...epsConfig, ...JSON.parse(row.content_json) };
+            } catch {}
+          }
+
+          const { username, password, merchant_id, store_id, hash_key } = epsConfig;
+
+          if (!username || !password || !merchant_id || !store_id || !hash_key) {
+            return fail(
+              400,
+              "EPS পেমেন্ট গেটওয়ে ক্রেডেনশিয়ালস (Username, Password, Merchant ID, Store ID, Hash Key) এডমিন প্যানেলে সেটআপ করা হয়নি।"
+            );
+          }
+
+          const baseUrl = "https://pgapi.eps.com.bd";
+
+          // Step 1: GetToken (Server-to-Server, NO CORS error!)
+          const tokenHash = hmacSha512Base64(hash_key, username);
+          const tokenRes = await fetch(`${baseUrl}/v1/Auth/GetToken`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-hash": tokenHash,
+            },
+            body: JSON.stringify({ userName: username, password: password }),
+          });
+
+          const tokenJson = await tokenRes.json().catch(() => ({}));
+          if (!tokenRes.ok || !tokenJson.token) {
+            return fail(
+              400,
+              tokenJson.errorMessage || tokenJson.message || "EPS টোকেন তৈরি ব্যর্থ হয়েছে। তথ্য পরীক্ষা করুন।"
+            );
+          }
+
+          const token = tokenJson.token;
+
+          // Step 2: InitializeEPS (Server-to-Server, NO CORS error!)
+          const initHash = hmacSha512Base64(hash_key, txId);
+          const originUrl = request.headers.get("origin") || "https://vencon.com.bd";
+          const returnUrl = `${originUrl}/dashboard`;
+
+          const bodyPayload = {
+            storeId: store_id,
+            merchantId: merchant_id,
+            CustomerOrderId: orderNo,
+            merchantTransactionId: txId,
+            transactionTypeId: 1, // 1 = Web
+            financialEntityId: 0,
+            transitionStatusId: 0,
+            totalAmount: amount,
+            ipAddress: request.headers.get("x-forwarded-for") || "103.12.45.69",
+            version: "1",
+            successUrl: returnUrl,
+            failUrl: returnUrl,
+            cancelUrl: returnUrl,
+            customerName: user.name || "Student",
+            customerEmail: user.email || "student@nextscale.com",
+            CustomerAddress: "Dhaka, Bangladesh",
+            CustomerAddress2: "Dhaka",
+            CustomerCity: "Dhaka",
+            CustomerState: "Dhaka",
+            CustomerPostcode: "1200",
+            CustomerCountry: "BD",
+            CustomerPhone: user.phone || "01700000000",
+            ShipmentName: "Digital Course",
+            ShipmentAddress: "Online",
+            ShipmentCity: "Dhaka",
+            ShipmentState: "Dhaka",
+            ShipmentPostcode: "1200",
+            ShipmentCountry: "BD",
+            ValueA: "",
+            ValueB: "",
+            ValueC: "",
+            ValueD: "",
+            ShippingMethod: "NO",
+            NoOfItem: "1",
+            ProductName: course.title,
+            ProductProfile: "general",
+            ProductCategory: "Education",
+          };
+
+          const initRes = await fetch(`${baseUrl}/v1/EPSEngine/InitializeEPS`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-hash": initHash,
+              Authorization: `Bearer ${token}`,
+            },
+            body: JSON.stringify(bodyPayload),
+          });
+
+          const initJson = await initRes.json().catch(() => ({}));
+          const redirectUrl = initJson.RedirectURL || initJson.redirectURL;
+
+          if (!initRes.ok || !redirectUrl) {
+            return fail(
+              400,
+              initJson.ErrorMessage || initJson.errorMessage || "EPS পেমেন্ট রিডাইরেক্ট লিঙ্ক তৈরি করা যায়নি।"
+            );
+          }
+
+          // Insert order into DB
+          await exec(
+            `INSERT INTO orders (user_id, course_id, amount, payment_method, transaction_id, note, status)
+             VALUES (?, ?, ?, ?, ?, ?, 'pending')`,
+            [user.id, course_id, amount, "eps_online", txId, `Order #${orderNo}`]
+          );
+
+          return ok({ redirectUrl, transactionId: txId });
+        }),
+    },
+  },
+});
