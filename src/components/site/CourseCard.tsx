@@ -44,7 +44,7 @@ export function CourseCard({ course }: { course: any }) {
       </div>
       {badge && style && (
         <div
-          className={`absolute -top-3 -right-3 z-10 h-16 w-16 rounded-full bg-gradient-to-br ${style.gradient} ring-4 ${style.ring} shadow-xl ${style.glow} flex flex-col items-center justify-center text-white text-center rotate-[-8deg] group-hover:rotate-0 transition-transform`}
+          className={`absolute -top-2 -right-1 sm:-top-3 sm:-right-2 z-10 h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-gradient-to-br ${style.gradient} ring-2 sm:ring-4 ${style.ring} shadow-xl ${style.glow} flex flex-col items-center justify-center text-white text-center rotate-[-8deg] group-hover:rotate-0 transition-transform`}
           style={{ fontFamily: '"Hind Siliguri", sans-serif' }}
         >
           <span className="text-base leading-none">{style.icon}</span>

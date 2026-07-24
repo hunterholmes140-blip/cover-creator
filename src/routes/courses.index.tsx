@@ -59,62 +59,85 @@ function CoursesPage() {
 
   return (
     <SiteLayout>
-      <section className="border-b border-border bg-muted/30">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10">
-          <h1 className="text-3xl md:text-4xl font-bold">সব কোর্স</h1>
-          <p className="mt-2 text-muted-foreground">আপনার পছন্দের কোর্স খুঁজে নিন</p>
-          <form onSubmit={submitSearch} className="mt-6 flex gap-2 max-w-lg">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+      {/* HEADER & SEARCH */}
+      <section className="border-b border-border bg-gradient-to-br from-primary/5 via-background to-accent/30 overflow-hidden">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 md:py-12">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold leading-tight">সব কোর্স</h1>
+          <p className="mt-2 text-sm sm:text-base text-muted-foreground">আপনার পছন্দের প্রফেশনাল কোর্সটি খুঁজে নিন</p>
+          
+          <form onSubmit={submitSearch} className="mt-6 flex gap-2 max-w-lg w-full">
+            <div className="relative flex-1 min-w-0">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
               <input
                 type="text"
                 value={q}
                 onChange={(e) => setQ(e.target.value)}
                 placeholder="কোর্স খুঁজুন..."
-                className="w-full rounded-lg border border-border bg-background pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary"
+                className="w-full rounded-xl border border-border bg-background/90 backdrop-blur pl-10 pr-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
               />
             </div>
-            <button className="rounded-lg bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold hover:bg-primary/90">
+            <button
+              type="submit"
+              className="flex-shrink-0 rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-sm font-semibold hover:bg-primary/90 shadow-md transition-colors"
+            >
               খুঁজুন
             </button>
           </form>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 grid lg:grid-cols-[240px_1fr] gap-8">
-        <aside>
-          <h3 className="font-semibold mb-3 text-sm uppercase tracking-wide text-muted-foreground">ক্যাটেগরি</h3>
-          <div className="flex lg:flex-col gap-2 overflow-x-auto lg:overflow-visible">
-            <Link
-              to="/courses"
-              search={{ ...search, category: undefined }}
-              className={`rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap ${!search.category ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
-            >
-              সব
-            </Link>
-            {cats.categories.map((c) => (
+      {/* CATEGORIES & COURSE GRID */}
+      <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6 md:py-10 overflow-hidden sm:overflow-visible">
+        <div className="grid lg:grid-cols-[240px_1fr] gap-6 lg:gap-8 items-start">
+          {/* Category Filter Sidebar / Horizontal Mobile Bar */}
+          <aside className="w-full overflow-hidden">
+            <h3 className="font-bold mb-3 text-xs uppercase tracking-wider text-muted-foreground hidden lg:block">
+              ক্যাটেগরি
+            </h3>
+            <div className="flex lg:flex-col gap-2 overflow-x-auto no-scrollbar pb-3 lg:pb-0 -mx-4 px-4 sm:mx-0 sm:px-0">
               <Link
-                key={c.id}
                 to="/courses"
-                search={{ ...search, category: c.slug }}
-                className={`rounded-lg px-3 py-2 text-sm font-medium whitespace-nowrap ${search.category === c.slug ? "bg-primary text-primary-foreground" : "hover:bg-accent"}`}
+                search={{ ...search, category: undefined }}
+                className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                  !search.category
+                    ? "bg-primary text-primary-foreground shadow-md"
+                    : "bg-muted/60 hover:bg-accent text-foreground"
+                }`}
               >
-                {c.name}
+                সব কোর্স
               </Link>
-            ))}
-          </div>
-        </aside>
+              {cats.categories.map((c) => (
+                <Link
+                  key={c.id}
+                  to="/courses"
+                  search={{ ...search, category: c.slug }}
+                  className={`rounded-xl px-4 py-2 text-xs sm:text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${
+                    search.category === c.slug
+                      ? "bg-primary text-primary-foreground shadow-md"
+                      : "bg-muted/60 hover:bg-accent text-foreground"
+                  }`}
+                >
+                  {c.name}
+                </Link>
+              ))}
+            </div>
+          </aside>
 
-        <div>
-          {data.courses.length === 0 ? (
-            <div className="rounded-xl border border-dashed border-border p-12 text-center text-muted-foreground">
-              এই ফিল্টারে কোনো কোর্স পাওয়া যায়নি।
-            </div>
-          ) : (
-            <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {data.courses.map((c) => <CourseCard key={c.id} course={c} />)}
-            </div>
-          )}
+          {/* Courses Grid */}
+          <div className="w-full min-w-0">
+            {data.courses.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-border bg-card p-8 sm:p-12 text-center text-muted-foreground">
+                <p className="text-base font-semibold">কোনো কোর্স পাওয়া যায়নি</p>
+                <p className="mt-1 text-sm">আপনার অনুসন্ধান বা ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
+                {data.courses.map((c) => (
+                  <CourseCard key={c.id} course={c} />
+                ))}
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </SiteLayout>
