@@ -466,7 +466,19 @@ function HomePage() {
           <h2 className="text-2xl md:text-3xl font-bold">{c.sectionFeaturedTitle}</h2>
           <p className="mt-2 text-muted-foreground">{c.sectionFeaturedSubtitle}</p>
         </div>
-        <div className="mt-6 grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+
+        {/* Mobile View: Auto-Scrolling 1 Course Card at a time */}
+        <div className="mt-6 sm:hidden">
+          <AutoScrollingCarousel
+            items={featured.courses}
+            itemClassName="w-[82vw] max-w-[290px] flex-shrink-0 snap-center"
+            intervalMs={3000}
+            renderItem={(c) => <CourseCard course={c} />}
+          />
+        </div>
+
+        {/* Desktop View: Grid */}
+        <div className="mt-6 hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {featured.courses.map((c) => <CourseCard key={c.id} course={c} />)}
         </div>
         <div className="mt-10 text-center">
@@ -733,7 +745,38 @@ function HomePage() {
             <h2 className="text-2xl md:text-3xl font-bold">{c.sectionBlogTitle}</h2>
             <p className="mt-2 text-muted-foreground">{c.sectionBlogSubtitle}</p>
           </div>
-          <div className="mt-6 grid md:grid-cols-3 gap-5">
+
+          {/* Mobile View: Auto-Scrolling 1 Blog Card at a time */}
+          <div className="mt-6 md:hidden">
+            <AutoScrollingCarousel
+              items={posts.posts.slice(0, 3)}
+              itemClassName="w-[82vw] max-w-[290px] flex-shrink-0 snap-center"
+              intervalMs={3500}
+              renderItem={(p) => (
+                <Link to="/blog/$slug" params={{ slug: p.slug }} className="group block h-full rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all shadow-sm">
+                  <div className={`aspect-video bg-gradient-to-br ${p.cover_gradient} relative overflow-hidden`}>
+                    {p.cover_image && (
+                      <img src={p.cover_image} alt={p.title} loading="lazy" className="absolute inset-0 h-full w-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    )}
+                    <span className="absolute top-3 left-3 rounded-full bg-background/90 backdrop-blur px-2.5 py-1 text-xs font-medium">
+                      {p.category}
+                    </span>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-semibold text-sm leading-snug line-clamp-2 group-hover:text-primary transition-colors">{p.title}</h3>
+                    <p className="mt-1.5 text-xs text-muted-foreground line-clamp-2">{p.excerpt}</p>
+                    <div className="mt-3 flex items-center gap-3 text-[11px] text-muted-foreground">
+                      <span className="inline-flex items-center gap-1"><Calendar className="h-3 w-3" /> {p.published_at}</span>
+                      <span className="inline-flex items-center gap-1"><Clock className="h-3 w-3" /> {p.read_time}</span>
+                    </div>
+                  </div>
+                </Link>
+              )}
+            />
+          </div>
+
+          {/* Desktop View: Grid */}
+          <div className="mt-6 hidden md:grid md:grid-cols-3 gap-5">
             {posts.posts.slice(0, 3).map((p) => (
               <Link key={p.id} to="/blog/$slug" params={{ slug: p.slug }} className="group rounded-xl border border-border bg-card overflow-hidden hover:shadow-lg hover:border-primary/40 transition-all">
                 <div className={`aspect-video bg-gradient-to-br ${p.cover_gradient} relative overflow-hidden`}>
