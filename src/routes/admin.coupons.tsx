@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Tag, Plus, Trash2, CheckCircle2, XCircle, AlertCircle, Percent, Banknote, Calendar } from "lucide-react";
 import { api } from "@/lib/api";
-import { useToast } from "@/components/site/Toast";
+import { useToast } from "@/components/admin/ui";
 import { taka } from "@/lib/format";
 
 export const Route = createFileRoute("/admin/coupons")({
