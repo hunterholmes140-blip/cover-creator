@@ -159,6 +159,27 @@ function CourseDetailPage() {
               </p>
             )}
 
+            {/* Mobile Course Video / Thumbnail Preview Box */}
+            <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-lg lg:hidden my-4">
+              <div className="aspect-video bg-gradient-to-br from-primary/30 via-primary/15 to-background grid place-items-center relative">
+                {course.thumbnail ? (
+                  <img src={course.thumbnail} className="h-full w-full object-cover" alt={course.title} />
+                ) : (
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-lg">
+                      <PlayCircle className="h-8 w-8 ml-0.5" />
+                    </div>
+                    <span className="text-xs font-semibold text-foreground">কোর্স ভিডিও প্রিভিউ</span>
+                  </div>
+                )}
+                {hasDiscount && (
+                  <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold rounded-full px-2.5 py-1 shadow">
+                    {toBn(discountPct)}% ছাড়
+                  </span>
+                )}
+              </div>
+            </div>
+
             {/* Ratings & Enrolled Badges */}
             <div className="flex flex-wrap items-center gap-3 text-sm pt-1 border-t border-border/60">
               <div className="flex items-center gap-1.5 bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20">
