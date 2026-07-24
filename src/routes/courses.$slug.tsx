@@ -161,23 +161,7 @@ function CourseDetailPage() {
 
             {/* Mobile Course Video / Thumbnail Preview Box */}
             <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-lg lg:hidden my-4">
-              <div className="aspect-video bg-gradient-to-br from-primary/30 via-primary/15 to-background grid place-items-center relative">
-                {course.thumbnail ? (
-                  <img src={course.thumbnail} className="h-full w-full object-cover" alt={course.title} />
-                ) : (
-                  <div className="flex flex-col items-center gap-2">
-                    <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-lg">
-                      <PlayCircle className="h-8 w-8 ml-0.5" />
-                    </div>
-                    <span className="text-xs font-semibold text-foreground">কোর্স ভিডিও প্রিভিউ</span>
-                  </div>
-                )}
-                {hasDiscount && (
-                  <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold rounded-full px-2.5 py-1 shadow">
-                    {toBn(discountPct)}% ছাড়
-                  </span>
-                )}
-              </div>
+              <CourseMediaPreview course={course} hasDiscount={!!hasDiscount} discountPct={discountPct} />
             </div>
 
             {/* Ratings & Enrolled Badges */}
@@ -457,6 +441,76 @@ function CourseDetailPage() {
   );
 }
 
+// ---------------- Course Media Preview Component ----------------
+function CourseMediaPreview({ course, hasDiscount, discountPct }: { course: any; hasDiscount: boolean; discountPct: number }) {
+  const [playing, setPlaying] = useState(false);
+  const videoUrl = course.preview_video || course.promo_video_url || "";
+
+  const getEmbedUrl = (url: string) => {
+    if (url.includes("youtube.com/watch?v=")) {
+      return url.replace("watch?v=", "embed/").split("&")[0] + "?autoplay=1";
+    }
+    if (url.includes("youtu.be/")) {
+      return url.replace("youtu.be/", "youtube.com/embed/") + "?autoplay=1";
+    }
+    return url;
+  };
+
+  if (playing && videoUrl) {
+    return (
+      <div className="aspect-video w-full bg-black relative">
+        <iframe
+          src={getEmbedUrl(videoUrl)}
+          className="w-full h-full border-0"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowFullScreen
+          title="Course Promo Video"
+        />
+        <button
+          onClick={() => setPlaying(false)}
+          className="absolute top-2 right-2 bg-black/80 text-white rounded-full p-1.5 hover:bg-black transition-colors"
+        >
+          <X className="h-4 w-4" />
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div className="aspect-video bg-gradient-to-br from-primary/30 via-primary/10 to-background grid place-items-center relative group">
+      {course.thumbnail ? (
+        <img src={course.thumbnail} className="h-full w-full object-cover" alt={course.title} />
+      ) : (
+        <div className="flex flex-col items-center justify-center p-4 text-center">
+          <div className="text-lg font-bold text-primary">{course.title}</div>
+          <span className="text-xs text-muted-foreground">NextScale Course</span>
+        </div>
+      )}
+
+      {/* Show play icon ONLY IF a preview video URL is provided by admin */}
+      {videoUrl ? (
+        <button
+          onClick={() => setPlaying(true)}
+          className="absolute inset-0 grid place-items-center bg-black/30 group-hover:bg-black/40 transition-colors cursor-pointer"
+        >
+          <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-xl transform group-hover:scale-110 transition-transform">
+            <PlayCircle className="h-8 w-8 ml-0.5" />
+          </div>
+          <span className="absolute bottom-3 bg-black/70 text-white text-[11px] font-semibold rounded-full px-3 py-1 backdrop-blur">
+            ▶️ ট্রেলার ভিডিও প্লে করুন
+          </span>
+        </button>
+      ) : null}
+
+      {hasDiscount && (
+        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold rounded-full px-2.5 py-1 shadow">
+          {toBn(discountPct)}% ছাড়
+        </span>
+      )}
+    </div>
+  );
+}
+
 // ---------------- Purchase Card ----------------
 function PurchaseCard({
   course, price, hasDiscount, discountPct, enrolled, onEnroll,
@@ -466,18 +520,7 @@ function PurchaseCard({
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-xl">
-      <div className="aspect-video bg-gradient-to-br from-primary/30 to-primary/10 grid place-items-center relative">
-        {course.thumbnail ? (
-          <img src={course.thumbnail} className="h-full w-full object-cover" alt={course.title} />
-        ) : (
-          <PlayCircle className="h-14 w-14 text-primary/70" />
-        )}
-        {hasDiscount && (
-          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold rounded-full px-2.5 py-1">
-            {toBn(discountPct)}% ছাড়
-          </span>
-        )}
-      </div>
+      <CourseMediaPreview course={course} hasDiscount={hasDiscount} discountPct={discountPct} />
       <div className="p-5">
         <div className="flex items-baseline gap-3">
           <span className="text-3xl font-bold text-primary">{taka(price)}</span>
