@@ -1,11 +1,31 @@
 import { createFileRoute } from "@tanstack/react-router";
-import crypto from "node:crypto";
 import { qOne, exec } from "@/lib/db.server";
 import { handle, ok, fail, bearerFrom } from "@/lib/auth.server";
 
-function hmacSha512Base64(hashKey: string, textToHash: string): string {
+async function hmacSha512Base64(hashKey: string, textToHash: string): Promise<string> {
   if (!hashKey || !textToHash) return "";
-  return crypto.createHmac("sha512", hashKey).update(textToHash, "utf8").digest("base64");
+  try {
+    const encoder = new TextEncoder();
+    const keyData = encoder.encode(hashKey);
+    const textData = encoder.encode(textToHash);
+
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw",
+      keyData,
+      { name: "HMAC", hash: "SHA-512" },
+      false,
+      ["sign"]
+    );
+    const signature = await crypto.subtle.sign("HMAC", cryptoKey, textData);
+    const bytes = new Uint8Array(signature);
+    let binary = "";
+    for (let i = 0; i < bytes.byteLength; i++) {
+      binary += String.fromCharCode(bytes[i]);
+    }
+    return btoa(binary);
+  } catch {
+    return "";
+  }
 }
 
 export const Route = createFileRoute("/api/payment/eps-init.php")({
@@ -68,7 +88,7 @@ export const Route = createFileRoute("/api/payment/eps-init.php")({
           // Step 1: GetToken (Server-to-Server)
           let token = "";
           try {
-            const tokenHash = hmacSha512Base64(hash_key, username);
+            const tokenHash = await hmacSha512Base64(hash_key, username);
             const tokenRes = await fetch(`${baseUrl}/v1/Auth/GetToken`, {
               method: "POST",
               headers: {
@@ -91,7 +111,7 @@ export const Route = createFileRoute("/api/payment/eps-init.php")({
           // Step 2: InitializeEPS (Server-to-Server)
           let redirectUrl = "";
           try {
-            const initHash = hmacSha512Base64(hash_key, txId);
+            const initHash = await hmacSha512Base64(hash_key, txId);
             const originUrl = request.headers.get("origin") || "https://vencon.com.bd";
             const returnUrl = `${originUrl}/dashboard`;
 
