@@ -481,43 +481,73 @@ function PurchaseCard({
 
 // ---------------- Enrollment Modal (inline checkout) ----------------
 function EnrollModal({ course, amount, onClose }: { course: any; amount: number; onClose: () => void }) {
-  const settings = useSiteSettings();
   const nav = useNavigate();
   const [user, setUser] = useState<any>(null);
   const epsConfig = getEpsConfig();
-  const isEpsActive = !!epsConfig.enabled;
 
-  const [method, setMethod] = useState<"eps" | "bkash" | "nagad" | "rocket">(isEpsActive ? "eps" : "bkash");
-  const [f, setF] = useState({ sender_number: "", transaction_id: "", note: "" });
+  const [billing, setBilling] = useState({
+    name: "",
+    address: "",
+    phone: "",
+    email: "",
+    password: "",
+  });
+
+  const [coupon, setCoupon] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [couponErr, setCouponErr] = useState<string | null>(null);
+
+  const [agreed, setAgreed] = useState(true);
   const [loading, setLoading] = useState(false);
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
-  const [copied, setCopied] = useState(false);
 
-  useEffect(() => { setUser(getStoredUser()); }, []);
+  useEffect(() => {
+    const u = getStoredUser();
+    if (u) {
+      setUser(u);
+      setBilling((b) => ({
+        ...b,
+        name: u.name || "",
+        email: u.email || "",
+        phone: u.phone || "",
+      }));
+    }
+  }, []);
+
   useEffect(() => {
     document.body.style.overflow = "hidden";
     return () => { document.body.style.overflow = ""; };
   }, []);
 
-  const s: any = (settings as any)?.settings ?? settings;
-  const numbers = useMemo<Record<string, string>>(() => ({
-    bkash: s?.bkash_number || "01700-000000",
-    nagad: s?.nagad_number || "01700-000000",
-    rocket: s?.rocket_number || "01700-000000",
-  }), [s]);
+  const finalAmount = Math.max(0, amount - discount);
 
-  const copyNumber = async () => {
-    try {
-      await navigator.clipboard.writeText(numbers[method]?.replace(/[^0-9]/g, "") || "");
-      setCopied(true);
-      setTimeout(() => setCopied(false), 1500);
-    } catch { /* ignore */ }
+  const applyCoupon = () => {
+    setCouponErr(null);
+    if (!coupon.trim()) return;
+    if (coupon.trim().toUpperCase() === "NEXT500") {
+      setDiscount(500);
+      setCouponApplied(true);
+    } else {
+      setCouponErr("কুপন কোডটি সঠিক নয় বা মেয়াদ শেষ।");
+    }
   };
 
-  const handleEpsPayment = async () => {
+  const handlePlaceOrder = async (e: React.FormEvent) => {
+    e.preventDefault();
     setErr(null);
-    if (!user) { nav({ to: "/login" }); return; }
+
+    if (!billing.name || !billing.phone || !billing.email) {
+      setErr("অনুগ্রহ করে আপনার নাম, ফোন নম্বর এবং ইমেইল ঠিকানা পূরণ করুন।");
+      return;
+    }
+
+    if (!agreed) {
+      setErr("অর্ডার সম্পন্ন করতে ব্যবহারের শর্তাবলিতে সম্মতি দিন।");
+      return;
+    }
+
     setLoading(true);
     try {
       const orderId = `ORD-${Date.now().toString().slice(-6)}`;
@@ -528,10 +558,10 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
         courseId: course.id,
         customerOrderId: orderId,
         merchantTransactionId: txId,
-        totalAmount: amount,
-        customerName: user.name || "Student",
-        customerEmail: user.email || "student@example.com",
-        customerPhone: user.phone || "01700000000",
+        totalAmount: finalAmount,
+        customerName: billing.name,
+        customerEmail: billing.email,
+        customerPhone: billing.phone,
         productName: course.title,
         successUrl: currentUrl,
         failUrl: currentUrl,
@@ -542,7 +572,14 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
         await api("orders/create.php", {
           method: "POST",
           auth: true,
-          body: { course_id: course.id, payment_method: "eps_online", transaction_id: txId, amount },
+          body: {
+            course_id: course.id,
+            payment_method: "eps_online",
+            transaction_id: txId,
+            amount: finalAmount,
+            sender_number: billing.phone,
+            note: billing.address,
+          },
         }).catch(() => {});
 
         window.location.href = res.redirectUrl;
@@ -559,51 +596,20 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
     }
   };
 
-  const submit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setErr(null);
-    if (!user) { nav({ to: "/login" }); return; }
-    if (method === "eps") {
-      await handleEpsPayment();
-      return;
-    }
-    setLoading(true);
-    try {
-      await api("orders/create.php", {
-        method: "POST",
-        auth: true,
-        body: { course_id: course.id, payment_method: method, ...f },
-      });
-      track("Purchase", {
-        content_ids: [String(course.id)],
-        content_name: course.title,
-        content_type: "product",
-        value: Number(amount) || 0,
-        currency: "BDT",
-        num_items: 1,
-      });
-      setMsg("অর্ডার সাবমিট হয়েছে! এডমিন verify করার পর কোর্স access পাবেন।");
-    } catch (e: any) {
-      setErr(e.message);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const secretGroupUrl = course.secret_group_link || "https://facebook.com";
 
   return (
-    <div className="fixed inset-0 z-[100] bg-black/60 backdrop-blur-sm flex items-end sm:items-center justify-center p-0 sm:p-4" onClick={onClose}>
+    <div className="fixed inset-0 z-[100] bg-black/70 backdrop-blur-sm flex items-center justify-center p-2 sm:p-4" onClick={onClose}>
       <div
-        className="bg-background w-full sm:max-w-2xl sm:rounded-2xl rounded-t-2xl max-h-[92vh] overflow-y-auto shadow-2xl"
+        className="bg-background w-full max-w-4xl rounded-2xl max-h-[92vh] overflow-y-auto shadow-2xl my-auto flex flex-col border border-border"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="sticky top-0 bg-background border-b border-border px-5 py-4 flex items-center justify-between z-10">
           <div>
-            <h3 className="font-bold text-lg">এনরোলমেন্ট</h3>
+            <h3 className="font-bold text-lg text-foreground">অর্ডার ও এনরোলমেন্ট</h3>
             <p className="text-xs text-muted-foreground truncate max-w-[280px]">{course.title}</p>
           </div>
-          <button onClick={onClose} className="p-2 rounded-lg hover:bg-accent" aria-label="Close">
+          <button onClick={onClose} className="p-2 rounded-full hover:bg-accent text-muted-foreground hover:text-foreground" aria-label="Close">
             <X className="h-5 w-5" />
           </button>
         </div>
@@ -659,119 +665,179 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
             </div>
           </div>
         ) : (
-          <div className="p-5 space-y-5">
-            {/* Method Selection */}
-            <div>
-              <div className="text-sm font-semibold mb-3">পেমেন্ট মেথড বেছে নিন</div>
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                {isEpsActive && (
-                  <button
-                    type="button"
-                    onClick={() => setMethod("eps")}
-                    className={`rounded-xl border-2 p-2.5 text-xs font-bold flex flex-col items-center justify-center gap-1 transition-all ${
-                      method === "eps"
-                        ? "border-primary bg-primary/10 text-primary ring-2 ring-primary/20 shadow"
-                        : "border-border hover:border-primary/40"
-                    }`}
-                  >
-                    <Zap className="h-4 w-4 fill-primary text-primary animate-pulse" />
-                    <span>⚡ EPS অটোমেটিক</span>
-                  </button>
-                )}
-                {(["bkash", "nagad", "rocket"] as const).map((m) => (
-                  <button
-                    key={m}
-                    type="button"
-                    onClick={() => setMethod(m)}
-                    className={`rounded-xl border-2 py-3 text-xs md:text-sm font-bold uppercase transition-colors ${
-                      method === m ? "border-primary bg-primary/5 text-primary" : "border-border hover:border-primary/40"
-                    }`}
-                  >
-                    {m === "bkash" ? "bKash" : m === "nagad" ? "Nagad" : "Rocket"}
-                  </button>
-                ))}
+          <form onSubmit={handlePlaceOrder} className="p-5 md:p-6 grid md:grid-cols-[1fr_360px] gap-6 items-start">
+            {/* Left: Billing Details */}
+            <div className="space-y-4">
+              <h4 className="font-bold text-base text-foreground border-b border-border pb-2">বিলিং তথ্য (Billing details)</h4>
+
+              {user && (
+                <div className="rounded-xl bg-green-500/10 border border-green-500/20 p-2.5 text-xs text-green-700 dark:text-green-400 font-semibold">
+                  ✓ অ্যাকাউন্ট সংযুক্ত: {user.name} ({user.email})
+                </div>
+              )}
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">
+                  পূর্ণ নাম (Full Name) <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={billing.name}
+                  onChange={(e) => setBilling({ ...billing, name: e.target.value })}
+                  placeholder="আপনার নাম"
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                />
               </div>
 
-              {method === "eps" ? (
-                <div className="mt-4 rounded-xl border border-primary/20 bg-primary/5 p-5 text-center space-y-3">
-                  <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 text-primary px-3 py-1 text-xs font-bold">
-                    <ShieldCheck className="h-4 w-4" /> ইনস্ট্যান্ট অটোমেটিক পেমেন্ট
-                  </div>
-                  <h4 className="font-bold text-sm text-foreground">
-                    bKash, Nagad, Rocket, Visa/Mastercard কার্ড দিয়ে পেমেন্ট করুন
-                  </h4>
-                  <p className="text-xs text-muted-foreground max-w-sm mx-auto">
-                    নিচের বাটনে চাপ দিলে আপনাকে সরাসরি নিরাপদ EPS Gateway পেজে নিয়ে যাবে।
-                  </p>
-                  <div className="pt-2">
-                    <button
-                      type="button"
-                      onClick={handleEpsPayment}
-                      disabled={loading}
-                      className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground px-6 py-3 text-sm font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all hover:scale-105"
-                    >
-                      <CreditCard className="h-4 w-4" /> {loading ? "প্রসেসিং হচ্ছে..." : `${taka(amount)} — স্বয়ংক্রিয় পেমেন্ট করুন ➔`}
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="mt-3 rounded-lg bg-muted p-4">
-                  <div className="text-xs text-muted-foreground">Send Money নম্বর</div>
-                  <div className="mt-1 flex items-center justify-between gap-3">
-                    <div className="text-xl font-bold tracking-wide">{numbers[method]}</div>
-                    <button
-                      type="button"
-                      onClick={copyNumber}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium text-primary bg-primary/10 hover:bg-primary/20 rounded-full px-3 py-1.5"
-                    >
-                      {copied ? <><Check className="h-3.5 w-3.5" /> কপি হয়েছে</> : <><Copy className="h-3.5 w-3.5" /> কপি করুন</>}
-                    </button>
-                  </div>
-                  <div className="mt-2 text-xs text-muted-foreground">
-                    পরিমাণ: <span className="font-bold text-foreground">{taka(amount)}</span>
-                  </div>
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">
+                  সম্পূর্ণ ঠিকানা (Full Address) <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={billing.address}
+                  onChange={(e) => setBilling({ ...billing, address: e.target.value })}
+                  placeholder="আপনার ঠিকানা"
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">
+                  মোবাইল নম্বর (Phone) <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="tel"
+                  required
+                  value={billing.phone}
+                  onChange={(e) => setBilling({ ...billing, phone: e.target.value })}
+                  placeholder="01XXXXXXXXX"
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-foreground mb-1">
+                  ইমেইল ঠিকানা (Email address) <span className="text-destructive">*</span>
+                </label>
+                <input
+                  type="email"
+                  required
+                  value={billing.email}
+                  onChange={(e) => setBilling({ ...billing, email: e.target.value })}
+                  placeholder="yourname@gmail.com"
+                  className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                />
+              </div>
+
+              {!user && (
+                <div>
+                  <label className="block text-xs font-semibold text-foreground mb-1">
+                    অ্যালাকাউন্ট পাসওয়ার্ড তৈরি করুন (Account password) <span className="text-destructive">*</span>
+                  </label>
+                  <input
+                    type="password"
+                    required
+                    value={billing.password}
+                    onChange={(e) => setBilling({ ...billing, password: e.target.value })}
+                    placeholder="••••••••"
+                    className="w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-xs focus:outline-none focus:ring-2 focus:ring-primary"
+                  />
                 </div>
               )}
             </div>
 
-            {/* Form for manual methods */}
-            {method !== "eps" && (
-              <form onSubmit={submit} className="space-y-3">
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">যে নম্বর থেকে পাঠিয়েছেন</label>
-                  <input required value={f.sender_number} onChange={(e) => setF({ ...f, sender_number: e.target.value })}
-                    placeholder="01XXXXXXXXX"
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">Transaction ID</label>
-                  <input required value={f.transaction_id} onChange={(e) => setF({ ...f, transaction_id: e.target.value })}
-                    placeholder="যেমন: 8N7A5B2K1"
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm font-mono focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium mb-1.5">নোট (ঐচ্ছিক)</label>
-                  <textarea rows={2} value={f.note} onChange={(e) => setF({ ...f, note: e.target.value })}
-                    className="w-full rounded-lg border border-border bg-background px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" />
-                </div>
-                {err && <div className="rounded-md bg-destructive/10 text-destructive text-sm p-3">{err}</div>}
-                {!user && (
-                  <div className="rounded-md bg-yellow-500/10 text-yellow-700 dark:text-yellow-500 text-sm p-3">
-                    অর্ডার সাবমিট করতে আগে <Link to="/login" className="underline font-semibold">লগইন</Link> করুন।
-                  </div>
-                )}
-                <button disabled={loading} className="w-full rounded-lg bg-primary text-primary-foreground py-3 font-semibold hover:bg-primary/90 disabled:opacity-60">
-                  {loading ? "সাবমিট হচ্ছে..." : `${taka(amount)} — অর্ডার সাবমিট করুন`}
-                </button>
-              </form>
-            )}
+            {/* Right: Your order & EPS payment */}
+            <div className="space-y-4">
+              <div className="rounded-xl border border-border bg-card p-4 space-y-4 shadow-sm">
+                <h4 className="font-bold text-base text-foreground border-b border-border pb-2">আপনার অর্ডার (Your order)</h4>
 
-            {method === "eps" && err && (
-              <div className="rounded-md bg-destructive/10 text-destructive text-sm p-3 font-medium">
-                {err}
+                <div className="flex items-center justify-between gap-3 text-xs border-b border-border pb-3">
+                  <span className="font-semibold text-foreground line-clamp-1">{course.title} × ১</span>
+                  <span className="font-bold text-foreground">{taka(amount)}</span>
+                </div>
+
+                <div className="space-y-1.5 text-xs border-b border-border pb-3">
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>সাবটোটাল</span>
+                    <span className="font-medium text-foreground">{taka(amount)}</span>
+                  </div>
+                  {discount > 0 && (
+                    <div className="flex justify-between text-green-600 font-semibold">
+                      <span>কুপন ডিসকাউন্ট</span>
+                      <span>- {taka(discount)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between text-sm font-bold text-primary pt-1.5 border-t border-border/60">
+                    <span>সর্বমোট (Total)</span>
+                    <span>{taka(finalAmount)}</span>
+                  </div>
+                </div>
+
+                {/* Coupon */}
+                <div className="flex gap-1.5">
+                  <input
+                    type="text"
+                    value={coupon}
+                    onChange={(e) => setCoupon(e.target.value)}
+                    placeholder="কুপন কোড (Coupon Code)"
+                    disabled={couponApplied}
+                    className="flex-1 rounded-lg border border-border bg-background px-3 py-1.5 text-xs uppercase font-mono"
+                  />
+                  <button
+                    type="button"
+                    onClick={applyCoupon}
+                    disabled={couponApplied}
+                    className="rounded-lg bg-primary text-primary-foreground px-3 py-1.5 text-xs font-bold"
+                  >
+                    {couponApplied ? "কুপন যুক্ত" : "এপ্লাই"}
+                  </button>
+                </div>
+                {couponErr && <div className="text-[11px] text-destructive">{couponErr}</div>}
+
+                {/* EPS Payment Box */}
+                <div className="rounded-xl border border-primary/30 bg-primary/5 p-3.5 space-y-2.5">
+                  <div className="font-bold text-xs text-foreground flex items-center justify-between">
+                    <span>Pay Online With EPS</span>
+                    <span className="text-[9px] bg-primary/20 text-primary font-bold px-1.5 py-0.5 rounded">Verified</span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-snug">
+                    bKash, Nagad, Rocket, Internet Banking বা Credit/Debit Card দিয়ে নিরাপদে পেমেন্ট করুন।
+                  </p>
+                  <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-bold text-muted-foreground">
+                    <span className="rounded bg-background px-1.5 py-0.5 border border-border">bKash</span>
+                    <span className="rounded bg-background px-1.5 py-0.5 border border-border">Nagad</span>
+                    <span className="rounded bg-background px-1.5 py-0.5 border border-border">Rocket</span>
+                    <span className="rounded bg-background px-1.5 py-0.5 border border-border">Visa/Card</span>
+                  </div>
+                </div>
+
+                {/* Terms */}
+                <label className="flex items-start gap-2 text-[11px] text-muted-foreground cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={agreed}
+                    onChange={(e) => setAgreed(e.target.checked)}
+                    className="mt-0.5 h-3.5 w-3.5 text-primary rounded border-border"
+                  />
+                  <span>আমি ব্যবহারের শর্তাবলি, প্রাইভেসি পলিসি ও রিফান্ড পলিসিতে সম্মত *</span>
+                </label>
+
+                {err && <div className="rounded-lg bg-destructive/10 p-2.5 text-xs text-destructive font-medium">{err}</div>}
+
+                {/* Place order button */}
+                <button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full rounded-xl bg-primary text-primary-foreground py-3.5 text-sm font-bold shadow-lg shadow-primary/25 hover:bg-primary/90 transition-all flex items-center justify-center gap-1.5"
+                >
+                  {loading ? "প্রসেসিং হচ্ছে..." : `${taka(finalAmount)} — অর্ডার করুন ➔`}
+                </button>
               </div>
-            )}
-          </div>
+            </div>
+          </form>
         )}
       </div>
     </div>
