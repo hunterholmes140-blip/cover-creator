@@ -35,11 +35,21 @@ export function getEpsConfig(): EpsConfig {
   }
 }
 
-export function saveEpsConfig(cfg: Partial<EpsConfig>): EpsConfig {
+export async function saveEpsConfig(cfg: Partial<EpsConfig>): Promise<EpsConfig> {
   const current = getEpsConfig();
   const next = { ...current, ...cfg };
   if (typeof window !== "undefined") {
     localStorage.setItem(EPS_STORAGE_KEY, JSON.stringify(next));
+  }
+  try {
+    const { api } = await import("./api");
+    await api("admin/content.php", {
+      method: "PUT",
+      auth: true,
+      body: { key: "eps_settings", value: next },
+    });
+  } catch (e) {
+    console.warn("Failed to sync EPS config to database:", e);
   }
   return next;
 }

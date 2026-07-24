@@ -5,6 +5,8 @@ import { useState, useEffect } from "react";
 import { getEpsConfig, saveEpsConfig, type EpsConfig } from "@/lib/eps-client";
 import { ShieldCheck, Zap } from "lucide-react";
 
+import { api } from "@/lib/api";
+
 export const Route = createFileRoute("/admin/payments")({
   component: PaymentsAdmin,
 });
@@ -14,10 +16,19 @@ function PaymentsAdmin() {
   const toast = useToast();
   const [drafts, setDrafts] = useState<Record<string, any>>({});
   const [epsForm, setEpsForm] = useState<EpsConfig>(getEpsConfig());
+  const [epsSaving, setEpsSaving] = useState(false);
   const [epsSaved, setEpsSaved] = useState(false);
 
   useEffect(() => {
-    setEpsForm(getEpsConfig());
+    // Load EPS settings directly from database if available
+    api<{ value: any }>("content.php", { query: { key: "eps_settings" } })
+      .then((res) => {
+        if (res && res.value && typeof res.value === "object") {
+          setEpsForm((prev) => ({ ...prev, ...res.value }));
+          saveEpsConfig(res.value);
+        }
+      })
+      .catch(() => {});
   }, []);
 
   const getVal = (m: any, k: string) => drafts[m.id]?.[k] ?? m[k];
@@ -33,12 +44,19 @@ function PaymentsAdmin() {
     toast.show(`${m.label} আপডেট হয়েছে`);
   };
 
-  const handleSaveEps = (e: React.FormEvent) => {
+  const handleSaveEps = async (e: React.FormEvent) => {
     e.preventDefault();
-    saveEpsConfig(epsForm);
-    setEpsSaved(true);
-    toast.show("EPS পেমেন্ট গেটওয়ে ক্রেডেনশিয়াল সেভ হয়েছে ⚡");
-    setTimeout(() => setEpsSaved(false), 3000);
+    setEpsSaving(true);
+    try {
+      await saveEpsConfig(epsForm);
+      setEpsSaved(true);
+      toast.show("EPS পেমেন্ট গেটওয়ে ক্রেডেনশিয়াল ডাটাবেজে সেভ হয়েছে ⚡");
+      setTimeout(() => setEpsSaved(false), 3000);
+    } catch (err: any) {
+      toast.show("সেভ হতে সমস্যা হয়েছে: " + (err.message || "ত্রুটি"));
+    } finally {
+      setEpsSaving(false);
+    }
   };
 
   return (
