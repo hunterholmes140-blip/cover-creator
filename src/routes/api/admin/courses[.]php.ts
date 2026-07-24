@@ -22,11 +22,11 @@ export const Route = createFileRoute("/api/admin/courses.php")({
           const b = await request.json().catch(() => ({}));
           if (!b.title || !b.slug) return fail(400, "title ও slug প্রয়োজন");
           const res = await exec(
-            `INSERT INTO courses (title, slug, short_description, description, thumbnail, price, discount_price, category_id, instructor, duration, level, is_published, is_featured)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            `INSERT INTO courses (title, slug, short_description, description, thumbnail, preview_video, price, discount_price, category_id, instructor, duration, level, is_published, is_featured)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
               b.title, b.slug, b.short_description ?? null, b.description ?? null,
-              b.thumbnail ?? null, Number(b.price ?? 0), b.discount_price ? Number(b.discount_price) : null,
+              b.thumbnail ?? null, b.preview_video ?? null, Number(b.price ?? 0), b.discount_price ? Number(b.discount_price) : null,
               b.category_id ? Number(b.category_id) : null, b.instructor ?? null, b.duration ?? null,
               b.level ?? "beginner", b.is_published ? 1 : 0, b.is_featured ? 1 : 0,
             ],
@@ -41,10 +41,10 @@ export const Route = createFileRoute("/api/admin/courses.php")({
           const id = Number(b.id);
           if (!id) return fail(400, "id প্রয়োজন");
           await exec(
-            `UPDATE courses SET title=?, slug=?, short_description=?, description=?, thumbnail=?, price=?, discount_price=?, category_id=?, instructor=?, duration=?, level=?, is_published=?, is_featured=? WHERE id=?`,
+            `UPDATE courses SET title=?, slug=?, short_description=?, description=?, thumbnail=?, preview_video=?, price=?, discount_price=?, category_id=?, instructor=?, duration=?, level=?, is_published=?, is_featured=? WHERE id=?`,
             [
               b.title, b.slug, b.short_description ?? null, b.description ?? null,
-              b.thumbnail ?? null, Number(b.price ?? 0), b.discount_price ? Number(b.discount_price) : null,
+              b.thumbnail ?? null, b.preview_video ?? null, Number(b.price ?? 0), b.discount_price ? Number(b.discount_price) : null,
               b.category_id ? Number(b.category_id) : null, b.instructor ?? null, b.duration ?? null,
               b.level ?? "beginner", b.is_published ? 1 : 0, b.is_featured ? 1 : 0, id,
             ],

@@ -70,6 +70,7 @@ CREATE TABLE `courses` (
   `short_description` VARCHAR(300) DEFAULT NULL,
   `description` TEXT,
   `thumbnail` VARCHAR(255) DEFAULT NULL,
+  `preview_video` VARCHAR(500) DEFAULT NULL,
   `price` DECIMAL(10,2) NOT NULL DEFAULT 0,
   `discount_price` DECIMAL(10,2) DEFAULT NULL,
   `category_id` INT UNSIGNED DEFAULT NULL,
