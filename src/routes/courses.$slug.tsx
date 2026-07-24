@@ -441,73 +441,112 @@ function CourseDetailPage() {
   );
 }
 
+// ---------------- YouTube & Video Helpers ----------------
+function extractYouTubeId(url: string): string | null {
+  if (!url) return null;
+  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+  return match ? match[1] : null;
+}
+
+function getYouTubeThumbnailUrl(url: string): string | null {
+  const videoId = extractYouTubeId(url);
+  return videoId ? `https://img.youtube.com/vi/${videoId}/hqdefault.jpg` : null;
+}
+
+function getYouTubeEmbedUrl(url: string): string {
+  const videoId = extractYouTubeId(url);
+  if (videoId) {
+    return `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0`;
+  }
+  if (url.includes("vimeo.com/")) {
+    const vimeoId = url.split("vimeo.com/")[1]?.split("?")[0];
+    return `https://player.vimeo.com/video/${vimeoId}?autoplay=1`;
+  }
+  return url;
+}
+
 // ---------------- Course Media Preview Component ----------------
 function CourseMediaPreview({ course, hasDiscount, discountPct }: { course: any; hasDiscount: boolean; discountPct: number }) {
-  const [playing, setPlaying] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   const videoUrl = course.preview_video || course.promo_video_url || "";
 
-  const getEmbedUrl = (url: string) => {
-    if (url.includes("youtube.com/watch?v=")) {
-      return url.replace("watch?v=", "embed/").split("&")[0] + "?autoplay=1";
-    }
-    if (url.includes("youtu.be/")) {
-      return url.replace("youtu.be/", "youtube.com/embed/") + "?autoplay=1";
-    }
-    return url;
-  };
-
-  if (playing && videoUrl) {
-    return (
-      <div className="aspect-video w-full bg-black relative">
-        <iframe
-          src={getEmbedUrl(videoUrl)}
-          className="w-full h-full border-0"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-          allowFullScreen
-          title="Course Promo Video"
-        />
-        <button
-          onClick={() => setPlaying(false)}
-          className="absolute top-2 right-2 bg-black/80 text-white rounded-full p-1.5 hover:bg-black transition-colors"
-        >
-          <X className="h-4 w-4" />
-        </button>
-      </div>
-    );
-  }
+  const ytThumbnail = getYouTubeThumbnailUrl(videoUrl);
+  const displayThumbnail = course.thumbnail || ytThumbnail;
 
   return (
-    <div className="aspect-video bg-gradient-to-br from-primary/30 via-primary/10 to-background grid place-items-center relative group">
-      {course.thumbnail ? (
-        <img src={course.thumbnail} className="h-full w-full object-cover" alt={course.title} />
-      ) : (
-        <div className="flex flex-col items-center justify-center p-4 text-center">
-          <div className="text-lg font-bold text-primary">{course.title}</div>
-          <span className="text-xs text-muted-foreground">NextScale Course</span>
+    <>
+      <div className="aspect-video bg-gradient-to-br from-primary/30 via-primary/10 to-background grid place-items-center relative group overflow-hidden">
+        {displayThumbnail ? (
+          <img
+            src={displayThumbnail}
+            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+            alt={course.title}
+          />
+        ) : (
+          <div className="flex flex-col items-center justify-center p-4 text-center">
+            <div className="text-lg font-bold text-primary">{course.title}</div>
+            <span className="text-xs text-muted-foreground">NextScale Course</span>
+          </div>
+        )}
+
+        {/* Our Custom Styled Play Button Overlay */}
+        {videoUrl ? (
+          <button
+            type="button"
+            onClick={() => setShowModal(true)}
+            className="absolute inset-0 grid place-items-center bg-black/30 group-hover:bg-black/45 transition-all cursor-pointer"
+          >
+            <div className="h-16 w-16 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-2xl transform group-hover:scale-110 transition-transform border-2 border-white/20">
+              <PlayCircle className="h-9 w-9 ml-0.5" />
+            </div>
+            <span className="absolute bottom-3 bg-black/80 text-white text-[11px] font-bold rounded-full px-3.5 py-1 backdrop-blur border border-white/10 shadow-lg">
+              ▶️ ট্রেলার ভিডিও প্লে করুন
+            </span>
+          </button>
+        ) : null}
+
+        {hasDiscount && (
+          <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold rounded-full px-2.5 py-1 shadow">
+            {toBn(discountPct)}% ছাড়
+          </span>
+        )}
+      </div>
+
+      {/* Pop-up Video Modal */}
+      {showModal && videoUrl && (
+        <div
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+          onClick={() => setShowModal(false)}
+        >
+          <div
+            className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between px-4 py-3 bg-neutral-900 border-b border-neutral-800 text-white">
+              <div className="font-bold text-sm truncate flex items-center gap-2">
+                <PlayCircle className="h-4 w-4 text-primary" /> {course.title} — ট্রেলার ভিডিও
+              </div>
+              <button
+                type="button"
+                onClick={() => setShowModal(false)}
+                className="rounded-full p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+              >
+                <X className="h-5 w-5" />
+              </button>
+            </div>
+            <div className="aspect-video w-full bg-black">
+              <iframe
+                src={getYouTubeEmbedUrl(videoUrl)}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                title={course.title}
+              />
+            </div>
+          </div>
         </div>
       )}
-
-      {/* Show play icon ONLY IF a preview video URL is provided by admin */}
-      {videoUrl ? (
-        <button
-          onClick={() => setPlaying(true)}
-          className="absolute inset-0 grid place-items-center bg-black/30 group-hover:bg-black/40 transition-colors cursor-pointer"
-        >
-          <div className="h-14 w-14 rounded-full bg-primary text-primary-foreground grid place-items-center shadow-xl transform group-hover:scale-110 transition-transform">
-            <PlayCircle className="h-8 w-8 ml-0.5" />
-          </div>
-          <span className="absolute bottom-3 bg-black/70 text-white text-[11px] font-semibold rounded-full px-3 py-1 backdrop-blur">
-            ▶️ ট্রেলার ভিডিও প্লে করুন
-          </span>
-        </button>
-      ) : null}
-
-      {hasDiscount && (
-        <span className="absolute top-3 left-3 bg-red-500 text-white text-xs font-bold rounded-full px-2.5 py-1 shadow">
-          {toBn(discountPct)}% ছাড়
-        </span>
-      )}
-    </div>
+    </>
   );
 }
 
