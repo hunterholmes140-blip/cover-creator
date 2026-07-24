@@ -281,29 +281,49 @@ function CategoryAutoScroll({ categories }: { categories: any[] }) {
   );
 }
 
-function AutoScrollingTrainers({ trainers, TrainerCard }: { trainers: any[]; TrainerCard: any }) {
+function AutoScrollingCarousel<T>({
+  items,
+  renderItem,
+  itemClassName = "w-[80vw] max-w-[280px] flex-shrink-0 snap-center",
+  intervalMs = 3000,
+}: {
+  items: T[];
+  renderItem: (item: T, idx: number) => React.ReactNode;
+  itemClassName?: string;
+  intervalMs?: number;
+}) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isPaused, setIsPaused] = useState(false);
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el || trainers.length <= 1) return;
+    if (!el || items.length <= 1) return;
 
-    const interval = setInterval(() => {
+    const timer = setInterval(() => {
       if (isPaused) return;
 
-      const cardWidth = el.firstElementChild ? (el.firstElementChild as HTMLElement).offsetWidth + 24 : 260;
-      const maxScrollLeft = el.scrollWidth - el.clientWidth;
+      const children = Array.from(el.children) as HTMLElement[];
+      if (!children.length) return;
 
-      if (el.scrollLeft + cardWidth >= maxScrollLeft - 10) {
-        el.scrollTo({ left: 0, behavior: "smooth" });
-      } else {
-        el.scrollBy({ left: cardWidth, behavior: "smooth" });
+      let currentIdx = 0;
+      let minDiff = Infinity;
+      children.forEach((child, i) => {
+        const diff = Math.abs(child.offsetLeft - el.offsetLeft - el.scrollLeft);
+        if (diff < minDiff) {
+          minDiff = diff;
+          currentIdx = i;
+        }
+      });
+
+      const nextIdx = (currentIdx + 1) % items.length;
+      const targetChild = children[nextIdx];
+      if (targetChild) {
+        el.scrollTo({ left: targetChild.offsetLeft - el.offsetLeft, behavior: "smooth" });
       }
-    }, 2800);
+    }, intervalMs);
 
-    return () => clearInterval(interval);
-  }, [isPaused, trainers.length]);
+    return () => clearInterval(timer);
+  }, [isPaused, items.length, intervalMs]);
 
   return (
     <div
@@ -311,15 +331,26 @@ function AutoScrollingTrainers({ trainers, TrainerCard }: { trainers: any[]; Tra
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
-      onTouchEnd={() => setTimeout(() => setIsPaused(false), 2000)}
-      className="mt-8 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-6 justify-start max-w-3xl mx-auto"
+      onTouchEnd={() => setTimeout(() => setIsPaused(false), 2500)}
+      className="mt-6 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-5 justify-start"
     >
-      {trainers.map((t: any) => (
-        <div key={t.id} className="w-[75vw] sm:w-[240px] max-w-[240px] flex-shrink-0 snap-center">
-          <TrainerCard t={t} />
+      {items.map((item, idx) => (
+        <div key={idx} className={itemClassName}>
+          {renderItem(item, idx)}
         </div>
       ))}
     </div>
+  );
+}
+
+function AutoScrollingTrainers({ trainers, TrainerCard }: { trainers: any[]; TrainerCard: any }) {
+  return (
+    <AutoScrollingCarousel
+      items={trainers}
+      itemClassName="w-[75vw] sm:w-[240px] max-w-[240px] flex-shrink-0 snap-center"
+      intervalMs={2800}
+      renderItem={(t) => <TrainerCard t={t} />}
+    />
   );
 }
 
@@ -634,7 +665,41 @@ function HomePage() {
           <h2 className="text-2xl md:text-3xl font-bold">{c.sectionTestimonialsTitle}</h2>
           <p className="mt-2 text-muted-foreground">{c.sectionTestimonialsSubtitle}</p>
         </div>
-        <div className="mt-10 grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+
+        {/* Mobile View: Auto-Scrolling 1 Review at a time */}
+        <div className="mt-8 md:hidden">
+          <AutoScrollingCarousel
+            items={testimonials.testimonials}
+            itemClassName="w-[85vw] max-w-[320px] flex-shrink-0 snap-center"
+            intervalMs={3200}
+            renderItem={(t) => (
+              <div className="rounded-xl border border-border bg-card p-6 flex flex-col h-full shadow-sm">
+                <div className="flex gap-0.5 text-amber-500">
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <Star key={i} className={`h-4 w-4 ${i < t.rating ? "fill-current" : "opacity-30"}`} />
+                  ))}
+                </div>
+                <p className="mt-4 text-sm text-foreground/90 leading-relaxed flex-1">"{t.comment}"</p>
+                <div className="mt-5 pt-4 border-t border-border flex items-center gap-3">
+                  {t.avatar_image ? (
+                    <img src={t.avatar_image} alt={t.name} loading="lazy" className="h-10 w-10 rounded-full object-cover" />
+                  ) : (
+                    <div className={`h-10 w-10 rounded-full bg-gradient-to-br ${t.avatar_color} grid place-items-center text-white font-bold`}>
+                      {t.name.charAt(0)}
+                    </div>
+                  )}
+                  <div>
+                    <div className="font-semibold text-sm">{t.name}</div>
+                    <div className="text-xs text-muted-foreground">{t.role}</div>
+                  </div>
+                </div>
+              </div>
+            )}
+          />
+        </div>
+
+        {/* Desktop View: Grid */}
+        <div className="mt-10 hidden md:grid md:grid-cols-2 lg:grid-cols-3 gap-5">
           {testimonials.testimonials.map((t) => (
             <div key={t.id} className="rounded-xl border border-border bg-card p-6 flex flex-col">
               <div className="flex gap-0.5 text-amber-500">
