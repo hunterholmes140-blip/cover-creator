@@ -3,7 +3,7 @@ import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
 import {
   Clock, User, GraduationCap, PlayCircle, Lock, CheckCircle2, ArrowRight,
-  Star, Users, Award, Globe, ShieldCheck, X, Copy, Check, ChevronDown, Zap, ExternalLink, CreditCard, MessageCircle,
+  Star, Users, Award, Globe, ShieldCheck, X, Copy, Check, ChevronDown, Zap, ExternalLink, CreditCard, MessageCircle, Sparkles,
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { api, ApiError, getStoredUser } from "@/lib/api";
@@ -124,9 +124,9 @@ function CourseDetailPage() {
   return (
     <SiteLayout>
       {/* HERO */}
-      <section className="relative bg-gradient-to-b from-primary/5 via-background to-background border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-8 lg:py-12 grid lg:grid-cols-[1fr_400px] gap-8 lg:gap-12">
-          <div>
+      <section className="relative bg-gradient-to-b from-primary/10 via-background to-background border-b border-border py-8 lg:py-12">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[1fr_400px] gap-8 lg:gap-12 items-start">
+          <div className="space-y-6">
             <nav className="flex items-center gap-2 text-xs text-muted-foreground">
               <Link to="/" className="hover:text-primary">হোম</Link>
               <span>/</span>
@@ -134,7 +134,7 @@ function CourseDetailPage() {
               {course.category_name && (
                 <>
                   <span>/</span>
-                  <span className="text-foreground truncate">{course.category_name}</span>
+                  <span className="text-foreground truncate font-medium">{course.category_name}</span>
                 </>
               )}
             </nav>
@@ -143,76 +143,110 @@ function CourseDetailPage() {
               <Link
                 to="/courses"
                 search={{ category: course.category_slug }}
-                className="inline-block mt-4 text-xs font-medium text-primary bg-primary/10 rounded-full px-3 py-1"
+                className="inline-block text-xs font-semibold text-primary bg-primary/10 rounded-full px-3 py-1 border border-primary/20 hover:bg-primary/20 transition-colors"
               >
-                {course.category_name}
+                🏷️ {course.category_name}
               </Link>
             )}
-            <h1 className="mt-3 text-3xl md:text-4xl lg:text-5xl font-bold leading-tight">
+
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight text-foreground tracking-tight">
               {course.title}
             </h1>
+
             {course.short_description && (
-              <p className="mt-4 text-base md:text-lg text-muted-foreground leading-relaxed">
+              <p className="text-base md:text-lg text-muted-foreground leading-relaxed">
                 {course.short_description}
               </p>
             )}
 
-            <div className="mt-5 flex flex-wrap items-center gap-4 text-sm">
-              <div className="flex items-center gap-1.5">
+            {/* Ratings & Enrolled Badges */}
+            <div className="flex flex-wrap items-center gap-3 text-sm pt-1 border-t border-border/60">
+              <div className="flex items-center gap-1.5 bg-yellow-500/10 px-3 py-1 rounded-full border border-yellow-500/20">
                 <div className="flex">
                   {[1, 2, 3, 4, 5].map((i) => (
-                    <Star key={i} className="h-4 w-4 fill-yellow-400 text-yellow-400" />
+                    <Star key={i} className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" />
                   ))}
                 </div>
-                <span className="font-semibold">৪.৮</span>
-                <span className="text-muted-foreground">({toBn(120)}+ রিভিউ)</span>
+                <span className="font-bold text-yellow-700 dark:text-yellow-400 text-xs">৪.৮</span>
+                <span className="text-xs text-muted-foreground">({toBn(120)}+ রিভিউ)</span>
               </div>
-              <span className="text-muted-foreground inline-flex items-center gap-1.5">
-                <Users className="h-4 w-4" /> {toBn(500)}+ শিক্ষার্থী
+
+              <span className="text-foreground text-xs font-semibold inline-flex items-center gap-1.5 bg-primary/5 px-3 py-1 rounded-full border border-primary/10">
+                <Users className="h-4 w-4 text-primary" /> {toBn(500)}+ শিক্ষার্থী এনরোল্ড
               </span>
             </div>
 
-            <div className="mt-4 flex flex-wrap gap-4 text-sm text-muted-foreground">
+            {/* Grid of Key Info Cards (Instructor, Duration, Level, Language) */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
               {course.instructor && (
-                <span className="inline-flex items-center gap-1.5">
-                  <User className="h-4 w-4" /> {course.instructor}
-                </span>
+                <div className="rounded-xl border border-border bg-card/60 p-3.5 space-y-1 shadow-sm">
+                  <div className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+                    <User className="h-3.5 w-3.5 text-primary" /> ইন্সট্রাক্টর
+                  </div>
+                  <div className="text-xs font-bold text-foreground truncate">{course.instructor}</div>
+                </div>
               )}
               {course.duration && (
-                <span className="inline-flex items-center gap-1.5">
-                  <Clock className="h-4 w-4" /> {course.duration}
-                </span>
+                <div className="rounded-xl border border-border bg-card/60 p-3.5 space-y-1 shadow-sm">
+                  <div className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+                    <Clock className="h-3.5 w-3.5 text-primary" /> সময়কাল
+                  </div>
+                  <div className="text-xs font-bold text-foreground truncate">{course.duration}</div>
+                </div>
               )}
               {course.level && (
-                <span className="inline-flex items-center gap-1.5">
-                  <GraduationCap className="h-4 w-4" /> {levelLabel(course.level)}
-                </span>
+                <div className="rounded-xl border border-border bg-card/60 p-3.5 space-y-1 shadow-sm">
+                  <div className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+                    <GraduationCap className="h-3.5 w-3.5 text-primary" /> লেভেল
+                  </div>
+                  <div className="text-xs font-bold text-foreground truncate">{levelLabel(course.level)}</div>
+                </div>
               )}
-              <span className="inline-flex items-center gap-1.5">
-                <Globe className="h-4 w-4" /> বাংলা
-              </span>
+              <div className="rounded-xl border border-border bg-card/60 p-3.5 space-y-1 shadow-sm">
+                <div className="text-[11px] text-muted-foreground font-medium flex items-center gap-1">
+                  <Globe className="h-3.5 w-3.5 text-primary" /> ভাষা
+                </div>
+                <div className="text-xs font-bold text-foreground">বাংলা</div>
+              </div>
             </div>
 
-            <div className="mt-6 flex flex-wrap gap-3 lg:hidden">
-              <div className="flex items-baseline gap-2">
-                <span className="text-2xl font-bold text-primary">{taka(price)}</span>
-                {hasDiscount && (
-                  <span className="text-base text-muted-foreground line-through">
-                    {taka(course.price)}
-                  </span>
-                )}
+            {/* Key Highlights Quick Box */}
+            <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 md:p-5 space-y-3 shadow-sm">
+              <div className="text-xs font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                <Sparkles className="h-4 w-4" /> এই কোর্সের বিশেষত্ব (Highlights)
+              </div>
+              <div className="grid sm:grid-cols-2 gap-2.5 text-xs text-foreground font-medium">
+                {highlights.slice(0, 4).map((h, i) => (
+                  <div key={i} className="flex items-center gap-2">
+                    <CheckCircle2 className="h-4 w-4 text-green-600 shrink-0" />
+                    <span>{h}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Mobile price & action */}
+            <div className="flex items-center justify-between gap-3 p-4 rounded-xl bg-card border border-border lg:hidden shadow-sm">
+              <div>
+                <div className="text-xs text-muted-foreground">কোর্স ফি</div>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-2xl font-bold text-primary">{taka(price)}</span>
+                  {hasDiscount && (
+                    <span className="text-sm text-muted-foreground line-through">{taka(course.price)}</span>
+                  )}
+                </div>
               </div>
               {enrolled ? (
                 <Link
                   to="/dashboard"
-                  className="ml-auto rounded-lg bg-primary text-primary-foreground px-5 py-2.5 font-semibold"
+                  className="rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-xs font-bold shadow"
                 >
                   কোর্স শুরু করুন →
                 </Link>
               ) : (
                 <button
                   onClick={openEnroll}
-                  className="ml-auto rounded-lg bg-primary text-primary-foreground px-5 py-2.5 font-semibold"
+                  className="rounded-xl bg-primary text-primary-foreground px-5 py-2.5 text-xs font-bold shadow hover:bg-primary/90"
                 >
                   এখনই এনরোল করুন
                 </button>
