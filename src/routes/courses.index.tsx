@@ -131,7 +131,7 @@ function CoursesPage() {
                 <p className="mt-1 text-sm">আপনার অনুসন্ধান বা ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।</p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5 sm:gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-3 sm:gap-6">
                 {data.courses.map((c) => (
                   <CourseCard key={c.id} course={c} />
                 ))}
