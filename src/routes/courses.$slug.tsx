@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useSuspenseQuery, queryOptions } from "@tanstack/react-query";
 import { useEffect, useMemo, useState } from "react";
+import { createPortal } from "react-dom";
 import {
   Clock, User, GraduationCap, PlayCircle, Lock, CheckCircle2, ArrowRight,
   Star, Users, Award, Globe, ShieldCheck, X, Copy, Check, ChevronDown, Zap, ExternalLink, CreditCard, MessageCircle, Sparkles,
@@ -512,40 +513,44 @@ function CourseMediaPreview({ course, hasDiscount, discountPct }: { course: any;
         )}
       </div>
 
-      {/* Pop-up Video Modal */}
-      {showModal && videoUrl && (
-        <div
-          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
-          onClick={() => setShowModal(false)}
-        >
-          <div
-            className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/10"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className="flex items-center justify-between px-4 py-3 bg-neutral-900 border-b border-neutral-800 text-white">
-              <div className="font-bold text-sm truncate flex items-center gap-2">
-                <PlayCircle className="h-4 w-4 text-primary" /> {course.title} — ট্রেলার ভিডিও
-              </div>
-              <button
-                type="button"
-                onClick={() => setShowModal(false)}
-                className="rounded-full p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+      {/* Pop-up Video Modal rendered via createPortal directly on document.body */}
+      {showModal && videoUrl && typeof document !== "undefined"
+        ? createPortal(
+            <div
+              className="fixed inset-0 z-[99999] bg-black/85 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+              style={{ top: 0, left: 0, right: 0, bottom: 0, width: "100vw", height: "100vh" }}
+              onClick={() => setShowModal(false)}
+            >
+              <div
+                className="relative w-full max-w-4xl bg-black rounded-2xl overflow-hidden shadow-2xl border border-white/20"
+                onClick={(e) => e.stopPropagation()}
               >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <div className="aspect-video w-full bg-black">
-              <iframe
-                src={getYouTubeEmbedUrl(videoUrl)}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={course.title}
-              />
-            </div>
-          </div>
-        </div>
-      )}
+                <div className="flex items-center justify-between px-5 py-3.5 bg-neutral-900 border-b border-neutral-800 text-white">
+                  <div className="font-bold text-sm truncate flex items-center gap-2">
+                    <PlayCircle className="h-4.5 w-4.5 text-primary" /> {course.title} — ট্রেলার ভিডিও
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setShowModal(false)}
+                    className="rounded-full p-1.5 text-neutral-400 hover:text-white hover:bg-neutral-800 transition-colors"
+                  >
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <div className="aspect-video w-full bg-black">
+                  <iframe
+                    src={getYouTubeEmbedUrl(videoUrl)}
+                    className="w-full h-full border-0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen
+                    title={course.title}
+                  />
+                </div>
+              </div>
+            </div>,
+            document.body
+          )
+        : null}
     </>
   );
 }
