@@ -523,14 +523,21 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
 
   const finalAmount = Math.max(0, amount - discount);
 
-  const applyCoupon = () => {
+  const applyCoupon = async () => {
     setCouponErr(null);
     if (!coupon.trim()) return;
-    if (coupon.trim().toUpperCase() === "NEXT500") {
-      setDiscount(500);
-      setCouponApplied(true);
-    } else {
-      setCouponErr("কুপন কোডটি সঠিক নয় বা মেয়াদ শেষ।");
+    try {
+      const res = await api<{ calculated_discount: number; code: string }>("coupons/validate.php", {
+        query: { code: coupon.trim(), amount: String(amount) },
+      });
+      if (res && res.calculated_discount) {
+        setDiscount(res.calculated_discount);
+        setCouponApplied(true);
+      } else {
+        throw new Error("কুপন কোড সঠিক নয়");
+      }
+    } catch (err: any) {
+      setCouponErr(err.message || "কুপন কোডটি সঠিক নয় বা মেয়াদ শেষ।");
     }
   };
 

@@ -189,3 +189,19 @@ CREATE TABLE IF NOT EXISTS site_content (
     content_json LONGTEXT NOT NULL,
     updated_at   TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ---------- COUPONS ----------
+CREATE TABLE IF NOT EXISTS `coupons` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `code` VARCHAR(50) NOT NULL UNIQUE,
+  `discount_type` ENUM('fixed', 'percent') NOT NULL DEFAULT 'fixed',
+  `discount_value` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+  `max_uses` INT UNSIGNED DEFAULT NULL,
+  `used_count` INT UNSIGNED NOT NULL DEFAULT 0,
+  `expiry_date` DATE DEFAULT NULL,
+  `is_active` TINYINT(1) NOT NULL DEFAULT 1,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  INDEX `idx_coupon_code` (`code`),
+  INDEX `idx_coupon_active` (`is_active`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
