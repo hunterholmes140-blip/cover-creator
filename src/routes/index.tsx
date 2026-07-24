@@ -281,6 +281,48 @@ function CategoryAutoScroll({ categories }: { categories: any[] }) {
   );
 }
 
+function AutoScrollingTrainers({ trainers, TrainerCard }: { trainers: any[]; TrainerCard: any }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [isPaused, setIsPaused] = useState(false);
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el || trainers.length <= 1) return;
+
+    const interval = setInterval(() => {
+      if (isPaused) return;
+
+      const cardWidth = el.firstElementChild ? (el.firstElementChild as HTMLElement).offsetWidth + 24 : 260;
+      const maxScrollLeft = el.scrollWidth - el.clientWidth;
+
+      if (el.scrollLeft + cardWidth >= maxScrollLeft - 10) {
+        el.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        el.scrollBy({ left: cardWidth, behavior: "smooth" });
+      }
+    }, 2800);
+
+    return () => clearInterval(interval);
+  }, [isPaused, trainers.length]);
+
+  return (
+    <div
+      ref={containerRef}
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setTimeout(() => setIsPaused(false), 2000)}
+      className="mt-8 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-6 justify-start max-w-3xl mx-auto"
+    >
+      {trainers.map((t: any) => (
+        <div key={t.id} className="w-[75vw] sm:w-[240px] max-w-[240px] flex-shrink-0 snap-center">
+          <TrainerCard t={t} />
+        </div>
+      ))}
+    </div>
+  );
+}
+
 function HomePage() {
   const { data: featured } = useSuspenseQuery(featuredQuery);
   const { data: cats } = useSuspenseQuery(categoriesQuery);
@@ -566,33 +608,8 @@ function HomePage() {
                   <span className="h-px w-16 bg-border" />
                 </div>
 
-                {/* Mobile View: Horizontal Scrollable Row (1 line with snap) */}
-                <div className="mt-8 sm:hidden overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-6 justify-start">
-                  {rest.map((t: any) => (
-                    <div key={t.id} className="w-[75vw] max-w-[240px] flex-shrink-0 snap-center">
-                      <TrainerCard t={t} />
-                    </div>
-                  ))}
-                </div>
-
-                {/* Desktop View: Grid or Carousel */}
-                <div className="hidden sm:block">
-                  {rest.length <= 3 ? (
-                    <div className="mt-8 grid grid-cols-3 gap-8 max-w-3xl mx-auto">
-                      {rest.map((t: any) => <TrainerCard key={t.id} t={t} />)}
-                    </div>
-                  ) : (
-                    <div className="mt-8 max-w-3xl mx-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:thin]">
-                      <div className="grid grid-flow-col auto-cols-[minmax(0,33.333%)] gap-8 pb-3">
-                        {rest.map((t: any) => (
-                          <div key={t.id} className="snap-center">
-                            <TrainerCard t={t} />
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-                </div>
+                {/* Auto-Scrolling Trainer Row for Mobile & Desktop */}
+                <AutoScrollingTrainers trainers={rest} TrainerCard={TrainerCard} />
 
 
                 <div className="mt-10 text-center">
