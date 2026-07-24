@@ -155,22 +155,33 @@ function TrainersPage() {
             <span className="h-px w-16 bg-border" />
           </div>
 
-          {/* Trainer row — 3 aligned with mentor; horizontal scroll if more */}
-          {rest.length <= 3 ? (
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-8 max-w-3xl mx-auto">
-              {rest.map((t) => <TrainerCard key={t.id} t={t} />)}
-            </div>
-          ) : (
-            <div className="mt-8 max-w-3xl mx-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:thin]">
-              <div className="grid grid-flow-col auto-cols-[minmax(0,33.333%)] gap-8 pb-3">
-                {rest.map((t) => (
-                  <div key={t.id} className="snap-center">
-                    <TrainerCard t={t} />
-                  </div>
-                ))}
+          {/* Mobile View: Horizontal Scrollable Row (1 line with snap) */}
+          <div className="mt-8 sm:hidden overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-6 justify-start">
+            {rest.map((t) => (
+              <div key={t.id} className="w-[75vw] max-w-[240px] flex-shrink-0 snap-center">
+                <TrainerCard t={t} />
               </div>
-            </div>
-          )}
+            ))}
+          </div>
+
+          {/* Desktop View: Grid or Carousel */}
+          <div className="hidden sm:block">
+            {rest.length <= 3 ? (
+              <div className="mt-8 grid grid-cols-3 gap-8 max-w-3xl mx-auto">
+                {rest.map((t) => <TrainerCard key={t.id} t={t} />)}
+              </div>
+            ) : (
+              <div className="mt-8 max-w-3xl mx-auto overflow-x-auto scroll-smooth snap-x snap-mandatory [scrollbar-width:thin]">
+                <div className="grid grid-flow-col auto-cols-[minmax(0,33.333%)] gap-8 pb-3">
+                  {rest.map((t) => (
+                    <div key={t.id} className="snap-center">
+                      <TrainerCard t={t} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </section>
     </SiteLayout>
