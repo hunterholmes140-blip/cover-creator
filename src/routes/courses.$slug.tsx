@@ -17,11 +17,35 @@ import { getEpsConfig, epsInitializePayment } from "@/lib/eps-client";
 const detailQuery = (slug: string) =>
   queryOptions({
     queryKey: ["course", slug],
-    queryFn: () =>
-      api<{ course: any; lessons: any[]; enrolled: boolean }>("courses/detail.php", {
-        query: { slug },
-        auth: true,
-      }),
+    queryFn: async () => {
+      try {
+        return await api<{ course: any; lessons: any[]; enrolled: boolean }>("courses/detail.php", {
+          query: { slug },
+          auth: true,
+        });
+      } catch (err: any) {
+        if (typeof window !== "undefined") {
+          try {
+            const raw = localStorage.getItem("live_courses_v1");
+            if (raw) {
+              const list = JSON.parse(raw);
+              const targetSlug = decodeURIComponent(slug).trim().toLowerCase();
+              const found = list.find(
+                (c: any) => c.slug && c.slug.trim().toLowerCase() === targetSlug
+              );
+              if (found) {
+                return {
+                  course: found,
+                  lessons: found.lessons || [],
+                  enrolled: false,
+                };
+              }
+            }
+          } catch {}
+        }
+        throw err;
+      }
+    },
   });
 
 export const Route = createFileRoute("/courses/$slug")({

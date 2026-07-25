@@ -11,12 +11,22 @@ export const Route = createFileRoute("/api/courses/detail.php")({
           const slug = url.searchParams.get("slug");
           if (!slug) return fail(400, "slug প্রয়োজন");
 
-          const course = await qOne(
+          let course = await qOne(
             `SELECT c.*, cat.slug AS category_slug, cat.name AS category_name
              FROM courses c LEFT JOIN categories cat ON cat.id = c.category_id
-             WHERE c.slug = ? AND c.is_published = 1 LIMIT 1`,
+             WHERE c.slug = ? LIMIT 1`,
             [slug],
           );
+
+          if (!course) {
+            course = await qOne(
+              `SELECT c.*, cat.slug AS category_slug, cat.name AS category_name
+               FROM courses c LEFT JOIN categories cat ON cat.id = c.category_id
+               WHERE LOWER(TRIM(c.slug)) = LOWER(TRIM(?)) LIMIT 1`,
+              [slug],
+            );
+          }
+
           if (!course) return fail(404, "কোর্স পাওয়া যায়নি");
 
           if (course.badge && typeof course.badge === "string") {
