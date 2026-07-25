@@ -345,17 +345,15 @@ function CourseDetailPage() {
           </section>
 
           {/* CURRICULUM & MODULES */}
-          <section id="curriculum" className="mt-12 scroll-mt-32">
-            <div className="flex items-end justify-between mb-5">
-              <div>
-                <h2 className="text-2xl font-bold">কোর্স মডিউল ও কারিকুলাম</h2>
-                <p className="mt-1 text-sm text-muted-foreground">
-                  {course.modules && course.modules.length > 0
-                    ? `${toBn(course.modules.length)}টি মডিউল`
-                    : `${toBn(lessons.length)}টি লেসন`}
-                  {course.duration ? ` • ${course.duration}` : ""}
-                </p>
-              </div>
+          <section id="curriculum" className="mt-12 scroll-mt-32 max-w-3xl mx-auto">
+            <div className="text-center mb-6">
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground">কোর্স মডিউল ও কারিকুলাম</h2>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {course.modules && course.modules.length > 0
+                  ? `${toBn(course.modules.length)}টি মডিউল`
+                  : `${toBn(lessons.length)}টি লেসন`}
+                {course.duration ? ` • ${course.duration}` : ""}
+              </p>
             </div>
 
             {/* Modules Accordion (Dropdowns) */}
@@ -598,7 +596,26 @@ function ModuleAccordionItem({ module, index }: { module: any; index: number }) 
     ? module.topics.split("\n")
     : [];
   const topics = rawTopics.map((t: string) => t.trim()).filter(Boolean);
-  const modNo = module.module_no || `Module-${String(index + 1).padStart(2, "0")}`;
+
+  let rawModNo = (module.module_no || "").trim();
+  let rawTitle = (module.title || "").trim();
+
+  const defaultModNo = `Module-${String(index + 1).padStart(2, "0")}`;
+
+  // Fix cases where title was entered in module_no or placeholder "মডিউল শিরোনাম লিখুন" was saved
+  let finalModNo = rawModNo || defaultModNo;
+  let finalTitle = rawTitle;
+
+  if (rawTitle === "মডিউল শিরোনাম লিখুন" || !rawTitle) {
+    if (rawModNo && rawModNo.length > 10 && !/^(module|মডিউল)[-\s]*\d+$/i.test(rawModNo)) {
+      finalTitle = rawModNo;
+      finalModNo = defaultModNo;
+    } else {
+      finalTitle = "";
+    }
+  }
+
+  const displayTitle = finalTitle || (finalModNo !== defaultModNo ? finalModNo : `Module ${String(index + 1).padStart(2, "0")}`);
 
   return (
     <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm transition-all hover:border-primary/30">
@@ -607,12 +624,12 @@ function ModuleAccordionItem({ module, index }: { module: any; index: number }) 
         onClick={() => setOpen(!open)}
         className="w-full flex items-center justify-between gap-4 p-4 text-left hover:bg-accent/40 transition-colors"
       >
-        <div className="flex items-center gap-3 flex-wrap flex-1">
-          <span className="rounded-lg bg-primary/10 text-primary font-mono text-xs font-bold px-2.5 py-1">
-            {modNo}
+        <div className="flex items-center gap-3 flex-wrap flex-1 min-w-0">
+          <span className="rounded-lg bg-primary/10 text-primary font-mono text-xs font-bold px-2.5 py-1 shrink-0">
+            {finalModNo}
           </span>
           <h3 className="font-bold text-base text-foreground leading-snug">
-            {module.title}
+            {displayTitle}
           </h3>
         </div>
         <div className="flex items-center gap-2 shrink-0">

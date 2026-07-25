@@ -370,7 +370,7 @@ export function CourseForm({
                 {
                   id: Date.now(),
                   module_no: `Module-${num}`,
-                  title: "মডিউল শিরোনাম লিখুন",
+                  title: "",
                   topics: [
                     "টপিক ১ — বিবরণ লিখুন",
                     "টপিক ২ — বিবরণ লিখুন",
