@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { CheckCircle2, Zap, ShieldCheck, Lock, ArrowRight, Tag } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
+import { EpsPaymentCard } from "@/components/site/EpsPaymentCard";
 import { api, getStoredUser } from "@/lib/api";
 import { taka } from "@/lib/format";
 import { getEpsConfig, epsInitializePayment } from "@/lib/eps-client";
@@ -371,27 +372,7 @@ function CheckoutPage() {
               </div>
 
               {/* EPS Payment Method Section */}
-              <div className="rounded-xl border-2 border-primary/30 bg-primary/5 p-4 space-y-3">
-                <label className="flex items-start gap-2.5 cursor-pointer">
-                  <input type="radio" checked readOnly className="mt-1 h-4 w-4 text-primary accent-primary" />
-                  <div>
-                    <div className="font-bold text-sm text-foreground flex items-center gap-1.5 flex-wrap">
-                      Pay Online With EPS
-                      <span className="text-[10px] bg-primary/20 text-primary font-bold px-2 py-0.5 rounded-full">Verified Gateway</span>
-                    </div>
-                    <p className="text-xs text-muted-foreground mt-1">
-                      bKash, Nagad, Rocket, Internet Banking বা Credit/Debit Card দিয়ে নিরাপদে পেমেন্ট করুন।
-                    </p>
-                  </div>
-                </label>
-
-                <div className="pt-2 flex flex-wrap items-center gap-2 border-t border-primary/10 text-[11px] font-bold text-muted-foreground">
-                  <span className="rounded bg-background px-2 py-1 border border-border">bKash</span>
-                  <span className="rounded bg-background px-2 py-1 border border-border">Nagad</span>
-                  <span className="rounded bg-background px-2 py-1 border border-border">Rocket</span>
-                  <span className="rounded bg-background px-2 py-1 border border-border">Visa/Card</span>
-                </div>
-              </div>
+              <EpsPaymentCard selected={true} />
 
               {/* Terms Checkbox */}
               <div>

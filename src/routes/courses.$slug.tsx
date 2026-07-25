@@ -7,6 +7,7 @@ import {
   Star, Users, Award, Globe, ShieldCheck, X, Copy, Check, ChevronDown, Zap, ExternalLink, CreditCard, MessageCircle, Sparkles,
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
+import { EpsPaymentCard } from "@/components/site/EpsPaymentCard";
 import { api, ApiError, getStoredUser } from "@/lib/api";
 import { taka, toBn } from "@/lib/format";
 import { useSiteSettings } from "@/lib/site-settings";
@@ -947,21 +948,7 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
                 {couponErr && <div className="text-[11px] text-destructive">{couponErr}</div>}
 
                 {/* EPS Payment Box */}
-                <div className="rounded-xl border border-primary/30 bg-primary/5 p-3.5 space-y-2.5">
-                  <div className="font-bold text-xs text-foreground flex items-center justify-between">
-                    <span>Pay Online With EPS</span>
-                    <span className="text-[9px] bg-primary/20 text-primary font-bold px-1.5 py-0.5 rounded">Verified</span>
-                  </div>
-                  <p className="text-[11px] text-muted-foreground leading-snug">
-                    bKash, Nagad, Rocket, Internet Banking বা Credit/Debit Card দিয়ে নিরাপদে পেমেন্ট করুন।
-                  </p>
-                  <div className="pt-1 flex flex-wrap gap-1 text-[10px] font-bold text-muted-foreground">
-                    <span className="rounded bg-background px-1.5 py-0.5 border border-border">bKash</span>
-                    <span className="rounded bg-background px-1.5 py-0.5 border border-border">Nagad</span>
-                    <span className="rounded bg-background px-1.5 py-0.5 border border-border">Rocket</span>
-                    <span className="rounded bg-background px-1.5 py-0.5 border border-border">Visa/Card</span>
-                  </div>
-                </div>
+                <EpsPaymentCard selected={true} />
 
                 {/* Terms */}
                 <label className="flex items-start gap-2 text-[11px] text-muted-foreground cursor-pointer">
