@@ -96,7 +96,11 @@ function TrainerDetailPage() {
                 <div className={`absolute inset-0 rounded-full blur-2xl opacity-60 ${isMentor ? "bg-amber-400/50" : "bg-primary/40"}`} />
                 <div className={`absolute inset-0 overflow-hidden rounded-full shadow-xl ring-4 ring-white ${isMentor ? "bg-gradient-to-br from-amber-400 via-amber-500 to-orange-500" : "bg-gradient-to-br from-primary via-primary to-primary/70"}`}>
                   {trainerImage ? (
-                    <img src={trainerImage} alt={t.name || "ট্রেনার"} className="absolute inset-x-0 bottom-0 mx-auto h-[95%] w-auto object-contain object-bottom" />
+                    <img
+                      src={trainerImage}
+                      alt={t.name || "ট্রেনার"}
+                      className="absolute inset-0 h-full w-full object-cover object-center"
+                    />
                   ) : (
                     <div className="absolute inset-0 grid place-items-center text-white text-5xl font-bold">{(t.name || "ট").charAt(0)}</div>
                   )}
