@@ -36,9 +36,12 @@ export function EpsPaymentCard({
       </p>
 
       {/* Official EPS Payment Methods Banner */}
-      <div className="rounded-xl border border-slate-200 bg-slate-50/50 p-1 overflow-hidden shadow-2xs">
+      <div className="rounded-xl border border-slate-200 bg-white p-1 overflow-hidden shadow-2xs">
         <img
-          src="/media/eps-banner.svg"
+          src="https://i.ibb.co/n8P9WFgH/Footer-Mobile-Light-Version-png.png"
+          onError={(e) => {
+            (e.target as HTMLImageElement).src = "/media/eps-banner.png";
+          }}
           alt="Pay with Visa, Mastercard, bKash, Nagad, Rocket, DBBL Nexus - Verified by EPS Easy Payment System"
           className="w-full h-auto object-contain"
           loading="lazy"
