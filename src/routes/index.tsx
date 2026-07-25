@@ -285,11 +285,13 @@ function AutoScrollingCarousel<T>({
   items,
   renderItem,
   itemClassName = "w-[80vw] max-w-[280px] flex-shrink-0 snap-center",
+  containerClassName,
   intervalMs = 3000,
 }: {
   items: T[];
   renderItem: (item: T, idx: number) => React.ReactNode;
   itemClassName?: string;
+  containerClassName?: string;
   intervalMs?: number;
 }) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -332,7 +334,9 @@ function AutoScrollingCarousel<T>({
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setTimeout(() => setIsPaused(false), 2500)}
-      className="mt-6 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-5 justify-start"
+      className={`mt-6 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-5 ${
+        containerClassName || "justify-start"
+      }`}
     >
       {items.map((item, idx) => (
         <div key={idx} className={itemClassName}>
@@ -348,6 +352,7 @@ function AutoScrollingTrainers({ trainers, TrainerCard }: { trainers: any[]; Tra
     <AutoScrollingCarousel
       items={trainers}
       itemClassName="w-[75vw] sm:w-[240px] max-w-[240px] flex-shrink-0 snap-center"
+      containerClassName="justify-start sm:justify-center"
       intervalMs={2800}
       renderItem={(t) => <TrainerCard t={t} />}
     />

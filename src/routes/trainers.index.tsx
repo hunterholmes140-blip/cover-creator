@@ -148,7 +148,7 @@ function AutoScrollingTrainers({ trainers, TrainerCard }: { trainers: any[]; Tra
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setTimeout(() => setIsPaused(false), 2000)}
-      className="mt-8 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-6 justify-start max-w-3xl mx-auto"
+      className="mt-8 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-6 justify-start sm:justify-center max-w-3xl mx-auto"
     >
       {trainers.map((t: any) => (
         <div key={t.id} className="w-[75vw] sm:w-[240px] max-w-[240px] flex-shrink-0 snap-center">
