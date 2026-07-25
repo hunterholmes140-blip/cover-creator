@@ -290,7 +290,7 @@ function CourseDetailPage() {
 
       {/* TAB NAV */}
       <div className="sticky top-16 z-30 bg-background/95 backdrop-blur border-b border-border">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex gap-6 overflow-x-auto no-scrollbar">
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex justify-center gap-6 overflow-x-auto no-scrollbar">
           {[
             { id: "overview", label: "ওভারভিউ" },
             { id: "curriculum", label: "কারিকুলাম" },
@@ -309,14 +309,14 @@ function CourseDetailPage() {
       </div>
 
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-10 grid lg:grid-cols-[1fr_400px] gap-10">
-        <div className="min-w-0">
+        <div className="min-w-0 space-y-12">
           {/* WHAT YOU'LL LEARN */}
-          <section id="overview" className="scroll-mt-32">
-            <h2 className="text-2xl font-bold">এই কোর্সে যা শিখবেন</h2>
+          <section id="overview" className="scroll-mt-32 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center">এই কোর্সে যা শিখবেন</h2>
             <div className="mt-5 grid sm:grid-cols-2 gap-3 rounded-2xl border border-border bg-card p-6">
               {highlights.map((h, i) => (
-                <div key={i} className="flex items-start gap-2.5 text-sm">
-                  <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0 mt-0.5" />
+                <div key={i} className="flex items-center justify-center sm:justify-start gap-2.5 text-sm text-center sm:text-left">
+                  <CheckCircle2 className="h-5 w-5 text-green-600 shrink-0" />
                   <span>{h}</span>
                 </div>
               ))}
@@ -324,31 +324,35 @@ function CourseDetailPage() {
 
             {/* DESCRIPTION */}
             {course.description && (
-              <>
-                <h2 className="mt-10 text-2xl font-bold">কোর্স সম্পর্কে</h2>
-                <div className="mt-4 text-muted-foreground leading-relaxed whitespace-pre-wrap">
+              <div className="mt-10">
+                <h2 className="text-2xl sm:text-3xl font-bold text-center">কোর্স সম্পর্কে</h2>
+                <div className="mt-4 text-muted-foreground leading-relaxed whitespace-pre-wrap text-center max-w-3xl mx-auto">
                   {course.description}
                 </div>
-              </>
+              </div>
             )}
 
             {/* REQUIREMENTS */}
-            <h2 className="mt-10 text-2xl font-bold">যা লাগবে</h2>
-            <ul className="mt-4 space-y-2">
-              {requirements.map((r, i) => (
-                <li key={i} className="flex items-start gap-2.5 text-sm text-muted-foreground">
-                  <span className="mt-1.5 h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                  <span>{r}</span>
-                </li>
-              ))}
-            </ul>
+            {requirements && requirements.length > 0 && (
+              <div className="mt-10">
+                <h2 className="text-2xl sm:text-3xl font-bold text-center">যা লাগবে</h2>
+                <ul className="mt-4 space-y-2 flex flex-col items-center text-center">
+                  {requirements.map((r, i) => (
+                    <li key={i} className="flex items-center justify-center gap-2.5 text-sm text-muted-foreground">
+                      <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
+                      <span>{r}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
           </section>
 
           {/* CURRICULUM & MODULES */}
-          <section id="curriculum" className="mt-12 scroll-mt-32 max-w-3xl mx-auto">
+          <section id="curriculum" className="scroll-mt-32 max-w-3xl mx-auto text-center w-full">
             <div className="text-center mb-6">
-              <h2 className="text-2xl sm:text-3xl font-bold text-foreground">কোর্স মডিউল ও কারিকুলাম</h2>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <h2 className="text-2xl sm:text-3xl font-bold text-foreground text-center">কোর্স মডিউল ও কারিকুলাম</h2>
+              <p className="mt-1 text-sm text-muted-foreground text-center">
                 {course.modules && course.modules.length > 0
                   ? `${toBn(course.modules.length)}টি মডিউল`
                   : `${toBn(lessons.length)}টি লেসন`}
@@ -358,7 +362,7 @@ function CourseDetailPage() {
 
             {/* Modules Accordion (Dropdowns) */}
             {course.modules && course.modules.length > 0 ? (
-              <div className="space-y-3.5">
+              <div className="space-y-3.5 text-left">
                 {course.modules.map((mod: any, idx: number) => (
                   <ModuleAccordionItem key={mod.id || idx} module={mod} index={idx} />
                 ))}
@@ -369,7 +373,7 @@ function CourseDetailPage() {
             {lessons && lessons.length > 0 && (
               <div className={course.modules && course.modules.length > 0 ? "mt-8" : ""}>
                 {course.modules && course.modules.length > 0 && (
-                  <h3 className="text-lg font-bold mb-3">ভিডিও লেসন সমূহ</h3>
+                  <h3 className="text-lg font-bold mb-3 text-center">ভিডিও লেসন সমূহ</h3>
                 )}
                 <div className="rounded-2xl border border-border overflow-hidden divide-y divide-border bg-card">
                   {lessons.map((l: any, i: number) => (
@@ -385,7 +389,7 @@ function CourseDetailPage() {
                       ) : (
                         <Lock className="h-4 w-4 text-muted-foreground shrink-0" />
                       )}
-                      <span className="flex-1 text-sm truncate">{l.title}</span>
+                      <span className="flex-1 text-sm truncate text-left">{l.title}</span>
                       {l.is_preview && (
                         <span className="text-xs text-primary font-medium bg-primary/10 rounded-full px-2 py-0.5">
                           ফ্রি প্রিভিউ
@@ -406,16 +410,16 @@ function CourseDetailPage() {
 
           {/* INSTRUCTOR */}
           {course.instructor && (
-            <section id="instructor" className="mt-12 scroll-mt-32">
-              <h2 className="text-2xl font-bold">আপনার ইন্সট্রাক্টর</h2>
-              <div className="mt-5 rounded-2xl border border-border bg-card p-6 flex flex-col sm:flex-row gap-5">
+            <section id="instructor" className="scroll-mt-32 text-center">
+              <h2 className="text-2xl sm:text-3xl font-bold text-center">আপনার ইন্সট্রাক্টর</h2>
+              <div className="mt-5 rounded-2xl border border-border bg-card p-6 flex flex-col items-center justify-center text-center gap-4 max-w-xl mx-auto">
                 <div className="h-20 w-20 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 grid place-items-center text-2xl font-bold text-primary shrink-0">
                   {course.instructor.charAt(0)}
                 </div>
                 <div>
-                  <h3 className="font-bold text-lg">{course.instructor}</h3>
-                  <p className="text-sm text-muted-foreground">সিনিয়র ইন্সট্রাক্টর, NextScale</p>
-                  <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
+                  <h3 className="font-bold text-lg text-center">{course.instructor}</h3>
+                  <p className="text-sm text-muted-foreground text-center">সিনিয়র ইন্সট্রাক্টর, NextScale</p>
+                  <div className="mt-3 flex flex-wrap justify-center gap-4 text-xs text-muted-foreground">
                     <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" /> ৪.৯ রেটিং</span>
                     <span className="inline-flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {toBn(1200)}+ শিক্ষার্থী</span>
                     <span className="inline-flex items-center gap-1"><Award className="h-3.5 w-3.5" /> {toBn(5)}+ বছর অভিজ্ঞতা</span>
@@ -426,9 +430,9 @@ function CourseDetailPage() {
           )}
 
           {/* FAQ */}
-          <section id="faq" className="mt-12 scroll-mt-32">
-            <h2 className="text-2xl font-bold">সাধারণ প্রশ্ন</h2>
-            <div className="mt-5 space-y-3">
+          <section id="faq" className="scroll-mt-32 text-center">
+            <h2 className="text-2xl sm:text-3xl font-bold text-center">সাধারণ প্রশ্ন</h2>
+            <div className="mt-5 space-y-3 max-w-3xl mx-auto text-left">
               {COURSE_FAQS.map((f, i) => (
                 <FaqItem key={i} q={f.q} a={f.a} />
               ))}
