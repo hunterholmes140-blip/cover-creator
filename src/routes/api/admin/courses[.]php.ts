@@ -10,6 +10,9 @@ async function ensureExtraColumns() {
   await exec(`ALTER TABLE courses ADD COLUMN notice TEXT DEFAULT NULL`).catch(() => {});
   await exec(`ALTER TABLE courses ADD COLUMN recordings_json LONGTEXT DEFAULT NULL`).catch(() => {});
   await exec(`ALTER TABLE courses ADD COLUMN modules_json LONGTEXT DEFAULT NULL`).catch(() => {});
+  await exec(`ALTER TABLE courses MODIFY COLUMN thumbnail LONGTEXT DEFAULT NULL`).catch(() => {});
+  await exec(`ALTER TABLE courses MODIFY COLUMN preview_video LONGTEXT DEFAULT NULL`).catch(() => {});
+  await exec(`ALTER TABLE courses MODIFY COLUMN description LONGTEXT DEFAULT NULL`).catch(() => {});
 }
 
 export const Route = createFileRoute("/api/admin/courses.php")({
