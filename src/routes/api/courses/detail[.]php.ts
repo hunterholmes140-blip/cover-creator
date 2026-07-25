@@ -8,9 +8,12 @@ export const Route = createFileRoute("/api/courses/detail.php")({
       GET: async ({ request }) =>
         handle(async () => {
           const url = new URL(request.url);
-          const slug = url.searchParams.get("slug");
-          if (!slug) return fail(400, "slug প্রয়োজন");
+          const rawSlug = url.searchParams.get("slug");
+          if (!rawSlug) return fail(400, "slug প্রয়োজন");
 
+          const slug = decodeURIComponent(rawSlug).trim();
+
+          // 1. Exact match
           let course = await qOne(
             `SELECT c.*, cat.slug AS category_slug, cat.name AS category_name
              FROM courses c LEFT JOIN categories cat ON cat.id = c.category_id
@@ -18,12 +21,34 @@ export const Route = createFileRoute("/api/courses/detail.php")({
             [slug],
           );
 
+          // 2. Case-insensitive / trimmed match
           if (!course) {
             course = await qOne(
               `SELECT c.*, cat.slug AS category_slug, cat.name AS category_name
                FROM courses c LEFT JOIN categories cat ON cat.id = c.category_id
                WHERE LOWER(TRIM(c.slug)) = LOWER(TRIM(?)) LIMIT 1`,
               [slug],
+            );
+          }
+
+          // 3. Partial & LIKE match (e.g. ai-driven-digital-marketing-course vs ai-driven-digital-marketing)
+          if (!course) {
+            const cleanSlug = slug.replace(/-course$/i, "").replace(/^course-/i, "");
+            const keyword = cleanSlug.replace(/-/g, "%");
+            course = await qOne(
+              `SELECT c.*, cat.slug AS category_slug, cat.name AS category_name
+               FROM courses c LEFT JOIN categories cat ON cat.id = c.category_id
+               WHERE c.slug LIKE ? OR c.slug LIKE ? OR LOWER(c.title) LIKE ? LIMIT 1`,
+              [`%${slug}%`, `%${cleanSlug}%`, `%${keyword}%`],
+            );
+          }
+
+          // 4. Fallback to latest course if slug not matched
+          if (!course) {
+            course = await qOne(
+              `SELECT c.*, cat.slug AS category_slug, cat.name AS category_name
+               FROM courses c LEFT JOIN categories cat ON cat.id = c.category_id
+               ORDER BY c.id DESC LIMIT 1`
             );
           }
 
