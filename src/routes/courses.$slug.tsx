@@ -72,10 +72,22 @@ function CourseDetailPage() {
   const { slug } = Route.useParams();
   const { data } = useSuspenseQuery(detailQuery(slug));
   const { course, lessons, enrolled } = data;
-  const price = course.discount_price ?? course.price;
-  const hasDiscount = course.discount_price && course.discount_price < course.price;
-  const discountPct = hasDiscount
-    ? Math.round(((course.price - course.discount_price) / course.price) * 100)
+  let price = Number(course.price || 0);
+  let originalPrice: number | null = null;
+  const disc = course.discount_price !== null && course.discount_price !== undefined ? Number(course.discount_price) : null;
+
+  if (disc !== null && disc > 0 && disc !== price) {
+    if (disc < price) {
+      price = disc;
+      originalPrice = Number(course.price);
+    } else {
+      originalPrice = disc;
+    }
+  }
+
+  const hasDiscount = originalPrice !== null && originalPrice > price;
+  const discountPct = hasDiscount && originalPrice
+    ? Math.round(((originalPrice - price) / originalPrice) * 100)
     : 0;
 
   const [showEnroll, setShowEnroll] = useState(false);
@@ -238,8 +250,8 @@ function CourseDetailPage() {
                 <div className="text-xs text-muted-foreground">কোর্স ফি</div>
                 <div className="flex items-baseline gap-2">
                   <span className="text-2xl font-bold text-primary">{taka(price)}</span>
-                  {hasDiscount && (
-                    <span className="text-sm text-muted-foreground line-through">{taka(course.price)}</span>
+                  {hasDiscount && originalPrice && (
+                    <span className="text-sm text-muted-foreground line-through">{taka(originalPrice)}</span>
                   )}
                 </div>
               </div>
@@ -266,6 +278,7 @@ function CourseDetailPage() {
             <PurchaseCard
               course={course}
               price={price}
+              originalPrice={originalPrice}
               hasDiscount={!!hasDiscount}
               discountPct={discountPct}
               enrolled={enrolled}
@@ -558,24 +571,24 @@ function CourseMediaPreview({ course, hasDiscount, discountPct }: { course: any;
 
 // ---------------- Purchase Card ----------------
 function PurchaseCard({
-  course, price, hasDiscount, discountPct, enrolled, onEnroll,
+  course, price, originalPrice, hasDiscount, discountPct, enrolled, onEnroll,
 }: {
-  course: any; price: number; hasDiscount: boolean; discountPct: number;
+  course: any; price: number; originalPrice: number | null; hasDiscount: boolean; discountPct: number;
   enrolled: boolean; onEnroll: () => void;
 }) {
   return (
     <div className="rounded-2xl border border-border bg-card overflow-hidden shadow-xl">
       <CourseMediaPreview course={course} hasDiscount={hasDiscount} discountPct={discountPct} />
       <div className="p-5">
-        <div className="flex items-baseline gap-3">
+        <div className="flex items-baseline gap-3 flex-wrap">
           <span className="text-3xl font-bold text-primary">{taka(price)}</span>
-          {hasDiscount && (
-            <span className="text-lg text-muted-foreground line-through">{taka(course.price)}</span>
+          {hasDiscount && originalPrice && (
+            <span className="text-lg text-muted-foreground line-through font-medium">{taka(originalPrice)}</span>
           )}
         </div>
-        {hasDiscount && (
-          <div className="mt-1 text-xs text-green-600 font-medium">
-            ৳{toBn(course.price - course.discount_price)} সাশ্রয়!
+        {hasDiscount && originalPrice && (
+          <div className="mt-1.5 inline-flex items-center gap-1.5 rounded-md bg-green-500/10 px-2.5 py-1 text-xs font-semibold text-green-700 dark:text-green-400">
+            ৳{toBn(originalPrice - price)} সাশ্রয় ({toBn(discountPct)}% ছাড়!)
           </div>
         )}
 

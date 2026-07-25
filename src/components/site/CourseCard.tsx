@@ -5,8 +5,20 @@ import { taka } from "@/lib/format";
 import { resolveBadge, BADGE_STYLES, type CourseBadge } from "@/lib/course-badges";
 
 export function CourseCard({ course }: { course: any }) {
-  const price = course.discount_price ?? course.price;
-  const hasDiscount = course.discount_price && course.discount_price < course.price;
+  let price = Number(course.price || 0);
+  let originalPrice: number | null = null;
+  const disc = course.discount_price !== null && course.discount_price !== undefined ? Number(course.discount_price) : null;
+
+  if (disc !== null && disc > 0 && disc !== price) {
+    if (disc < price) {
+      price = disc;
+      originalPrice = Number(course.price);
+    } else {
+      originalPrice = disc;
+    }
+  }
+
+  const hasDiscount = originalPrice !== null && originalPrice > price;
 
   const [badge, setBadge] = useState<CourseBadge | null>(() => resolveBadge(course));
   useEffect(() => {
@@ -72,8 +84,8 @@ export function CourseCard({ course }: { course: any }) {
         <div className="mt-2 sm:mt-4 flex items-center justify-between">
           <div className="flex items-baseline gap-1 sm:gap-2">
             <span className="text-xs sm:text-lg font-bold text-primary">{taka(price)}</span>
-            {hasDiscount && (
-              <span className="text-[10px] sm:text-sm text-muted-foreground line-through">{taka(course.price)}</span>
+            {hasDiscount && originalPrice && (
+              <span className="text-[10px] sm:text-sm text-muted-foreground line-through font-normal">{taka(originalPrice)}</span>
             )}
           </div>
           <span className="text-[10px] sm:text-xs font-medium text-primary group-hover:translate-x-1 transition-transform hidden sm:inline">

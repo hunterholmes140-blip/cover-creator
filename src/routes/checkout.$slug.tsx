@@ -63,7 +63,19 @@ function CheckoutPage() {
     }
   }, []);
 
-  const rawAmount = course.discount_price ?? course.price;
+  let rawAmount = Number(course.price || 0);
+  let originalPrice: number | null = null;
+  const disc = course.discount_price !== null && course.discount_price !== undefined ? Number(course.discount_price) : null;
+
+  if (disc !== null && disc > 0 && disc !== rawAmount) {
+    if (disc < rawAmount) {
+      rawAmount = disc;
+      originalPrice = Number(course.price);
+    } else {
+      originalPrice = disc;
+    }
+  }
+
   const finalAmount = Math.max(0, rawAmount - discount);
 
   const applyCoupon = async () => {
@@ -327,7 +339,12 @@ function CheckoutPage() {
                     <div className="text-xs text-muted-foreground mt-0.5">পরিমাণ × ১</div>
                   </div>
                 </div>
-                <div className="font-bold text-sm text-foreground whitespace-nowrap">{taka(rawAmount)}</div>
+                <div className="text-right whitespace-nowrap">
+                  <div className="font-bold text-sm text-foreground">{taka(rawAmount)}</div>
+                  {originalPrice && originalPrice > rawAmount && (
+                    <div className="text-xs text-muted-foreground line-through font-normal">{taka(originalPrice)}</div>
+                  )}
+                </div>
               </div>
 
               {/* Subtotal & Total */}
