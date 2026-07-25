@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useLiveCourses } from "@/lib/live-store";
 import { CourseForm, emptyCourse } from "@/lib/course-form";
+import { setBadgeOverride } from "@/lib/course-badges";
 import { PageHeader, Button, useToast } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/courses/new")({
@@ -31,6 +32,7 @@ function NewCoursePage() {
         submitLabel="কোর্স তৈরি করুন"
         onSubmit={async (v) => {
           try {
+            if (v.badge) setBadgeOverride(v.slug, v.badge);
             await add(v);
             navigate({ to: "/admin/courses" });
           } catch (e: any) {

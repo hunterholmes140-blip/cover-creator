@@ -2,6 +2,7 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { ArrowLeft } from "lucide-react";
 import { useLiveCourses } from "@/lib/live-store";
 import { CourseForm, emptyCourse, type CourseFormValue } from "@/lib/course-form";
+import { resolveBadge, setBadgeOverride } from "@/lib/course-badges";
 import { PageHeader, Button, useToast } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/courses/$slug")({
@@ -28,7 +29,16 @@ function EditCoursePage() {
     );
   }
 
-  const initial: CourseFormValue = { ...emptyCourse, ...course };
+  const badge = resolveBadge(course);
+  let parsedBadge = course.badge && typeof course.badge === "object" ? course.badge : null;
+  if (!parsedBadge && course.badge && typeof course.badge === "string") {
+    try { parsedBadge = JSON.parse(course.badge); } catch {}
+  }
+  const initial: CourseFormValue = {
+    ...emptyCourse,
+    ...course,
+    badge: parsedBadge || badge || null,
+  };
 
   return (
     <div className="max-w-4xl mx-auto">
@@ -48,6 +58,7 @@ function EditCoursePage() {
         submitLabel="আপডেট করুন"
         onSubmit={async (v) => {
           try {
+            setBadgeOverride(v.slug, v.badge);
             await update((course as any).id, v);
             toast.show("আপডেট হয়েছে");
             setTimeout(() => navigate({ to: "/admin/courses" }), 500);

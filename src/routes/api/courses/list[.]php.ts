@@ -32,7 +32,13 @@ export const Route = createFileRoute("/api/courses/list.php")({
              ORDER BY c.created_at DESC`,
             params,
           );
-          return ok({ courses });
+          const parsed = (courses || []).map((c: any) => {
+            if (c.badge && typeof c.badge === "string") {
+              try { c.badge = JSON.parse(c.badge); } catch {}
+            }
+            return c;
+          });
+          return ok({ courses: parsed });
         }),
     },
   },
