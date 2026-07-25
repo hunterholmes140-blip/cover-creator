@@ -334,7 +334,8 @@ function AutoScrollingCarousel<T>({
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}
       onTouchEnd={() => setTimeout(() => setIsPaused(false), 2500)}
-      className={`mt-6 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar px-4 pb-4 -mx-4 flex gap-5 ${
+      style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+      className={`mt-6 overflow-x-auto scroll-smooth snap-x snap-mandatory no-scrollbar scrollbar-none [scrollbar-width:none] [&::-webkit-scrollbar]:hidden px-4 pb-4 -mx-4 flex gap-5 ${
         containerClassName || "justify-start"
       }`}
     >
