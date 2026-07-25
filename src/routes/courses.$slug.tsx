@@ -13,6 +13,7 @@ import { taka, toBn } from "@/lib/format";
 import { useSiteSettings } from "@/lib/site-settings";
 import { track } from "@/lib/marketing";
 import { MOCK_COURSES } from "@/lib/mock-data";
+import { getEpsConfig, epsInitializePayment } from "@/lib/eps-client";
 
 const detailQuery = (slug: string) =>
   queryOptions({
