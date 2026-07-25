@@ -14,6 +14,13 @@ export type RecordingItem = {
   url: string;
 };
 
+export type CourseModule = {
+  id: string | number;
+  module_no?: string; // e.g. "Module-01"
+  title: string; // e.g. "Foundation-Digital Marketing And AI Basics"
+  topics: string[]; // list of topics under this module
+};
+
 export type CourseFormValue = {
   title: string;
   slug: string;
@@ -33,6 +40,7 @@ export type CourseFormValue = {
   class_routine?: string;
   notice?: string;
   recordings?: RecordingItem[];
+  modules?: CourseModule[];
   level: "beginner" | "intermediate" | "advanced";
   is_published: 0 | 1;
   is_featured: 0 | 1;
@@ -59,6 +67,7 @@ export const emptyCourse: CourseFormValue = {
   class_routine: "প্রতি রবি, মঙ্গল, বৃহস্পতি রাত ৯:০০ টা",
   notice: "",
   recordings: [],
+  modules: [],
   level: "beginner",
   is_published: 1,
   is_featured: 0,
@@ -338,6 +347,110 @@ export function CourseForm({
             </span>
           </div>
         )}
+      </section>
+
+      {/* Course Modules Section */}
+      <section className="rounded-xl border border-border bg-card p-5 space-y-4">
+        <div className="flex items-center justify-between flex-wrap gap-2">
+          <div>
+            <h3 className="font-semibold text-base">কোর্স মডিউল ({(v.modules || []).length})</h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              ড্রপডাউন/অ্যাকর্ডিয়ন আকারে কোর্স কারিকুলাম দেখানোর জন্য মডিউল ও টপিক যুক্ত করুন।
+            </p>
+          </div>
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            onClick={() => {
+              const current = v.modules || [];
+              const num = String(current.length + 1).padStart(2, "0");
+              set("modules", [
+                ...current,
+                {
+                  id: Date.now(),
+                  module_no: `Module-${num}`,
+                  title: "মডিউল শিরোনাম লিখুন",
+                  topics: [
+                    "টপিক ১ — বিবরণ লিখুন",
+                    "টপিক ২ — বিবরণ লিখুন",
+                  ],
+                },
+              ]);
+            }}
+          >
+            + মডিউল যোগ করুন
+          </Button>
+        </div>
+
+        {(v.modules || []).length === 0 && (
+          <div className="rounded-lg border border-dashed border-border p-6 text-center text-sm text-muted-foreground">
+            এখনো কোনো মডিউল যোগ করা হয়নি। "+ মডিউল যোগ করুন" বাটনে ক্লিক করে মডিউল তৈরি করুন।
+          </div>
+        )}
+
+        <div className="space-y-4">
+          {(v.modules || []).map((mod, idx) => (
+            <div key={mod.id || idx} className="rounded-xl border border-border bg-background p-4 space-y-3 shadow-sm">
+              <div className="flex items-center justify-between gap-3 border-b border-border pb-3 flex-wrap">
+                <div className="flex items-center gap-2 flex-1 min-w-[240px]">
+                  <span className="text-xs font-bold bg-primary/10 text-primary px-2.5 py-1 rounded-md shrink-0">
+                    #{idx + 1}
+                  </span>
+                  <Input
+                    value={mod.module_no || `Module-${String(idx + 1).padStart(2, "0")}`}
+                    onChange={(e) => {
+                      const next = [...(v.modules || [])];
+                      next[idx] = { ...mod, module_no: e.target.value };
+                      set("modules", next);
+                    }}
+                    placeholder="Module-01"
+                    className="w-32 font-bold shrink-0"
+                  />
+                  <Input
+                    value={mod.title}
+                    onChange={(e) => {
+                      const next = [...(v.modules || [])];
+                      next[idx] = { ...mod, title: e.target.value };
+                      set("modules", next);
+                    }}
+                    placeholder="যেমন: Foundation-Digital Marketing And AI Basics"
+                    className="flex-1 font-semibold"
+                  />
+                </div>
+                <Button
+                  type="button"
+                  variant="danger"
+                  size="sm"
+                  onClick={() => {
+                    const next = (v.modules || []).filter((_, i) => i !== idx);
+                    set("modules", next);
+                  }}
+                >
+                  মডিউল মুছুন
+                </Button>
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-muted-foreground mb-1">
+                  টপিক/লেসন সমূহ (প্রতি লাইনে ১টি টপিক লিখুন)
+                </label>
+                <Textarea
+                  rows={4}
+                  value={(mod.topics || []).join("\n")}
+                  onChange={(e) => {
+                    const lines = e.target.value.split("\n");
+                    const next = [...(v.modules || [])];
+                    next[idx] = { ...mod, topics: lines };
+                    set("modules", next);
+                  }}
+                  placeholder={"• Core concepts of digital marketing\n• What is AI and how it works\n• Role and impact of AI in marketing\n• Introduction to popular AI tools"}
+                  className="font-sans text-xs leading-relaxed"
+                />
+              </div>
+            </div>
+          ))}
+        </div>
       </section>
 
       <section className="rounded-xl border border-border bg-card p-5 space-y-4">

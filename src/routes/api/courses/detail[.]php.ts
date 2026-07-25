@@ -19,6 +19,16 @@ export const Route = createFileRoute("/api/courses/detail.php")({
           );
           if (!course) return fail(404, "কোর্স পাওয়া যায়নি");
 
+          if (course.badge && typeof course.badge === "string") {
+            try { course.badge = JSON.parse(course.badge); } catch {}
+          }
+          if (course.recordings_json && typeof course.recordings_json === "string") {
+            try { course.recordings = JSON.parse(course.recordings_json); } catch {}
+          }
+          if (course.modules_json && typeof course.modules_json === "string") {
+            try { course.modules = JSON.parse(course.modules_json); } catch {}
+          }
+
           const lessons = await q(
             `SELECT id, title, video_url, content, sort_order, is_preview
              FROM lessons WHERE course_id = ? ORDER BY sort_order ASC, id ASC`,

@@ -344,46 +344,66 @@ function CourseDetailPage() {
             </ul>
           </section>
 
-          {/* CURRICULUM */}
+          {/* CURRICULUM & MODULES */}
           <section id="curriculum" className="mt-12 scroll-mt-32">
-            <div className="flex items-end justify-between">
+            <div className="flex items-end justify-between mb-5">
               <div>
-                <h2 className="text-2xl font-bold">কোর্স কনটেন্ট</h2>
+                <h2 className="text-2xl font-bold">কোর্স মডিউল ও কারিকুলাম</h2>
                 <p className="mt-1 text-sm text-muted-foreground">
-                  {toBn(lessons.length)}টি লেসন
+                  {course.modules && course.modules.length > 0
+                    ? `${toBn(course.modules.length)}টি মডিউল`
+                    : `${toBn(lessons.length)}টি লেসন`}
                   {course.duration ? ` • ${course.duration}` : ""}
                 </p>
               </div>
             </div>
-            <div className="mt-5 rounded-2xl border border-border overflow-hidden divide-y divide-border bg-card">
-              {lessons.length === 0 ? (
-                <div className="p-8 text-center text-sm text-muted-foreground">
-                  শীঘ্রই লেসনগুলি যুক্ত করা হবে।
-                </div>
-              ) : (
-                lessons.map((l, i) => (
-                  <div
-                    key={l.id}
-                    className="flex items-center gap-4 px-5 py-3.5 hover:bg-accent/50 transition-colors"
-                  >
-                    <span className="text-sm font-medium text-muted-foreground w-6">
-                      {toBn(i + 1)}
-                    </span>
-                    {l.is_preview || enrolled ? (
-                      <PlayCircle className="h-5 w-5 text-primary shrink-0" />
-                    ) : (
-                      <Lock className="h-4 w-4 text-muted-foreground shrink-0" />
-                    )}
-                    <span className="flex-1 text-sm truncate">{l.title}</span>
-                    {l.is_preview && (
-                      <span className="text-xs text-primary font-medium bg-primary/10 rounded-full px-2 py-0.5">
-                        ফ্রি প্রিভিউ
+
+            {/* Modules Accordion (Dropdowns) */}
+            {course.modules && course.modules.length > 0 ? (
+              <div className="space-y-3.5">
+                {course.modules.map((mod: any, idx: number) => (
+                  <ModuleAccordionItem key={mod.id || idx} module={mod} index={idx} />
+                ))}
+              </div>
+            ) : null}
+
+            {/* Individual Lessons */}
+            {lessons && lessons.length > 0 && (
+              <div className={course.modules && course.modules.length > 0 ? "mt-8" : ""}>
+                {course.modules && course.modules.length > 0 && (
+                  <h3 className="text-lg font-bold mb-3">ভিডিও লেসন সমূহ</h3>
+                )}
+                <div className="rounded-2xl border border-border overflow-hidden divide-y divide-border bg-card">
+                  {lessons.map((l: any, i: number) => (
+                    <div
+                      key={l.id}
+                      className="flex items-center gap-4 px-5 py-3.5 hover:bg-accent/50 transition-colors"
+                    >
+                      <span className="text-sm font-medium text-muted-foreground w-6">
+                        {toBn(i + 1)}
                       </span>
-                    )}
-                  </div>
-                ))
-              )}
-            </div>
+                      {l.is_preview || enrolled ? (
+                        <PlayCircle className="h-5 w-5 text-primary shrink-0" />
+                      ) : (
+                        <Lock className="h-4 w-4 text-muted-foreground shrink-0" />
+                      )}
+                      <span className="flex-1 text-sm truncate">{l.title}</span>
+                      {l.is_preview && (
+                        <span className="text-xs text-primary font-medium bg-primary/10 rounded-full px-2 py-0.5">
+                          ফ্রি প্রিভিউ
+                        </span>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {(!course.modules || course.modules.length === 0) && (!lessons || lessons.length === 0) && (
+              <div className="rounded-2xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
+                শীঘ্রই কারিকুলাম ও মডিউলগুলি যুক্ত করা হবে।
+              </div>
+            )}
           </section>
 
           {/* INSTRUCTOR */}
@@ -566,6 +586,70 @@ function CourseMediaPreview({ course, hasDiscount, discountPct }: { course: any;
           )
         : null}
     </>
+  );
+}
+
+// ---------------- Module Accordion Dropdown Component ----------------
+function ModuleAccordionItem({ module, index }: { module: any; index: number }) {
+  const [open, setOpen] = useState(index === 0);
+  const rawTopics = Array.isArray(module.topics)
+    ? module.topics
+    : typeof module.topics === "string"
+    ? module.topics.split("\n")
+    : [];
+  const topics = rawTopics.map((t: string) => t.trim()).filter(Boolean);
+  const modNo = module.module_no || `Module-${String(index + 1).padStart(2, "0")}`;
+
+  return (
+    <div className="rounded-xl border border-border bg-card overflow-hidden shadow-sm transition-all hover:border-primary/30">
+      <button
+        type="button"
+        onClick={() => setOpen(!open)}
+        className="w-full flex items-center justify-between gap-4 p-4 text-left hover:bg-accent/40 transition-colors"
+      >
+        <div className="flex items-center gap-3 flex-wrap flex-1">
+          <span className="rounded-lg bg-primary/10 text-primary font-mono text-xs font-bold px-2.5 py-1">
+            {modNo}
+          </span>
+          <h3 className="font-bold text-base text-foreground leading-snug">
+            {module.title}
+          </h3>
+        </div>
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="text-xs text-muted-foreground hidden sm:inline font-medium">
+            {toBn(topics.length)}টি টপিক
+          </span>
+          <div
+            className={`h-8 w-8 rounded-full border border-border grid place-items-center bg-background transition-transform duration-200 ${
+              open ? "rotate-180 bg-primary/10 text-primary border-primary/30" : ""
+            }`}
+          >
+            <ChevronDown className="h-4 w-4" />
+          </div>
+        </div>
+      </button>
+
+      {open && (
+        <div className="px-5 pb-5 pt-2 border-t border-border/60 bg-muted/20">
+          {topics.length === 0 ? (
+            <p className="text-xs text-muted-foreground italic py-2">কোনো টপিক বিবরণ দেওয়া হয়নি।</p>
+          ) : (
+            <ul className="space-y-2.5 pt-1">
+              {topics.map((t: string, i: number) => {
+                const cleanText = t.replace(/^[•\-\*\d\.]+\s*/, "").trim();
+                if (!cleanText) return null;
+                return (
+                  <li key={i} className="flex items-start gap-2.5 text-sm text-foreground/90 leading-relaxed">
+                    <span className="h-2 w-2 rounded-full bg-primary shrink-0 mt-2" />
+                    <span>{cleanText}</span>
+                  </li>
+                );
+              })}
+            </ul>
+          )}
+        </div>
+      )}
+    </div>
   );
 }
 
