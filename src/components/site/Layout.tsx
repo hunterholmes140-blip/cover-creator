@@ -228,7 +228,29 @@ export function SiteLayout({ children }: { children: ReactNode }) {
             <div>
               <h4 className="text-lg font-bold mb-4">{footer.quickLinksHeading}</h4>
               <ul className="space-y-3 text-sm text-white/80">
-                <li><Link to="/affiliate" className="hover:text-white transition-colors">অ্যাফিলিয়েট অ্যাকাউন্ট</Link></li>
+                <li>
+                  {(() => {
+                    const target = settings.affiliateUrl || "/affiliate";
+                    const isExternal = target.startsWith("http://") || target.startsWith("https://");
+                    if (isExternal) {
+                      return (
+                        <a
+                          href={target}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="hover:text-white transition-colors"
+                        >
+                          অ্যাফিলিয়েট অ্যাকাউন্ট
+                        </a>
+                      );
+                    }
+                    return (
+                      <Link to={target} className="hover:text-white transition-colors">
+                        অ্যাফিলিয়েট অ্যাকাউন্ট
+                      </Link>
+                    );
+                  })()}
+                </li>
                 <li><Link to="/courses" className="hover:text-white transition-colors">সব কোর্স</Link></li>
                 <li><Link to="/free-courses" className="hover:text-white transition-colors">ফ্রি কোর্স</Link></li>
                 <li><Link to="/blog" className="hover:text-white transition-colors">ব্লগ</Link></li>

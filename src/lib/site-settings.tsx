@@ -18,6 +18,7 @@ export type SiteSettings = {
   youtubeUrl: string;
   instagramUrl: string;
   linkedinUrl: string;
+  affiliateUrl: string; // Dynamic URL for affiliate account link
   // Colors — HSL values only (space separated) to match Tailwind theme tokens
   primaryHsl: string;
   accentHsl: string;
@@ -37,6 +38,7 @@ export const DEFAULT_SETTINGS: SiteSettings = {
   youtubeUrl: "#",
   instagramUrl: "#",
   linkedinUrl: "#",
+  affiliateUrl: "/affiliate",
   primaryHsl: "29 93% 54%",
   accentHsl: "38 96% 58%",
   footerFrom: "#1a1006",

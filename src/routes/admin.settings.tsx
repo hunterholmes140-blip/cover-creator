@@ -396,10 +396,17 @@ function AdminSettingsPage() {
         </div>
       </section>
 
-      {/* Social */}
+      {/* Social & Quick Links */}
       <section className="rounded-xl border border-border bg-card p-6 space-y-4">
-        <h2 className="text-lg font-semibold">সোশ্যাল লিঙ্ক</h2>
+        <h2 className="text-lg font-semibold">সোশ্যাল ও কুইক লিঙ্ক</h2>
         <div className="grid gap-4 sm:grid-cols-2">
+          <Field label="অ্যাফিলিয়েট অ্যাকাউন্ট URL / লিঙ্ক" hint="ফুটারের অ্যাফিলিয়েট বাটনে ক্লিকে যেখানে যাবে (যেমন: /affiliate বা https://example.com)">
+            <TextInput
+              value={form.affiliateUrl ?? "/affiliate"}
+              onChange={(e) => set("affiliateUrl", e.target.value)}
+              placeholder="/affiliate"
+            />
+          </Field>
           <Field label="Facebook URL"><TextInput value={form.facebookUrl} onChange={(e) => set("facebookUrl", e.target.value)} /></Field>
           <Field label="YouTube URL"><TextInput value={form.youtubeUrl} onChange={(e) => set("youtubeUrl", e.target.value)} /></Field>
           <Field label="Instagram URL"><TextInput value={form.instagramUrl} onChange={(e) => set("instagramUrl", e.target.value)} /></Field>
