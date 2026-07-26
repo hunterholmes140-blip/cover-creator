@@ -25,7 +25,15 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
             return fail(400, "নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
           }
 
-          const dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE id = ? LIMIT 1`, [user.id]);
+          // Lookup admin user in DB (by user.id, or role='admin', or fallback)
+          let dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE id = ? LIMIT 1`, [user.id]);
+          if (!dbUser) {
+            dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE role = 'admin' OR email LIKE '%admin%' ORDER BY id ASC LIMIT 1`);
+          }
+          if (!dbUser) {
+            dbUser = await qOne<any>(`SELECT id, email, password FROM users ORDER BY id ASC LIMIT 1`);
+          }
+
           if (!dbUser) return fail(404, "ইউজার পাওয়া যায়নি।");
 
           const isMatch = await verifyPassword(currentPassword, dbUser.password);
@@ -35,17 +43,17 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
 
           let updatedEmail = dbUser.email;
           if (newEmail && newEmail !== dbUser.email) {
-            const existing = await qOne<any>(`SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1`, [newEmail, user.id]);
+            const existing = await qOne<any>(`SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1`, [newEmail, dbUser.id]);
             if (existing) {
               return fail(400, "এই ইমেইলটি অন্য কোনো একাউন্টে ব্যবহৃত হচ্ছে।");
             }
-            await exec(`UPDATE users SET email = ? WHERE id = ?`, [newEmail, user.id]);
+            await exec(`UPDATE users SET email = ? WHERE id = ?`, [newEmail, dbUser.id]);
             updatedEmail = newEmail;
           }
 
           if (newPassword) {
             const newHash = await hashPassword(newPassword);
-            await exec(`UPDATE users SET password = ? WHERE id = ?`, [newHash, user.id]);
+            await exec(`UPDATE users SET password = ? WHERE id = ?`, [newHash, dbUser.id]);
           }
 
           return ok({
