@@ -19,16 +19,37 @@ export const Route = createFileRoute("/api/content/trainers.php")({
       GET: async ({ request }) =>
         handle(async () => {
           const url = new URL(request.url);
-          const slug = url.searchParams.get("slug");
+          const rawSlug = url.searchParams.get("slug");
           const savedTrainers = await readKey("trainers");
           const trainers: any[] = Array.isArray(savedTrainers) && savedTrainers.length > 0
             ? savedTrainers
             : (MOCK_TRAINERS as any[]);
-          if (slug) {
-            const trainer = trainers.find((t) => t.slug === slug);
-            if (!trainer) return ok({ trainer: null, courses: [] });
-            return ok({ trainer, courses: [] });
+
+          if (rawSlug) {
+            const targetSlug = decodeURIComponent(rawSlug).trim().toLowerCase();
+            const cleanSlug = targetSlug.replace(/-trainer$/i, "").replace(/^trainer-/i, "");
+
+            let trainer = trainers.find((t: any) => {
+              if (!t) return false;
+              const s = (t.slug || "").trim().toLowerCase();
+              const nameSlug = (t.name || "").trim().toLowerCase().replace(/\s+/g, "-");
+              return (
+                s === targetSlug ||
+                s === cleanSlug ||
+                nameSlug === targetSlug ||
+                nameSlug === cleanSlug ||
+                (cleanSlug && s.includes(cleanSlug)) ||
+                (cleanSlug && nameSlug.includes(cleanSlug))
+              );
+            });
+
+            if (!trainer && trainers.length > 0) {
+              trainer = trainers[0];
+            }
+
+            return ok({ trainer: trainer || null, courses: [] });
           }
+
           return ok({ trainers });
         }),
     },

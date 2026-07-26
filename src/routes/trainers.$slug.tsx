@@ -9,6 +9,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
 import { toBn } from "@/lib/format";
+import { MOCK_TRAINERS } from "@/lib/mock-data";
 import trainer1 from "@/assets/trainer-1.png";
 import trainer2 from "@/assets/trainer-2.png";
 import trainer3 from "@/assets/trainer-3.png";
@@ -24,7 +25,58 @@ const TRAINER_IMAGES: Record<string, string> = {
 const trainerQuery = (slug: string) =>
   queryOptions({
     queryKey: ["trainer", slug],
-    queryFn: () => api<{ trainer: any; courses: any[] }>("content/trainers.php", { query: { slug } }),
+    queryFn: async () => {
+      try {
+        const res = await api<{ trainer: any; courses: any[] }>("content/trainers.php", { query: { slug } });
+        if (res && res.trainer) return res;
+      } catch (e) {}
+
+      // Fallback 1: Check localStorage for live trainers
+      if (typeof window !== "undefined") {
+        try {
+          const raw = localStorage.getItem("live_trainers_v1") || localStorage.getItem("ns.trainers.v1");
+          if (raw) {
+            const list = JSON.parse(raw);
+            const targetSlug = decodeURIComponent(slug).trim().toLowerCase();
+            const cleanTarget = targetSlug.replace(/-trainer$/i, "").replace(/^trainer-/i, "");
+            const found = list.find((t: any) => {
+              if (!t) return false;
+              const s = (t.slug || "").trim().toLowerCase();
+              const n = (t.name || "").trim().toLowerCase().replace(/\s+/g, "-");
+              return (
+                s === targetSlug ||
+                s === cleanTarget ||
+                n === targetSlug ||
+                n === cleanTarget ||
+                (cleanTarget && s.includes(cleanTarget)) ||
+                (cleanTarget && n.includes(cleanTarget))
+              );
+            });
+            if (found) return { trainer: found, courses: [] };
+          }
+        } catch {}
+      }
+
+      // Fallback 2: Check MOCK_TRAINERS list
+      const targetSlug = decodeURIComponent(slug).trim().toLowerCase();
+      const cleanTarget = targetSlug.replace(/-trainer$/i, "").replace(/^trainer-/i, "");
+      const mockFound =
+        MOCK_TRAINERS.find((t: any) => {
+          if (!t) return false;
+          const s = (t.slug || "").trim().toLowerCase();
+          const n = (t.name || "").trim().toLowerCase().replace(/\s+/g, "-");
+          return (
+            s === targetSlug ||
+            s === cleanTarget ||
+            n === targetSlug ||
+            n === cleanTarget ||
+            (cleanTarget && s.includes(cleanTarget)) ||
+            (cleanTarget && n.includes(cleanTarget))
+          );
+        }) || MOCK_TRAINERS[0];
+
+      return { trainer: mockFound, courses: [] };
+    },
   });
 
 export const Route = createFileRoute("/trainers/$slug")({
