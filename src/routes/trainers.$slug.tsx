@@ -187,9 +187,25 @@ function TrainerDetailPage() {
                   {t.social?.youtube && <a href={t.social.youtube} className="h-9 w-9 rounded-lg border border-border grid place-items-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"><Youtube className="h-4 w-4" /></a>}
                   {t.social?.twitter && <a href={t.social.twitter} className="h-9 w-9 rounded-lg border border-border grid place-items-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"><Twitter className="h-4 w-4" /></a>}
                   {t.social?.github && <a href={t.social.github} className="h-9 w-9 rounded-lg border border-border grid place-items-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"><Github className="h-4 w-4" /></a>}
-                  <button className="ml-1 inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-2 text-xs font-semibold hover:opacity-90 transition-opacity">
-                    <Download className="h-3.5 w-3.5" /> CV ডাউনলোড
-                  </button>
+                  {t.cv_url ? (
+                    <a
+                      href={t.cv_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      download
+                      className="ml-1 inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-2 text-xs font-semibold hover:opacity-90 transition-opacity"
+                    >
+                      <Download className="h-3.5 w-3.5" /> CV ডাউনলোড
+                    </a>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => window.print()}
+                      className="ml-1 inline-flex items-center gap-1.5 rounded-lg bg-primary text-primary-foreground px-3 py-2 text-xs font-semibold hover:opacity-90 transition-opacity"
+                    >
+                      <Download className="h-3.5 w-3.5" /> CV ডাউনলোড
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
