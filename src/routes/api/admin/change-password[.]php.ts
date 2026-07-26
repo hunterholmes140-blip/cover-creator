@@ -20,62 +20,46 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
             return fail(400, "নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
           }
 
-          // Ensure users table and role column exist
+          // Ensure admins table exists
           try {
             await exec(`
-              CREATE TABLE IF NOT EXISTS users (
+              CREATE TABLE IF NOT EXISTS admins (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(255) NOT NULL DEFAULT 'Admin',
+                name VARCHAR(255) NOT NULL DEFAULT 'Super Admin',
                 email VARCHAR(255) NOT NULL UNIQUE,
-                phone VARCHAR(50) DEFAULT NULL,
                 password VARCHAR(255) NOT NULL,
-                role VARCHAR(50) DEFAULT 'admin',
+                token VARCHAR(255) DEFAULT NULL,
+                token_expires_at DATETIME DEFAULT NULL,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             `);
           } catch (e) {}
 
-          try {
-            await exec(`ALTER TABLE users ADD COLUMN role VARCHAR(50) DEFAULT 'admin'`);
-          } catch (e) {}
+          // Lookup existing admin in admins table
+          let admin = await qOne<any>(`SELECT id, email FROM admins ORDER BY id ASC LIMIT 1`).catch(() => null);
 
-          // Lookup existing admin user
-          let dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE role = 'admin' LIMIT 1`).catch(() => null);
-          if (!dbUser) {
-            dbUser = await qOne<any>(`SELECT id, email, password FROM users ORDER BY id ASC LIMIT 1`).catch(() => null);
-          }
-
-          const targetEmail = newEmail || dbUser?.email || "admin@nextscale.com";
+          const targetEmail = newEmail || admin?.email || "admin@nextscale.com";
 
           try {
-            if (dbUser) {
+            if (admin) {
               if (newPassword) {
                 const newHash = await hashPassword(newPassword);
-                await exec(`UPDATE users SET email = ?, password = ?, role = 'admin' WHERE id = ?`, [targetEmail, newHash, dbUser.id]);
-                try { await exec(`UPDATE admins SET email = ?, password = ? WHERE email = ? OR id = ?`, [targetEmail, newHash, targetEmail, dbUser.id]); } catch {}
+                await exec(`UPDATE admins SET email = ?, password = ? WHERE id = ?`, [targetEmail, newHash, admin.id]);
               } else {
-                await exec(`UPDATE users SET email = ?, role = 'admin' WHERE id = ?`, [targetEmail, dbUser.id]);
-                try { await exec(`UPDATE admins SET email = ? WHERE email = ? OR id = ?`, [targetEmail, targetEmail, dbUser.id]); } catch {}
+                await exec(`UPDATE admins SET email = ? WHERE id = ?`, [targetEmail, admin.id]);
               }
             } else {
-              const targetPw = newPassword || "123456";
+              const targetPw = newPassword || "admin123";
               const newHash = await hashPassword(targetPw);
               await exec(
-                `INSERT INTO users (name, email, password, role) VALUES ('Super Admin', ?, ?, 'admin')`,
+                `INSERT INTO admins (id, name, email, password) VALUES (1, 'Super Admin', ?, ?) ON DUPLICATE KEY UPDATE email = VALUES(email), password = VALUES(password)`,
                 [targetEmail, newHash]
               );
-              try {
-                await exec(
-                  `INSERT INTO admins (id, name, email, password) VALUES (1, 'Super Admin', ?, ?) ON DUPLICATE KEY UPDATE email = VALUES(email), password = VALUES(password)`,
-                  [targetEmail, newHash]
-                );
-              } catch {}
             }
           } catch (err: any) {
             if (newPassword) {
               const newHash = await hashPassword(newPassword);
-              await exec(`UPDATE users SET password = ?, role = 'admin' WHERE email = ?`, [newHash, targetEmail]);
-              try { await exec(`UPDATE admins SET password = ? WHERE email = ?`, [newHash, targetEmail]); } catch {}
+              await exec(`UPDATE admins SET password = ? WHERE email = ?`, [newHash, targetEmail]);
             }
           }
 

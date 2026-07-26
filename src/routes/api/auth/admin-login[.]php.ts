@@ -34,29 +34,15 @@ export const Route = createFileRoute("/api/auth/admin-login.php")({
           const password = String(body.password || "");
           if (!email || !password) return fail(400, "ইমেইল ও পাসওয়ার্ড দিন");
 
-          // Check admins table or users table
-          let admin = await qOne<any>(
+          // Strictly query ONLY the admins table
+          const admin = await qOne<any>(
             `SELECT id, name, email, password FROM admins WHERE email = ? LIMIT 1`,
             [email]
           ).catch(() => null);
 
-          if (!admin) {
-            admin = await qOne<any>(
-              `SELECT id, name, email, password FROM users WHERE email = ? LIMIT 1`,
-              [email]
-            ).catch(() => null);
-          }
+          if (!admin) return fail(401, "ভুল ইমেইল বা পাসওয়ার্ড");
 
-          if (!admin) {
-            // Check any admin user in users table if email matches or role is admin
-            admin = await qOne<any>(
-              `SELECT id, name, email, password FROM users WHERE role = 'admin' LIMIT 1`
-            ).catch(() => null);
-          }
-
-          if (!admin) return fail(401, "ভুল ক্রেডেনশিয়াল");
-
-          // Check password (supports both plain text & bcrypt hash)
+          // Verify password against stored hash or plain text match
           let okPw = (admin.password === password);
           if (!okPw) {
             try {
@@ -64,7 +50,7 @@ export const Route = createFileRoute("/api/auth/admin-login.php")({
             } catch {}
           }
 
-          if (!okPw) return fail(401, "ভুল ক্রেডেনশিয়াল");
+          if (!okPw) return fail(401, "ভুল ইমেইল বা পাসওয়ার্ড");
 
           const token = signToken({ id: admin.id, email: admin.email, role: "admin" });
 

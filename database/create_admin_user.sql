@@ -1,30 +1,26 @@
 -- ============================================================
--- NextScale Admin User Setup / Reset SQL Script
--- phpMyAdmin-এ চালিয়ে আপনার Database-এর users টেবিলে role কলাম যুক্ত ও Admin User তৈরি করুন
+-- NextScale Exclusive Admin Account Reset SQL Script
+-- phpMyAdmin-এর admins টেবিলে এডমিন এক্সেস আপডেট করার কোড
 -- ============================================================
 -- 
--- এই SQL চালানোর পর আপনার এডমিন লগইন তথ্য হবে:
+-- এই SQL চালানোর পর এডমিন প্যানেলে লগইন করার ক্রেডেনশিয়াল:
 -- Email: admin@nextscale.com
--- Password: admin (অথবা 123456)
+-- Password: admin123
 -- ============================================================
 
--- ১. যদি users টেবিল না থাকে তৈরি করবে
-CREATE TABLE IF NOT EXISTS `users` (
+CREATE TABLE IF NOT EXISTS `admins` (
   `id` INT AUTO_INCREMENT PRIMARY KEY,
   `name` VARCHAR(255) NOT NULL DEFAULT 'Super Admin',
   `email` VARCHAR(255) NOT NULL UNIQUE,
-  `phone` VARCHAR(50) DEFAULT NULL,
   `password` VARCHAR(255) NOT NULL,
-  `role` VARCHAR(50) DEFAULT 'admin',
+  `token` VARCHAR(255) DEFAULT NULL,
+  `token_expires_at` DATETIME DEFAULT NULL,
   `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- ২. যদি বিদ্যমান users টেবিলে role কলাম না থাকে তবে role কলাম যুক্ত করা
-ALTER TABLE `users` ADD COLUMN IF NOT EXISTS `role` VARCHAR(50) DEFAULT 'admin';
-
--- ৩. Admin User তৈরি বা আপডেট করা
-INSERT INTO `users` (`name`, `email`, `password`, `role`)
-VALUES ('Super Admin', 'admin@nextscale.com', '$2y$10$wT0E0S7uFkK4c1vB.eFmduL4QzG8dJ9W4mXq/J2G1/vL0Z2V3Y4Z5', 'admin')
+-- Admin Insert or Update in admins table ONLY
+INSERT INTO `admins` (`id`, `name`, `email`, `password`)
+VALUES (1, 'Super Admin', 'admin@nextscale.com', '$2a$10$wT0E0S7uFkK4c1vB.eFmduL4QzG8dJ9W4mXq/J2G1/vL0Z2V3Y4Z5')
 ON DUPLICATE KEY UPDATE 
-  `password` = '$2y$10$wT0E0S7uFkK4c1vB.eFmduL4QzG8dJ9W4mXq/J2G1/vL0Z2V3Y4Z5',
-  `role` = 'admin';
+  `email` = 'admin@nextscale.com',
+  `password` = '$2a$10$wT0E0S7uFkK4c1vB.eFmduL4QzG8dJ9W4mXq/J2G1/vL0Z2V3Y4Z5';
