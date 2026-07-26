@@ -3,9 +3,9 @@
 -- phpMyAdmin-এর admins টেবিলে এডমিন এক্সেস আপডেট করার কোড
 -- ============================================================
 -- 
--- এই SQL চালানোর পর এডমিন প্যানেলে লগইন করার ক্রেডেনশিয়াল:
+-- এই SQL চালানোর পর এডমিন প্যানেলে লগইন করার নতুন ক্রেডেনশিয়াল:
 -- Email: admin@nextscale.com
--- Password: admin123
+-- Password: NextScale2026!
 -- ============================================================
 
 CREATE TABLE IF NOT EXISTS `admins` (
@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS `admins` (
 
 -- Admin Insert or Update in admins table ONLY
 INSERT INTO `admins` (`id`, `name`, `email`, `password`)
-VALUES (1, 'Super Admin', 'admin@nextscale.com', '$2a$10$wT0E0S7uFkK4c1vB.eFmduL4QzG8dJ9W4mXq/J2G1/vL0Z2V3Y4Z5')
+VALUES (1, 'Super Admin', 'admin@nextscale.com', 'NextScale2026!')
 ON DUPLICATE KEY UPDATE 
   `email` = 'admin@nextscale.com',
-  `password` = '$2a$10$wT0E0S7uFkK4c1vB.eFmduL4QzG8dJ9W4mXq/J2G1/vL0Z2V3Y4Z5';
+  `password` = 'NextScale2026!';
