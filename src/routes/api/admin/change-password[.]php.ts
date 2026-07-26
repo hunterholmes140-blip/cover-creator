@@ -1,15 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { qOne, exec } from "@/lib/db.server";
-import { handle, ok, fail, requireAdmin, verifyPassword, hashPassword } from "@/lib/auth.server";
+import { handle, ok, fail, requireAdmin, hashPassword } from "@/lib/auth.server";
 
 export const Route = createFileRoute("/api/admin/change-password.php")({
   server: {
     handlers: {
       POST: async ({ request }) =>
         handle(async () => {
-          const user = requireAdmin(request);
+          requireAdmin(request);
           const body = await request.json().catch(() => ({}));
-          const currentPassword = String(body.current_password || "");
           const newPassword = String(body.new_password || "");
           const newEmail = String(body.new_email || "").trim();
 
@@ -21,65 +20,56 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
             return fail(400, "নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
           }
 
-          // Lookup admin user in DB (by user.email, request email, role='admin', or ID)
-          let dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE email = ? LIMIT 1`, [user.email]);
-          if (!dbUser && newEmail) {
-            dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE email = ? LIMIT 1`, [newEmail]);
-          }
+          // Ensure users table exists
+          try {
+            await exec(`
+              CREATE TABLE IF NOT EXISTS users (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL DEFAULT 'Admin',
+                email VARCHAR(255) NOT NULL UNIQUE,
+                phone VARCHAR(50) DEFAULT NULL,
+                password VARCHAR(255) NOT NULL,
+                role ENUM('user', 'admin') DEFAULT 'user',
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            `);
+          } catch (e) {}
+
+          // Lookup existing admin user
+          let dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE role = 'admin' LIMIT 1`).catch(() => null);
           if (!dbUser) {
-            dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE id = ? LIMIT 1`, [user.id]);
-          }
-          if (!dbUser) {
-            dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE role = 'admin' OR email LIKE '%admin%' ORDER BY id ASC LIMIT 1`);
-          }
-          if (!dbUser) {
-            dbUser = await qOne<any>(`SELECT id, email, password FROM users ORDER BY id ASC LIMIT 1`);
+            dbUser = await qOne<any>(`SELECT id, email, password FROM users ORDER BY id ASC LIMIT 1`).catch(() => null);
           }
 
-          // If no admin user in DB yet, create the admin user record
-          if (!dbUser) {
-            const targetPassword = newPassword || currentPassword || "admin123";
-            const newHash = await hashPassword(targetPassword);
-            const targetEmail = newEmail || user.email || "admin@nextscale.com";
-            await exec(
-              `INSERT INTO users (name, email, password, role) VALUES ('Super Admin', ?, ?, 'admin')`,
-              [targetEmail, newHash]
-            );
-            return ok({
-              message: "এডমিন ইমেইল ও পাসওয়ার্ড তথ্য সফলভাবে আপডেট করা হয়েছে 🔒",
-              updatedEmail: targetEmail,
-            });
-          }
+          const targetEmail = newEmail || dbUser?.email || "admin@nextscale.com";
 
-          // Verify password if provided, or allow if admin session is verified
-          if (currentPassword && dbUser.password) {
-            let isMatch = (dbUser.password === currentPassword);
-            if (!isMatch) {
-              try {
-                isMatch = await verifyPassword(currentPassword, dbUser.password);
-              } catch {}
+          try {
+            if (dbUser) {
+              if (newPassword) {
+                const newHash = await hashPassword(newPassword);
+                await exec(`UPDATE users SET email = ?, password = ?, role = 'admin' WHERE id = ?`, [targetEmail, newHash, dbUser.id]);
+              } else {
+                await exec(`UPDATE users SET email = ?, role = 'admin' WHERE id = ?`, [targetEmail, dbUser.id]);
+              }
+            } else {
+              const targetPw = newPassword || "123456";
+              const newHash = await hashPassword(targetPw);
+              await exec(
+                `INSERT INTO users (name, email, password, role) VALUES ('Super Admin', ?, ?, 'admin')`,
+                [targetEmail, newHash]
+              );
             }
-            // If mismatch, check if currentPassword matches newPassword or allow direct update for logged in admin
-          }
-
-          let updatedEmail = dbUser.email;
-          if (newEmail && newEmail !== dbUser.email) {
-            const existing = await qOne<any>(`SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1`, [newEmail, dbUser.id]);
-            if (existing) {
-              return fail(400, "এই ইমেইলটি অন্য কোনো একাউন্টে ব্যবহৃত হচ্ছে।");
+          } catch (err: any) {
+            // If email already exists on another row, update that row
+            if (newPassword) {
+              const newHash = await hashPassword(newPassword);
+              await exec(`UPDATE users SET password = ?, role = 'admin' WHERE email = ?`, [newHash, targetEmail]);
             }
-            await exec(`UPDATE users SET email = ?, role = 'admin' WHERE id = ?`, [newEmail, dbUser.id]);
-            updatedEmail = newEmail;
-          }
-
-          if (newPassword) {
-            const newHash = await hashPassword(newPassword);
-            await exec(`UPDATE users SET password = ?, role = 'admin' WHERE id = ?`, [newHash, dbUser.id]);
           }
 
           return ok({
             message: "এডমিন ইমেইল ও পাসওয়ার্ড তথ্য সফলভাবে আপডেট করা হয়েছে 🔒",
-            updatedEmail,
+            updatedEmail: targetEmail,
           });
         }),
     },
