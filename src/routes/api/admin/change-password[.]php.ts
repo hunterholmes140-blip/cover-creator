@@ -20,7 +20,7 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
             return fail(400, "নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
           }
 
-          // Ensure users table exists
+          // Ensure users table and role column exist
           try {
             await exec(`
               CREATE TABLE IF NOT EXISTS users (
@@ -29,10 +29,14 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
                 email VARCHAR(255) NOT NULL UNIQUE,
                 phone VARCHAR(50) DEFAULT NULL,
                 password VARCHAR(255) NOT NULL,
-                role ENUM('user', 'admin') DEFAULT 'user',
+                role VARCHAR(50) DEFAULT 'admin',
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
               ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             `);
+          } catch (e) {}
+
+          try {
+            await exec(`ALTER TABLE users ADD COLUMN role VARCHAR(50) DEFAULT 'admin'`);
           } catch (e) {}
 
           // Lookup existing admin user
