@@ -15,6 +15,7 @@ export type TrainerFormValue = {
   courses: number;
   rating: number;
   avatar_url: string;
+  cv_url?: string;
   is_mentor: boolean;
   location: string;
   email: string;
@@ -39,6 +40,7 @@ export const emptyTrainer: TrainerFormValue = {
   courses: 0,
   rating: 5,
   avatar_url: "",
+  cv_url: "",
   is_mentor: false,
   location: "",
   email: "",
@@ -137,6 +139,13 @@ export function TrainerForm({
               onChange={(url) => set("avatar_url", url)}
               aspect="square"
               maxDim={600}
+            />
+          </Field>
+          <Field label="CV / Resume PDF URL" hint="PDF ফাইল বা গুগল ড্রাইভের ডাউনলোড লিঙ্ক">
+            <Input
+              value={v.cv_url || ""}
+              onChange={(e) => set("cv_url", e.target.value)}
+              placeholder="https://example.com/trainer-cv.pdf"
             />
           </Field>
 
