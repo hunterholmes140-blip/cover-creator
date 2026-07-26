@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useSiteSettings, DEFAULT_SETTINGS, type SiteSettings, whatsappLink } from "@/lib/site-settings";
 import { Save, RotateCcw, ExternalLink, KeyRound, ShieldCheck, Laptop, Smartphone, Trash2, LogOut, CheckCircle2 } from "lucide-react";
-import { api } from "@/lib/api";
+import { api, getStoredUser } from "@/lib/api";
 import { useToast } from "@/components/admin/ui";
 
 export const Route = createFileRoute("/admin/settings")({
@@ -54,6 +54,8 @@ type DeviceSession = {
 
 function AdminPasswordSection() {
   const toast = useToast();
+  const storedUser = getStoredUser();
+  const [email, setEmail] = useState(storedUser?.email || "admin@nextscale.com");
   const [currPw, setCurrPw] = useState("");
   const [newPw, setNewPw] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
@@ -61,30 +63,45 @@ function AdminPasswordSection() {
   const [msg, setMsg] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
+  useEffect(() => {
+    if (storedUser?.email) setEmail(storedUser.email);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMsg(null);
     setErr(null);
 
-    if (newPw !== confirmPw) {
+    if (newPw && newPw !== confirmPw) {
       setErr("নতুন পাসওয়ার্ড এবং কনফার্ম পাসওয়ার্ড মিলছে না।");
       return;
     }
 
     setLoading(true);
     try {
-      const res = await api<{ message: string }>("admin/change-password.php", {
+      const res = await api<{ message: string; updatedEmail?: string }>("admin/change-password.php", {
         method: "POST",
         auth: true,
-        body: { current_password: currPw, new_password: newPw },
+        body: { current_password: currPw, new_password: newPw, new_email: email },
       });
-      setMsg(res.message || "পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে।");
-      toast.show("পাসওয়ার্ড আপডেট হয়েছে 🔒");
+      setMsg(res.message || "ইউজার ও পাসওয়ার্ড সফলভাবে আপডেট করা হয়েছে।");
+      toast.show("এডমিন ইউজার ও পাসওয়ার্ড আপডেট হয়েছে 🔒");
+
+      if (res.updatedEmail && typeof window !== "undefined") {
+        try {
+          const u = getStoredUser();
+          if (u) {
+            u.email = res.updatedEmail;
+            localStorage.setItem("nextscale_user", JSON.stringify(u));
+          }
+        } catch {}
+      }
+
       setCurrPw("");
       setNewPw("");
       setConfirmPw("");
     } catch (e: any) {
-      setErr(e.message || "পাসওয়ার্ড পরিবর্তন করতে ব্যর্থ হয়েছে।");
+      setErr(e.message || "ইউজার বা পাসওয়ার্ড পরিবর্তন করতে ব্যর্থ হয়েছে।");
     } finally {
       setLoading(false);
     }
@@ -94,12 +111,23 @@ function AdminPasswordSection() {
     <section className="rounded-xl border border-border bg-card p-6 space-y-4">
       <div className="flex items-center gap-2 border-b border-border pb-3">
         <KeyRound className="h-5 w-5 text-primary" />
-        <h2 className="text-lg font-semibold text-foreground">এডমিন পাসওয়ার্ড পরিবর্তন</h2>
+        <h2 className="text-lg font-semibold text-foreground">এডমিন ইউজারনেম/ইমেইল ও পাসওয়ার্ড পরিবর্তন</h2>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
         <div>
-          <label className="block text-xs font-semibold text-foreground mb-1">বর্তমান পাসওয়ার্ড</label>
+          <label className="block text-xs font-semibold text-foreground mb-1">এডমিন ইমেইল / ইউজারনেম</label>
+          <TextInput
+            type="email"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="admin@nextscale.com"
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-foreground mb-1">বর্তমান পাসওয়ার্ড (যাচাইয়ের জন্য)</label>
           <TextInput
             type="password"
             required
@@ -110,28 +138,29 @@ function AdminPasswordSection() {
         </div>
 
         <div>
-          <label className="block text-xs font-semibold text-foreground mb-1">নতুন পাসওয়ার্ড</label>
+          <label className="block text-xs font-semibold text-foreground mb-1">নতুন পাসওয়ার্ড (ঐচ্ছিক)</label>
           <TextInput
             type="password"
-            required
             value={newPw}
             onChange={(e) => setNewPw(e.target.value)}
-            placeholder="নতুন পাসওয়ার্ড (কমপক্ষে ৬ অক্ষর)"
+            placeholder="নতুন পাসওয়ার্ড (পরিবর্তন না করতে চাইলে খালি রাখুন)"
           />
         </div>
 
-        <div>
-          <label className="block text-xs font-semibold text-foreground mb-1">নতুন পাসওয়ার্ড কনফার্ম করুন</label>
-          <TextInput
-            type="password"
-            required
-            value={confirmPw}
-            onChange={(e) => setConfirmPw(e.target.value)}
-            placeholder="পুনরায় নতুন পাসওয়ার্ড লিখুন"
-          />
-        </div>
+        {newPw ? (
+          <div>
+            <label className="block text-xs font-semibold text-foreground mb-1">নতুন পাসওয়ার্ড কনফার্ম করুন</label>
+            <TextInput
+              type="password"
+              required={!!newPw}
+              value={confirmPw}
+              onChange={(e) => setConfirmPw(e.target.value)}
+              placeholder="পুনরায় নতুন পাসওয়ার্ড লিখুন"
+            />
+          </div>
+        ) : null}
 
-        {msg && <div className="rounded-md bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-400 text-xs p-3 font-medium">{msg}</div>}
+        {msg && <div className="rounded-md bg-green-500/10 border border-green-500/20 text-green-700 dark:text-green-400 text-xs p-3 font-medium flex items-center gap-2"><CheckCircle2 className="h-4 w-4 shrink-0" />{msg}</div>}
         {err && <div className="rounded-md bg-destructive/10 text-destructive text-xs p-3 font-medium">{err}</div>}
 
         <button
@@ -139,7 +168,7 @@ function AdminPasswordSection() {
           disabled={loading}
           className="inline-flex items-center justify-center gap-2 rounded-md bg-primary text-primary-foreground px-4 py-2 text-xs font-bold shadow hover:bg-primary/90 disabled:opacity-60"
         >
-          {loading ? "পরিবর্তন হচ্ছে..." : "পাসওয়ার্ড আপডেট করুন"}
+          {loading ? "আপডেট হচ্ছে…" : "ইউজার ও পাসওয়ার্ড আপডেট করুন"}
         </button>
       </form>
     </section>

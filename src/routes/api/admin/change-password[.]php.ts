@@ -11,16 +11,21 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
           const body = await request.json().catch(() => ({}));
           const currentPassword = String(body.current_password || "");
           const newPassword = String(body.new_password || "");
+          const newEmail = String(body.new_email || "").trim();
 
-          if (!currentPassword || !newPassword) {
-            return fail(400, "বর্তমান এবং নতুন পাসওয়ার্ড উভয়ই প্রদান করুন।");
+          if (!currentPassword) {
+            return fail(400, "বর্তমান পাসওয়ার্ড প্রদান করুন।");
           }
 
-          if (newPassword.length < 6) {
+          if (!newPassword && !newEmail) {
+            return fail(400, "নতুন ইমেইল বা পাসওয়ার্ড প্রদান করুন।");
+          }
+
+          if (newPassword && newPassword.length < 6) {
             return fail(400, "নতুন পাসওয়ার্ড কমপক্ষে ৬ অক্ষরের হতে হবে।");
           }
 
-          const dbUser = await qOne<any>(`SELECT id, password FROM users WHERE id = ? LIMIT 1`, [user.id]);
+          const dbUser = await qOne<any>(`SELECT id, email, password FROM users WHERE id = ? LIMIT 1`, [user.id]);
           if (!dbUser) return fail(404, "ইউজার পাওয়া যায়নি।");
 
           const isMatch = await verifyPassword(currentPassword, dbUser.password);
@@ -28,10 +33,25 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
             return fail(400, "বর্তমান পাসওয়ার্ডটি সঠিক নয়।");
           }
 
-          const newHash = await hashPassword(newPassword);
-          await exec(`UPDATE users SET password = ? WHERE id = ?`, [newHash, user.id]);
+          let updatedEmail = dbUser.email;
+          if (newEmail && newEmail !== dbUser.email) {
+            const existing = await qOne<any>(`SELECT id FROM users WHERE email = ? AND id != ? LIMIT 1`, [newEmail, user.id]);
+            if (existing) {
+              return fail(400, "এই ইমেইলটি অন্য কোনো একাউন্টে ব্যবহৃত হচ্ছে।");
+            }
+            await exec(`UPDATE users SET email = ? WHERE id = ?`, [newEmail, user.id]);
+            updatedEmail = newEmail;
+          }
 
-          return ok({ message: "এডমিন পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে 🔒" });
+          if (newPassword) {
+            const newHash = await hashPassword(newPassword);
+            await exec(`UPDATE users SET password = ? WHERE id = ?`, [newHash, user.id]);
+          }
+
+          return ok({
+            message: "এডমিন ইমেইল / পাসওয়ার্ড তথ্য সফলভাবে আপডেট করা হয়েছে 🔒",
+            updatedEmail,
+          });
         }),
     },
   },
