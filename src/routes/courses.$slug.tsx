@@ -4,7 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 import {
   Clock, User, GraduationCap, PlayCircle, Lock, CheckCircle2, ArrowRight,
-  Star, Users, Award, Globe, ShieldCheck, X, Copy, Check, ChevronDown, Zap, ExternalLink, CreditCard, MessageCircle, Sparkles,
+  Star, Users, Award, Globe, ShieldCheck, X, Copy, Check, ChevronDown, Zap, ExternalLink, CreditCard, MessageCircle, Sparkles, BadgeCheck,
 } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { EpsPaymentCard } from "@/components/site/EpsPaymentCard";
@@ -12,7 +12,7 @@ import { api, ApiError, getStoredUser } from "@/lib/api";
 import { taka, toBn } from "@/lib/format";
 import { useSiteSettings } from "@/lib/site-settings";
 import { track } from "@/lib/marketing";
-import { MOCK_COURSES } from "@/lib/mock-data";
+import { MOCK_COURSES, MOCK_TRAINERS } from "@/lib/mock-data";
 import { getEpsConfig, epsInitializePayment } from "@/lib/eps-client";
 
 const detailQuery = (slug: string) =>
@@ -464,26 +464,100 @@ function CourseDetailPage() {
             )}
           </section>
 
-          {/* INSTRUCTOR */}
-          {course.instructor && (
-            <section id="instructor" className="scroll-mt-32">
-              <h2 className="text-2xl font-bold">আপনার ইন্সট্রাক্টর</h2>
-              <div className="mt-5 rounded-2xl border border-border bg-card p-6 flex flex-col sm:flex-row gap-5">
-                <div className="h-20 w-20 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 grid place-items-center text-2xl font-bold text-primary shrink-0">
-                  {course.instructor.charAt(0)}
+          {/* INSTRUCTOR / INSTRUCTORS */}
+          {course.instructor && (() => {
+            const rawNames = (course.instructor || "")
+              .split(/,| and | এবং /i)
+              .map((s: string) => s.trim())
+              .filter(Boolean);
+
+            let liveTrainers: any[] = MOCK_TRAINERS;
+            if (typeof window !== "undefined") {
+              try {
+                const raw = localStorage.getItem("live_trainers_v1") || localStorage.getItem("ns.trainers.v1");
+                if (raw) {
+                  const parsed = JSON.parse(raw);
+                  if (Array.isArray(parsed) && parsed.length > 0) liveTrainers = parsed;
+                }
+              } catch {}
+            }
+
+            const parsedInstructors = rawNames.map((name: string) => {
+              const cleanTarget = name.toLowerCase().replace(/\s+/g, "-");
+              const found = liveTrainers.find((t: any) => {
+                if (!t) return false;
+                const s = (t.slug || "").toLowerCase();
+                const n = (t.name || "").toLowerCase();
+                return n === name.toLowerCase() || s === cleanTarget || n.includes(name.toLowerCase());
+              });
+
+              return {
+                name: found?.name || name,
+                title: found?.title || "সিনিয়র ইন্সট্রাক্টর, NextScale",
+                tagline: found?.tagline || "",
+                avatar: found?.avatar_url || null,
+                rating: found?.rating || "৪.৯",
+                students: found?.students || 1200,
+                slug: found?.slug || (cleanTarget ? `${cleanTarget}-trainer` : undefined),
+              };
+            });
+
+            return (
+              <section id="instructor" className="scroll-mt-32">
+                <h2 className="text-2xl font-bold">
+                  {parsedInstructors.length > 1 ? "কোর্স ইন্সট্রাক্টরবৃন্দ" : "আপনার ইন্সট্রাক্টর"}
+                </h2>
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  {parsedInstructors.map((inst: any, idx: number) => (
+                    <div
+                      key={idx}
+                      className="rounded-2xl border border-border bg-card p-5 flex items-start gap-4 shadow-sm hover:border-primary/40 transition-all"
+                    >
+                      {inst.avatar ? (
+                        <img
+                          src={inst.avatar}
+                          alt={inst.name}
+                          className="h-16 w-16 rounded-full object-cover shrink-0 ring-2 ring-primary/20 shadow-md"
+                        />
+                      ) : (
+                        <div className="h-16 w-16 rounded-full bg-gradient-to-br from-primary/30 to-primary/10 grid place-items-center text-xl font-bold text-primary shrink-0 ring-2 ring-primary/20 shadow-md">
+                          {inst.name.charAt(0)}
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-1.5">
+                          <h3 className="font-bold text-base truncate">{inst.name}</h3>
+                          <BadgeCheck className="h-4 w-4 text-primary shrink-0" />
+                        </div>
+                        <p className="text-xs text-primary font-medium truncate mt-0.5">
+                          {inst.title}
+                        </p>
+                        {inst.tagline && (
+                          <p className="text-xs text-muted-foreground line-clamp-2 mt-1">
+                            {inst.tagline}
+                          </p>
+                        )}
+                        <div className="mt-3 flex items-center justify-between gap-2 border-t border-border/60 pt-2 text-xs">
+                          <span className="inline-flex items-center gap-1 text-amber-500 font-semibold">
+                            <Star className="h-3.5 w-3.5 fill-current" /> {inst.rating}
+                          </span>
+                          {inst.slug ? (
+                            <Link
+                              to="/trainers/$slug"
+                              params={{ slug: inst.slug }}
+                              className="text-primary hover:underline font-semibold flex items-center gap-1 text-xs"
+                            >
+                              প্রোফাইল দেখুন →
+                            </Link>
+                          ) : null}
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <h3 className="font-bold text-lg">{course.instructor}</h3>
-                  <p className="text-sm text-muted-foreground">সিনিয়র ইন্সট্রাক্টর, NextScale</p>
-                  <div className="mt-3 flex flex-wrap gap-4 text-xs text-muted-foreground">
-                    <span className="inline-flex items-center gap-1"><Star className="h-3.5 w-3.5 fill-yellow-400 text-yellow-400" /> ৪.৯ রেটিং</span>
-                    <span className="inline-flex items-center gap-1"><Users className="h-3.5 w-3.5" /> {toBn(1200)}+ শিক্ষার্থী</span>
-                    <span className="inline-flex items-center gap-1"><Award className="h-3.5 w-3.5" /> {toBn(5)}+ বছর অভিজ্ঞতা</span>
-                  </div>
-                </div>
-              </div>
-            </section>
-          )}
+              </section>
+            );
+          })()}
 
           {/* FAQ */}
           <section id="faq" className="scroll-mt-32">

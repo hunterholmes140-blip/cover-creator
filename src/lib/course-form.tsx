@@ -2,9 +2,102 @@
 import { useState } from "react";
 import { makeSlug } from "@/lib/admin-store";
 import { useLiveCategories } from "@/lib/live-store";
+import { useTrainers } from "@/lib/admin-store";
+import { MOCK_TRAINERS } from "@/lib/mock-data";
 import { BADGE_PRESETS, BADGE_STYLES, type BadgeVariant } from "@/lib/course-badges";
 import { Field, Input, Textarea, Select, Button } from "@/components/admin/ui";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+
+function InstructorMultiSelect({
+  value,
+  onChange,
+}: {
+  value: string;
+  onChange: (val: string) => void;
+}) {
+  const { items: trainers } = useTrainers();
+  const trainerList = trainers && trainers.length > 0 ? trainers : MOCK_TRAINERS;
+
+  const selectedNames = (value || "")
+    .split(/,| and | এবং /i)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+  const toggleTrainer = (name: string) => {
+    let next: string[];
+    if (selectedNames.some((n) => n.toLowerCase() === name.toLowerCase())) {
+      next = selectedNames.filter((n) => n.toLowerCase() !== name.toLowerCase());
+    } else {
+      next = [...selectedNames, name];
+    }
+    onChange(next.join(", "));
+  };
+
+  return (
+    <div className="space-y-3">
+      <div className="rounded-lg border border-border bg-background p-3">
+        <div className="text-xs font-semibold text-foreground mb-2">
+          ড্রপ ডাউন তালিকা থেকে মেন্টর/ট্রেনার নির্বাচন করুন (একাধিক নির্বাচন করা যাবে):
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-48 overflow-y-auto pr-1">
+          {trainerList.map((t: any) => {
+            const isSelected = selectedNames.some((n) => n.toLowerCase() === (t.name || "").toLowerCase());
+            return (
+              <label
+                key={t.id || t.slug || t.name}
+                className={`flex items-center gap-2.5 p-2 rounded-md border text-xs cursor-pointer transition-all ${
+                  isSelected
+                    ? "border-primary bg-primary/10 font-bold text-primary shadow-sm"
+                    : "border-border hover:bg-muted/50 text-foreground"
+                }`}
+              >
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={() => toggleTrainer(t.name)}
+                  className="rounded border-border text-primary focus:ring-primary h-4 w-4 shrink-0"
+                />
+                <span className="truncate">{t.name} {t.title ? `(${t.title})` : ""}</span>
+              </label>
+            );
+          })}
+        </div>
+      </div>
+
+      <div>
+        <div className="text-xs font-medium text-muted-foreground mb-1">
+          ম্যানুয়াল ইনপুট (কমা দিয়ে নামগুলো সেপারেট করতে পারবেন):
+        </div>
+        <Input
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder="যেমন: Faruk Hossain, Sakibul Islam, Farazul Islam"
+        />
+      </div>
+
+      {selectedNames.length > 0 && (
+        <div className="flex flex-wrap items-center gap-1.5 pt-1">
+          <span className="text-xs font-medium text-muted-foreground">সিলেক্টেড ইনস্ট্রাক্টর ({selectedNames.length} জন):</span>
+          {selectedNames.map((name, i) => (
+            <span
+              key={i}
+              className="inline-flex items-center gap-1 rounded-full bg-primary/15 text-primary border border-primary/25 px-2.5 py-0.5 text-xs font-bold"
+            >
+              {name}
+              <button
+                type="button"
+                onClick={() => toggleTrainer(name)}
+                className="hover:text-destructive text-primary/70 font-black ml-1 text-sm leading-none"
+              >
+                ×
+              </button>
+            </span>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
 
 
 export type RecordingItem = {
@@ -122,9 +215,11 @@ export function CourseForm({
           <Field label="সংক্ষিপ্ত বিবরণ">
             <Input value={v.short_description} onChange={(e) => set("short_description", e.target.value)} />
           </Field>
-          <Field label="ইন্সট্রাক্টর">
-            <Input value={v.instructor} onChange={(e) => set("instructor", e.target.value)} />
-          </Field>
+          <div className="md:col-span-2">
+            <Field label="ইনস্ট্রাক্টর নির্বাচন (ড্রপ ডাউন)">
+              <InstructorMultiSelect value={v.instructor} onChange={(val) => set("instructor", val)} />
+            </Field>
+          </div>
           <Field label="বিস্তারিত বিবরণ">
             <Textarea rows={5} value={v.description} onChange={(e) => set("description", e.target.value)} />
           </Field>
