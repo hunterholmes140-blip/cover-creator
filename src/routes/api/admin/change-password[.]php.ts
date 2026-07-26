@@ -52,8 +52,10 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
               if (newPassword) {
                 const newHash = await hashPassword(newPassword);
                 await exec(`UPDATE users SET email = ?, password = ?, role = 'admin' WHERE id = ?`, [targetEmail, newHash, dbUser.id]);
+                try { await exec(`UPDATE admins SET email = ?, password = ? WHERE email = ? OR id = ?`, [targetEmail, newHash, targetEmail, dbUser.id]); } catch {}
               } else {
                 await exec(`UPDATE users SET email = ?, role = 'admin' WHERE id = ?`, [targetEmail, dbUser.id]);
+                try { await exec(`UPDATE admins SET email = ? WHERE email = ? OR id = ?`, [targetEmail, targetEmail, dbUser.id]); } catch {}
               }
             } else {
               const targetPw = newPassword || "123456";
@@ -62,12 +64,18 @@ export const Route = createFileRoute("/api/admin/change-password.php")({
                 `INSERT INTO users (name, email, password, role) VALUES ('Super Admin', ?, ?, 'admin')`,
                 [targetEmail, newHash]
               );
+              try {
+                await exec(
+                  `INSERT INTO admins (id, name, email, password) VALUES (1, 'Super Admin', ?, ?) ON DUPLICATE KEY UPDATE email = VALUES(email), password = VALUES(password)`,
+                  [targetEmail, newHash]
+                );
+              } catch {}
             }
           } catch (err: any) {
-            // If email already exists on another row, update that row
             if (newPassword) {
               const newHash = await hashPassword(newPassword);
               await exec(`UPDATE users SET password = ?, role = 'admin' WHERE email = ?`, [newHash, targetEmail]);
+              try { await exec(`UPDATE admins SET password = ? WHERE email = ?`, [newHash, targetEmail]); } catch {}
             }
           }
 
