@@ -124,58 +124,6 @@ export const Route = createFileRoute("/courses/$slug")({
   component: CourseDetailPage,
 });
 
-function CourseDetailPage() {
-  const { slug } = Route.useParams();
-  const { data } = useSuspenseQuery(detailQuery(slug));
-  const { course, lessons, enrolled } = data;
-  let price = Number(course.price || 0);
-  let originalPrice: number | null = null;
-  const disc = course.discount_price !== null && course.discount_price !== undefined ? Number(course.discount_price) : null;
-
-  if (disc !== null && disc > 0 && disc !== price) {
-    if (disc < price) {
-      price = disc;
-      originalPrice = Number(course.price);
-    } else {
-      originalPrice = disc;
-    }
-  }
-
-  const hasDiscount = originalPrice !== null && originalPrice > price;
-  const discountPct = hasDiscount && originalPrice
-    ? Math.round(((originalPrice - price) / originalPrice) * 100)
-    : 0;
-
-  const [showEnroll, setShowEnroll] = useState(false);
-
-  // Facebook Pixel: ViewContent
-  useEffect(() => {
-    track("ViewContent", {
-      content_ids: [String(course.id)],
-      content_name: course.title,
-      content_type: "product",
-      content_category: course.category_name || undefined,
-      value: Number(price) || 0,
-      currency: "BDT",
-    });
-  }, [course.id, course.title, course.category_name, price]);
-
-  const openEnroll = () => {
-    track("InitiateCheckout", {
-      content_ids: [String(course.id)],
-      content_name: course.title,
-      value: Number(price) || 0,
-      currency: "BDT",
-      num_items: 1,
-    });
-    setShowEnroll(true);
-  };
-
-  const scrollTo = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
-
 function CourseCountdownBanner({
   title,
   endDateStr,
