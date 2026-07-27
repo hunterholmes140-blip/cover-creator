@@ -6,6 +6,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
 import { MOCK_HERO_VIDEOS, MOCK_VIDEO_GALLERY } from "@/lib/mock-data";
+import { useVideos } from "@/lib/admin-store";
 import { HeroCarousel } from "@/components/site/HeroCarousel";
 import VideoGallery from "@/components/site/VideoGallery";
 import { toBn } from "@/lib/format";
@@ -367,6 +368,8 @@ function HomePage() {
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: faqs } = useSuspenseQuery(faqsQuery);
   const { data: posts } = useSuspenseQuery(postsQuery);
+  const { items: liveVideos } = useVideos();
+  const videoList = liveVideos && liveVideos.length > 0 ? liveVideos : MOCK_VIDEO_GALLERY;
   const [c] = useContent(CONTENT_KEYS.HOME, HOME_CONTENT_DEFAULTS);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
@@ -880,7 +883,7 @@ function HomePage() {
           </div>
 
           <div className="mt-12">
-            <VideoGallery videos={MOCK_VIDEO_GALLERY} />
+            <VideoGallery videos={videoList} />
           </div>
 
           <div className="mt-12 text-center">
