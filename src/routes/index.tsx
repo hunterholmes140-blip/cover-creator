@@ -6,7 +6,7 @@ import { SiteLayout } from "@/components/site/Layout";
 import { CourseCard } from "@/components/site/CourseCard";
 import { api } from "@/lib/api";
 import { MOCK_HERO_VIDEOS, MOCK_VIDEO_GALLERY } from "@/lib/mock-data";
-import { useVideos } from "@/lib/admin-store";
+import { useVideos, useHero } from "@/lib/admin-store";
 import { HeroCarousel } from "@/components/site/HeroCarousel";
 import VideoGallery from "@/components/site/VideoGallery";
 import { toBn } from "@/lib/format";
@@ -368,6 +368,8 @@ function HomePage() {
   const { data: testimonials } = useSuspenseQuery(testimonialsQuery);
   const { data: faqs } = useSuspenseQuery(faqsQuery);
   const { data: posts } = useSuspenseQuery(postsQuery);
+  const { items: liveHero } = useHero();
+  const heroSlides = liveHero && liveHero.length > 0 ? liveHero : MOCK_HERO_VIDEOS;
   const { items: liveVideos } = useVideos();
   const videoList = liveVideos && liveVideos.length > 0 ? liveVideos : MOCK_VIDEO_GALLERY;
   const [c] = useContent(CONTENT_KEYS.HOME, HOME_CONTENT_DEFAULTS);
@@ -397,7 +399,7 @@ function HomePage() {
           </div>
 
           <div className="relative">
-            <HeroCarousel slides={MOCK_HERO_VIDEOS} />
+            <HeroCarousel slides={heroSlides} />
           </div>
         </div>
       </section>
