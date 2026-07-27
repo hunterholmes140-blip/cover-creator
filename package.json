@@ -71,9 +71,16 @@
     "vaul": "^1.1.2",
     "vite-tsconfig-paths": "^6.0.2",
     "zod": "^3.24.2",
+    "@rollup/wasm-node": "^4.34.8",
     "@lovable.dev/vite-tanstack-config": "2.7.7",
     "nitro": "3.0.260603-beta",
     "vite": "^6.2.0"
+  },
+  "overrides": {
+    "@rollup/rollup-linux-x64-gnu": "npm:@rollup/wasm-node@^4.34.8"
+  },
+  "resolutions": {
+    "@rollup/rollup-linux-x64-gnu": "npm:@rollup/wasm-node@^4.34.8"
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
