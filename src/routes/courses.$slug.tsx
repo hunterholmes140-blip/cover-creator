@@ -226,8 +226,23 @@ function CourseDetailPage() {
   const [showEnroll, setShowEnroll] = useState(false);
   const [activeTab, setActiveTab] = useState("about");
 
-  const price = course.discount_price ?? course.price;
-  const hasDiscount = course.discount_price !== null && course.discount_price !== undefined && course.discount_price < course.price;
+  let price = Number(course.price || 0);
+  let originalPrice: number | null = null;
+  const disc = course.discount_price !== null && course.discount_price !== undefined ? Number(course.discount_price) : null;
+
+  if (disc !== null && disc > 0 && disc !== price) {
+    if (disc < price) {
+      price = disc;
+      originalPrice = Number(course.price);
+    } else {
+      originalPrice = disc;
+    }
+  }
+
+  const hasDiscount = originalPrice !== null && originalPrice > price;
+  const discountPct = hasDiscount && originalPrice
+    ? Math.round(((originalPrice - price) / originalPrice) * 100)
+    : 0;
 
   useEffect(() => {
     track("ViewContent", {
