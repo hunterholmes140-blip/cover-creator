@@ -10,6 +10,9 @@ async function ensureExtraColumns() {
   await exec(`ALTER TABLE courses ADD COLUMN notice TEXT DEFAULT NULL`).catch(() => {});
   await exec(`ALTER TABLE courses ADD COLUMN recordings_json LONGTEXT DEFAULT NULL`).catch(() => {});
   await exec(`ALTER TABLE courses ADD COLUMN modules_json LONGTEXT DEFAULT NULL`).catch(() => {});
+  await exec(`ALTER TABLE courses ADD COLUMN is_countdown_enabled TINYINT(1) DEFAULT 0`).catch(() => {});
+  await exec(`ALTER TABLE courses ADD COLUMN countdown_title VARCHAR(255) DEFAULT NULL`).catch(() => {});
+  await exec(`ALTER TABLE courses ADD COLUMN countdown_end_date VARCHAR(255) DEFAULT NULL`).catch(() => {});
   await exec(`ALTER TABLE courses MODIFY COLUMN thumbnail LONGTEXT DEFAULT NULL`).catch(() => {});
   await exec(`ALTER TABLE courses MODIFY COLUMN preview_video LONGTEXT DEFAULT NULL`).catch(() => {});
   await exec(`ALTER TABLE courses MODIFY COLUMN description LONGTEXT DEFAULT NULL`).catch(() => {});
@@ -53,14 +56,15 @@ export const Route = createFileRoute("/api/admin/courses.php")({
           const modulesStr = b.modules ? JSON.stringify(b.modules) : (b.modules_json ?? null);
 
           const res = await exec(
-            `INSERT INTO courses (title, slug, short_description, description, thumbnail, preview_video, price, discount_price, category_id, instructor, duration, live_class_link, secret_group_link, class_routine, notice, recordings_json, modules_json, level, is_published, is_featured, badge)
-             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
+            `INSERT INTO courses (title, slug, short_description, description, thumbnail, preview_video, price, discount_price, category_id, instructor, duration, live_class_link, secret_group_link, class_routine, notice, recordings_json, modules_json, level, is_published, is_featured, badge, is_countdown_enabled, countdown_title, countdown_end_date)
+             VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
             [
               b.title, b.slug, b.short_description ?? null, b.description ?? null,
               b.thumbnail ?? null, b.preview_video ?? null, Number(b.price ?? 0), b.discount_price ? Number(b.discount_price) : null,
               b.category_id ? Number(b.category_id) : null, b.instructor ?? null, b.duration ?? null,
               b.live_class_link ?? null, b.secret_group_link ?? null, b.class_routine ?? null, b.notice ?? null,
               recordingsStr, modulesStr, b.level ?? "beginner", b.is_published ? 1 : 0, b.is_featured ? 1 : 0, badgeStr,
+              b.is_countdown_enabled ? 1 : 0, b.countdown_title ?? null, b.countdown_end_date ?? null,
             ],
           );
           return ok({ id: res.insertId }, 201);
@@ -78,13 +82,14 @@ export const Route = createFileRoute("/api/admin/courses.php")({
           const modulesStr = b.modules ? JSON.stringify(b.modules) : (b.modules_json ?? null);
 
           await exec(
-            `UPDATE courses SET title=?, slug=?, short_description=?, description=?, thumbnail=?, preview_video=?, price=?, discount_price=?, category_id=?, instructor=?, duration=?, live_class_link=?, secret_group_link=?, class_routine=?, notice=?, recordings_json=?, modules_json=?, level=?, is_published=?, is_featured=?, badge=? WHERE id=?`,
+            `UPDATE courses SET title=?, slug=?, short_description=?, description=?, thumbnail=?, preview_video=?, price=?, discount_price=?, category_id=?, instructor=?, duration=?, live_class_link=?, secret_group_link=?, class_routine=?, notice=?, recordings_json=?, modules_json=?, level=?, is_published=?, is_featured=?, badge=?, is_countdown_enabled=?, countdown_title=?, countdown_end_date=? WHERE id=?`,
             [
               b.title, b.slug, b.short_description ?? null, b.description ?? null,
               b.thumbnail ?? null, b.preview_video ?? null, Number(b.price ?? 0), b.discount_price ? Number(b.discount_price) : null,
               b.category_id ? Number(b.category_id) : null, b.instructor ?? null, b.duration ?? null,
               b.live_class_link ?? null, b.secret_group_link ?? null, b.class_routine ?? null, b.notice ?? null,
-              recordingsStr, modulesStr, b.level ?? "beginner", b.is_published ? 1 : 0, b.is_featured ? 1 : 0, badgeStr, id,
+              recordingsStr, modulesStr, b.level ?? "beginner", b.is_published ? 1 : 0, b.is_featured ? 1 : 0, badgeStr,
+              b.is_countdown_enabled ? 1 : 0, b.countdown_title ?? null, b.countdown_end_date ?? null, id,
             ],
           );
           return ok({ id });

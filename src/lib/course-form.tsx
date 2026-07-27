@@ -139,6 +139,9 @@ export type CourseFormValue = {
   is_featured: 0 | 1;
   badge: { text: string; variant: BadgeVariant } | null;
   lessons: any[];
+  is_countdown_enabled?: boolean | number;
+  countdown_title?: string;
+  countdown_end_date?: string;
 };
 
 export const emptyCourse: CourseFormValue = {
@@ -166,6 +169,9 @@ export const emptyCourse: CourseFormValue = {
   is_featured: 0,
   badge: null,
   lessons: [],
+  is_countdown_enabled: false,
+  countdown_title: "⚡ অফার শেষ হতে বাকি:",
+  countdown_end_date: "",
 };
 
 export function CourseForm({
@@ -268,6 +274,51 @@ export function CourseForm({
             <Input value={v.preview_video} onChange={(e) => set("preview_video", e.target.value)} />
           </Field>
         </div>
+      </section>
+
+      <section className="rounded-xl border border-border bg-card p-5 space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
+          <div>
+            <h3 className="font-semibold text-base flex items-center gap-2 text-foreground">
+              ⏰ কাউন্টডাউন টাইমার সেটিংস (Countdown Timer)
+            </h3>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              অন করলে কোর্সের ভেতরে একদম উপরে টাইমার কাউন্টডাউন শো হবে
+            </p>
+          </div>
+          <label className="inline-flex items-center gap-2 text-xs font-semibold cursor-pointer bg-primary/10 border border-primary/20 px-3 py-2 rounded-lg text-primary self-start sm:self-auto hover:bg-primary/20 transition-colors">
+            <input
+              type="checkbox"
+              checked={!!v.is_countdown_enabled}
+              onChange={(e) => set("is_countdown_enabled", e.target.checked)}
+              className="rounded border-border text-primary focus:ring-primary h-4 w-4"
+            />
+            কোর্সে কাউন্টডাউন চালু করুন
+          </label>
+        </div>
+
+        {v.is_countdown_enabled ? (
+          <div className="grid gap-4 md:grid-cols-2 pt-1">
+            <Field label="টাইটেল / নোটিশ হেডিং" hint="যেমন: ⚡ বিশেষ অফার শেষ হতে বাকি:">
+              <Input
+                value={v.countdown_title || ""}
+                onChange={(e) => set("countdown_title", e.target.value)}
+                placeholder="⚡ অফার শেষ হতে বাকি:"
+              />
+            </Field>
+            <Field label="শেষ হওয়ার তারিখ ও সময়" hint="টাইমারটি যে তারিখ ও সময় পর্যন্ত কাউন্টডাউন করবে">
+              <Input
+                type="datetime-local"
+                value={v.countdown_end_date ? v.countdown_end_date.slice(0, 16) : ""}
+                onChange={(e) => set("countdown_end_date", e.target.value)}
+              />
+            </Field>
+          </div>
+        ) : (
+          <div className="text-xs text-muted-foreground italic">
+            কাউন্টডাউন টাইমারটি বর্তমানে বন্ধ রয়েছে। চালু করতে ডানপাশের চেক বক্সে টিক দিন।
+          </div>
+        )}
       </section>
 
       <section className="rounded-xl border border-border bg-card p-5 space-y-4">

@@ -176,6 +176,137 @@ function CourseDetailPage() {
     if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
   };
 
+function CourseCountdownBanner({
+  title,
+  endDateStr,
+}: {
+  title?: string;
+  endDateStr?: string;
+}) {
+  const [timeLeft, setTimeLeft] = useState<{
+    days: number;
+    hours: number;
+    minutes: number;
+    seconds: number;
+    expired: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    if (!endDateStr) return;
+
+    const calculateTime = () => {
+      const target = new Date(endDateStr).getTime();
+      const now = new Date().getTime();
+      const diff = target - now;
+
+      if (diff <= 0 || isNaN(target)) {
+        setTimeLeft({ days: 0, hours: 0, minutes: 0, seconds: 0, expired: true });
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      setTimeLeft({ days, hours, minutes, seconds, expired: false });
+    };
+
+    calculateTime();
+    const interval = setInterval(calculateTime, 1000);
+    return () => clearInterval(interval);
+  }, [endDateStr]);
+
+  if (!timeLeft) return null;
+
+  return (
+    <div className="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 text-white shadow-xl py-3 px-4 relative overflow-hidden border-b border-orange-500/30">
+      <div className="absolute -top-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl pointer-events-none" />
+
+      <div className="mx-auto max-w-7xl flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left relative z-10">
+        <div className="flex items-center gap-2.5">
+          <span className="flex h-3 w-3 relative shrink-0">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-yellow-300 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-yellow-400"></span>
+          </span>
+          <span className="font-bold text-sm sm:text-base tracking-wide">
+            {title || "⚡ অফার শেষ হতে বাকি:"}
+          </span>
+        </div>
+
+        {timeLeft.expired ? (
+          <div className="bg-black/40 border border-white/20 px-4 py-1.5 rounded-lg text-xs font-bold text-yellow-200">
+            ⏰ অফারের সময়সীমা শেষ হয়েছে
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-xs sm:text-sm font-bold">
+            {timeLeft.days > 0 && (
+              <div className="flex flex-col items-center bg-black/40 border border-white/20 rounded-lg px-2.5 py-1 min-w-[48px]">
+                <span className="text-base sm:text-lg font-extrabold text-yellow-300 leading-none">{toBn(timeLeft.days)}</span>
+                <span className="text-[10px] text-white/80 font-normal mt-0.5">দিন</span>
+              </div>
+            )}
+            <div className="flex flex-col items-center bg-black/40 border border-white/20 rounded-lg px-2.5 py-1 min-w-[48px]">
+              <span className="text-base sm:text-lg font-extrabold text-yellow-300 leading-none">{toBn(timeLeft.hours.toString().padStart(2, "0"))}</span>
+              <span className="text-[10px] text-white/80 font-normal mt-0.5">ঘণ্টা</span>
+            </div>
+            <span className="text-yellow-300 text-lg font-bold animate-pulse">:</span>
+            <div className="flex flex-col items-center bg-black/40 border border-white/20 rounded-lg px-2.5 py-1 min-w-[48px]">
+              <span className="text-base sm:text-lg font-extrabold text-yellow-300 leading-none">{toBn(timeLeft.minutes.toString().padStart(2, "0"))}</span>
+              <span className="text-[10px] text-white/80 font-normal mt-0.5">মিনিট</span>
+            </div>
+            <span className="text-yellow-300 text-lg font-bold animate-pulse">:</span>
+            <div className="flex flex-col items-center bg-black/40 border border-white/20 rounded-lg px-2.5 py-1 min-w-[48px]">
+              <span className="text-base sm:text-lg font-extrabold text-yellow-300 leading-none">{toBn(timeLeft.seconds.toString().padStart(2, "0"))}</span>
+              <span className="text-[10px] text-white/80 font-normal mt-0.5">সেকেন্ড</span>
+            </div>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
+
+function CourseDetailPage() {
+  const { slug } = Route.useParams();
+  const { data } = useSuspenseQuery(detailQuery(slug));
+  const course = data.course;
+  const lessons = data.lessons || [];
+  const enrolled = data.enrolled || false;
+
+  const [showEnroll, setShowEnroll] = useState(false);
+  const [activeTab, setActiveTab] = useState("about");
+
+  const price = course.discount_price ?? course.price;
+  const hasDiscount = course.discount_price !== null && course.discount_price !== undefined && course.discount_price < course.price;
+
+  useEffect(() => {
+    track("ViewContent", {
+      content_ids: [String(course.id)],
+      content_name: course.title,
+      content_category: course.category_name || "Course",
+      value: Number(price) || 0,
+      currency: "BDT",
+    });
+  }, [course.id, course.title, course.category_name, price]);
+
+  const openEnroll = () => {
+    track("InitiateCheckout", {
+      content_ids: [String(course.id)],
+      content_name: course.title,
+      value: Number(price) || 0,
+      currency: "BDT",
+      num_items: 1,
+    });
+    setShowEnroll(true);
+  };
+
+  const scrollTo = (id: string) => {
+    const el = document.getElementById(id);
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  };
+
   const highlights: string[] = course.highlights?.length
     ? course.highlights
     : [
@@ -193,6 +324,12 @@ function CourseDetailPage() {
 
   return (
     <SiteLayout>
+      {Boolean(course.is_countdown_enabled) && course.countdown_end_date && (
+        <CourseCountdownBanner
+          title={course.countdown_title}
+          endDateStr={course.countdown_end_date}
+        />
+      )}
       {/* HERO */}
       <section className="relative bg-gradient-to-b from-primary/10 via-background to-background border-b border-border py-8 lg:py-12">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 grid lg:grid-cols-[1fr_400px] gap-8 lg:gap-12 items-start">
