@@ -168,7 +168,7 @@ function CourseCountdownBanner({
   if (!timeLeft) return null;
 
   return (
-    <div className="w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 text-white shadow-xl py-3 px-4 relative overflow-hidden border-b border-orange-500/30">
+    <div className="sticky top-0 z-50 w-full bg-gradient-to-r from-red-600 via-orange-600 to-amber-600 text-white shadow-xl py-2.5 px-4 overflow-hidden border-b border-orange-500/30">
       <div className="absolute -top-10 -left-10 w-32 h-32 bg-white/10 rounded-full blur-2xl pointer-events-none" />
       <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-yellow-400/20 rounded-full blur-2xl pointer-events-none" />
 
