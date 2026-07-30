@@ -198,12 +198,18 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
       injectPixel(settings.fb_pixel_id, settings.fb_advanced_matching);
       initedPixel.current = settings.fb_pixel_id;
     }
+    if (typeof window !== "undefined" && window.fbq && settings.fb_test_event_code) {
+      try {
+        window.fbq("set", "testEventCode", settings.fb_test_event_code.trim());
+      } catch {}
+    }
     if (settings.ga_measurement_id) injectGA(settings.ga_measurement_id);
     if (settings.gtm_container_id) injectGTM(settings.gtm_container_id);
     upsertMeta("facebook-domain-verification", settings.fb_domain_verification || "");
   }, [
     settings.fb_pixel_id,
     settings.fb_advanced_matching,
+    settings.fb_test_event_code,
     settings.ga_measurement_id,
     settings.gtm_container_id,
     settings.fb_domain_verification,
@@ -214,6 +220,9 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!settings.fb_auto_pageview || !settings.fb_pixel_id || typeof window === "undefined") return;
     if (!window.fbq) return;
+    if (settings.fb_test_event_code) {
+      try { window.fbq("set", "testEventCode", settings.fb_test_event_code.trim()); } catch {}
+    }
     const evtId = `pv_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     window.fbq("track", "PageView", {}, { eventID: evtId });
     if (settings.fb_capi_token) {
@@ -227,6 +236,9 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
   const track = useCallback(
     (event: string, params?: Record<string, any>, eventId?: string) => {
       if (typeof window === "undefined" || !window.fbq || !settings.fb_pixel_id) return;
+      if (settings.fb_test_event_code) {
+        try { window.fbq("set", "testEventCode", settings.fb_test_event_code.trim()); } catch {}
+      }
       const generatedEvtId = eventId || `evt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
       const opts: any = { eventID: generatedEvtId };
 
