@@ -337,11 +337,12 @@ export function CourseForm({
             />
           </Field>
 
-          <Field label="প্রাইভেট সিক্রেট গ্রুপ লিংক" hint="যেমন: Facebook / WhatsApp Group URL">
-            <Input
+          <Field label="প্রাইভেট সিক্রেট গ্রুপ লিংক (একাধিক লিংক দিতে পারেন)" hint="একাধিক লিংক দিতে প্রতি লাইনে ১টি লিংক বা নামসহ লিখুন (যেমন: ফেসবুক গ্রুপ: https://facebook.com/... \n হোয়াটসঅ্যাপ: https://chat.whatsapp.com/...)">
+            <Textarea
+              rows={3}
               value={v.secret_group_link || ""}
               onChange={(e) => set("secret_group_link", e.target.value)}
-              placeholder="https://facebook.com/groups/..."
+              placeholder="ফেসবুক গ্রুপ: https://facebook.com/groups/... &#10;হোয়াটসঅ্যাপ: https://chat.whatsapp.com/..."
             />
           </Field>
 

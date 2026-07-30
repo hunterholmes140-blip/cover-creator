@@ -18,15 +18,87 @@ export const Route = createFileRoute("/dashboard")({
 
 function EnrolledCourseHubModal({ course, onClose }: { course: any; onClose: () => void }) {
   const [hubTab, setHubTab] = useState<"live" | "group" | "recordings" | "notice">("live");
+  const [nowTime, setNowTime] = useState(Date.now());
+
+  useEffect(() => {
+    const timer = setInterval(() => setNowTime(Date.now()), 1000);
+    return () => clearInterval(timer);
+  }, []);
 
   const liveUrl = course.live_class_link || "https://zoom.us";
-  const groupUrl = course.secret_group_link || "https://facebook.com";
   const routine = course.class_routine || "প্রতি রবি, মঙ্গল, বৃহস্পতি রাত ৯:০০ টা";
   const notice = course.notice || "আজকের ক্লাসের নির্ধারিত টপিক সোর্স কোড ড্রাইভে আপলোড করা হয়েছে।";
-  const recordings: any[] = course.recordings && course.recordings.length ? course.recordings : [
-    { id: 1, title: "ক্লাস ১: অরিয়েন্টেশন ও কোর্স পরিচিতি", date: "১৫ জুলাই, ২০২৬", url: "https://www.youtube.com/watch?v=aqz-KE-bpKQ" },
-    { id: 2, title: "ক্লাস ২: বেসিক সেটআপ ও কনসেপ্ট", date: "১৮ জুলাই, ২০২৬", url: "https://www.youtube.com/watch?v=ScMzIvxBSi4" },
-  ];
+
+  // Parse real recordings (do not show fake mock data if admin hasn't uploaded any)
+  let recordings: any[] = [];
+  try {
+    if (Array.isArray(course.recordings)) {
+      recordings = course.recordings;
+    } else if (typeof course.recordings === "string" && course.recordings.trim()) {
+      recordings = JSON.parse(course.recordings);
+    }
+  } catch {
+    recordings = [];
+  }
+
+  // Parse multiple secret groups from secret_group_link (newline/comma separated)
+  const rawGroupLinks = String(course.secret_group_link || "").trim();
+  const secretGroupItems: { name: string; url: string; type: "facebook" | "whatsapp" | "telegram" | "general" }[] = [];
+
+  if (rawGroupLinks) {
+    const lines = rawGroupLinks.split(/\n|,|;/).map((s) => s.trim()).filter(Boolean);
+    lines.forEach((line) => {
+      let url = line;
+      let name = "";
+      if (line.includes("http")) {
+        const parts = line.split(/(https?:\/\/[^\s]+)/);
+        name = parts[0]?.replace(/[:\-]/g, "").trim() || "";
+        url = parts[1] || line;
+      }
+      const lowerUrl = url.toLowerCase();
+      const lowerName = name.toLowerCase();
+
+      if (lowerUrl.includes("facebook.com") || lowerUrl.includes("fb.com") || lowerName.includes("facebook") || lowerName.includes("ফেসবুক")) {
+        secretGroupItems.push({ name: name || "ফেসবুক প্রাইভেট সিক্রেট গ্রুপ", url, type: "facebook" });
+      } else if (lowerUrl.includes("whatsapp.com") || lowerUrl.includes("wa.me") || lowerName.includes("whatsapp") || lowerName.includes("হোয়াটসঅ্যাপ")) {
+        secretGroupItems.push({ name: name || "হোয়াটসঅ্যাপ সিক্রেট সাপোর্ট গ্রুপ", url, type: "whatsapp" });
+      } else if (lowerUrl.includes("t.me") || lowerUrl.includes("telegram") || lowerName.includes("telegram") || lowerName.includes("টেলিগ্রাম")) {
+        secretGroupItems.push({ name: name || "টেলিগ্রাম সিক্রেট চ্যানেল/গ্রুপ", url, type: "telegram" });
+      } else {
+        secretGroupItems.push({ name: name || "প্রাইভেট সিক্রেট গ্রুপ", url, type: "general" });
+      }
+    });
+  }
+
+  if (secretGroupItems.length === 0) {
+    secretGroupItems.push({ name: "প্রাইভেট সিক্রেট গ্রুপ", url: "https://facebook.com", type: "facebook" });
+  }
+
+  // Calculate live class start countdown status
+  let isClassLocked = false;
+  let remainingMs = 0;
+
+  if (Boolean(course.is_countdown_enabled) && course.countdown_end_date) {
+    const targetMs = new Date(course.countdown_end_date).getTime();
+    if (!isNaN(targetMs) && targetMs > nowTime) {
+      isClassLocked = true;
+      remainingMs = targetMs - nowTime;
+    }
+  }
+
+  const formatCountdown = (ms: number) => {
+    const d = Math.floor(ms / (1000 * 60 * 60 * 24));
+    const h = Math.floor((ms % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    const m = Math.floor((ms % (1000 * 60 * 60)) / (1000 * 60));
+    const s = Math.floor((ms % (1000 * 60)) / 1000);
+
+    return {
+      d: String(d).padStart(2, "0"),
+      h: String(h).padStart(2, "0"),
+      m: String(m).padStart(2, "0"),
+      s: String(s).padStart(2, "0"),
+    };
+  };
 
   return createPortal(
     <div
@@ -74,7 +146,7 @@ function EnrolledCourseHubModal({ course, onClose }: { course: any; onClose: () 
               hubTab === "group" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
-            <MessageCircle className="h-4 w-4 text-blue-500" /> 💬 সিক্রেট গ্রুপ
+            <MessageCircle className="h-4 w-4 text-blue-500" /> 💬 সিক্রেট গ্রুপ ({secretGroupItems.length})
           </button>
 
           <button
@@ -106,22 +178,65 @@ function EnrolledCourseHubModal({ course, onClose }: { course: any; onClose: () 
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-red-500/10 text-red-600 px-3 py-1 text-xs font-bold animate-pulse">
                   ● লাইভ সেশন
                 </span>
-                <h3 className="text-lg md:text-xl font-bold text-foreground">
-                  লাইভ ক্লাসে জয়েন করুন
-                </h3>
-                <p className="text-xs md:text-sm text-muted-foreground max-w-md mx-auto">
-                  নিচের বাটনে ক্লিক করে সরাসরি Zoom / Google Meet ক্লাসে যুক্ত হোন।
-                </p>
-                <div>
-                  <a
-                    href={liveUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 text-white px-8 py-3.5 text-base font-bold shadow-lg shadow-red-600/30 transition-all hover:scale-105"
-                  >
-                    <Radio className="h-5 w-5 fill-current animate-ping" /> Join Live Class Now <ExternalLink className="h-4 w-4" />
-                  </a>
-                </div>
+
+                {isClassLocked ? (
+                  /* Countdown running before class starts */
+                  <div className="space-y-4">
+                    <h3 className="text-lg md:text-xl font-bold text-foreground">
+                      ⏰ লাইভ ক্লাস শুরু হতে বাকি:
+                    </h3>
+                    {(() => {
+                      const t = formatCountdown(remainingMs);
+                      return (
+                        <div className="flex items-center justify-center gap-2 text-xs sm:text-sm font-bold">
+                          {Number(t.d) > 0 && (
+                            <div className="flex flex-col items-center bg-background border border-border rounded-lg px-3 py-1.5 min-w-[54px] shadow-sm">
+                              <span className="text-lg sm:text-xl font-extrabold text-primary leading-none">{t.d}</span>
+                              <span className="text-[10px] text-muted-foreground font-normal mt-0.5">দিন</span>
+                            </div>
+                          )}
+                          <div className="flex flex-col items-center bg-background border border-border rounded-lg px-3 py-1.5 min-w-[54px] shadow-sm">
+                            <span className="text-lg sm:text-xl font-extrabold text-primary leading-none">{t.h}</span>
+                            <span className="text-[10px] text-muted-foreground font-normal mt-0.5">ঘণ্টা</span>
+                          </div>
+                          <span className="text-primary text-lg font-bold animate-pulse">:</span>
+                          <div className="flex flex-col items-center bg-background border border-border rounded-lg px-3 py-1.5 min-w-[54px] shadow-sm">
+                            <span className="text-lg sm:text-xl font-extrabold text-primary leading-none">{t.m}</span>
+                            <span className="text-[10px] text-muted-foreground font-normal mt-0.5">মিনিট</span>
+                          </div>
+                          <span className="text-primary text-lg font-bold animate-pulse">:</span>
+                          <div className="flex flex-col items-center bg-background border border-border rounded-lg px-3 py-1.5 min-w-[54px] shadow-sm">
+                            <span className="text-lg sm:text-xl font-extrabold text-primary leading-none">{t.s}</span>
+                            <span className="text-[10px] text-muted-foreground font-normal mt-0.5">সেকেন্ড</span>
+                          </div>
+                        </div>
+                      );
+                    })()}
+                    <p className="text-xs text-muted-foreground max-w-md mx-auto italic">
+                      ক্লাস শুরু হওয়ার নির্ধারিত সময় হলে সরাসরি জুম/মিট ক্লাসে জয়েন করার বাটনটি এখানে সচল হবে।
+                    </p>
+                  </div>
+                ) : (
+                  /* Class is active / unlocked */
+                  <div className="space-y-4">
+                    <h3 className="text-lg md:text-xl font-bold text-foreground">
+                      লাইভ ক্লাসে জয়েন করুন
+                    </h3>
+                    <p className="text-xs md:text-sm text-muted-foreground max-w-md mx-auto">
+                      নিচের বাটনে ক্লিক করে সরাসরি Zoom / Google Meet ক্লাসে যুক্ত হোন।
+                    </p>
+                    <div>
+                      <a
+                        href={liveUrl}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center justify-center gap-2 rounded-xl bg-red-600 hover:bg-red-700 text-white px-8 py-3.5 text-base font-bold shadow-lg shadow-red-600/30 transition-all hover:scale-105"
+                      >
+                        <Radio className="h-5 w-5 fill-current animate-ping" /> Join Live Class Now <ExternalLink className="h-4 w-4" />
+                      </a>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="rounded-xl border border-border bg-muted/30 p-4 flex items-center justify-between gap-4">
@@ -135,27 +250,51 @@ function EnrolledCourseHubModal({ course, onClose }: { course: any; onClose: () 
           )}
 
           {hubTab === "group" && (
-            <div className="space-y-5">
-              <div className="rounded-xl border border-blue-500/20 bg-blue-500/5 p-5 text-center space-y-4">
-                <div className="mx-auto h-12 w-12 rounded-full bg-blue-500/10 text-blue-600 grid place-items-center">
-                  <MessageCircle className="h-6 w-6" />
-                </div>
-                <h3 className="text-lg md:text-xl font-bold text-foreground">
-                  প্রাইভেট ফেসবুক / হোয়াটসঅ্যাপ সাপোর্ট গ্রুপ
-                </h3>
-                <p className="text-xs md:text-sm text-muted-foreground max-w-md mx-auto">
-                  এই কোর্সের শিক্ষার্থীদের জন্য নির্ধারিত সিক্রেট সাপোর্ট গ্রুপে যুক্ত হোন। এখানে আপনার সব প্রশ্নের উত্তর ও মেন্টর সাপোর্ট পাবেন।
-                </p>
-                <div>
-                  <a
-                    href={groupUrl}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white px-7 py-3 text-sm md:text-base font-bold shadow-lg shadow-blue-600/20 transition-all hover:scale-105"
+            <div className="space-y-4">
+              <div className="text-xs font-semibold text-muted-foreground">
+                এই কোর্সের শিক্ষার্থীদের জন্য নির্ধারিত সিক্রেট সাপোর্ট গ্রুপসমূহে যুক্ত হোন:
+              </div>
+              <div className="grid gap-3">
+                {secretGroupItems.map((grp, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 shadow-sm hover:border-primary/40 transition-colors"
                   >
-                    গোপন গ্রুপে যুক্ত হন <ExternalLink className="h-4 w-4" />
-                  </a>
-                </div>
+                    <div className="flex items-center gap-3">
+                      <div className={`h-11 w-11 rounded-xl grid place-items-center font-bold text-white shadow-sm ${
+                        grp.type === "facebook"
+                          ? "bg-blue-600"
+                          : grp.type === "whatsapp"
+                          ? "bg-emerald-600"
+                          : grp.type === "telegram"
+                          ? "bg-sky-500"
+                          : "bg-primary"
+                      }`}>
+                        <MessageCircle className="h-6 w-6" />
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-sm text-foreground">{grp.name}</h4>
+                        <p className="text-xs text-muted-foreground truncate max-w-xs">{grp.url}</p>
+                      </div>
+                    </div>
+                    <a
+                      href={grp.url}
+                      target="_blank"
+                      rel="noreferrer"
+                      className={`inline-flex items-center gap-1.5 rounded-xl text-white px-5 py-2.5 text-xs font-bold shadow-md transition-transform hover:scale-105 ${
+                        grp.type === "facebook"
+                          ? "bg-blue-600 hover:bg-blue-700"
+                          : grp.type === "whatsapp"
+                          ? "bg-emerald-600 hover:bg-emerald-700"
+                          : grp.type === "telegram"
+                          ? "bg-sky-500 hover:bg-sky-600"
+                          : "bg-primary hover:bg-primary/90"
+                      }`}
+                    >
+                      গ্রুপে যুক্ত হন <ExternalLink className="h-3.5 w-3.5" />
+                    </a>
+                  </div>
+                ))}
               </div>
             </div>
           )}
@@ -163,31 +302,39 @@ function EnrolledCourseHubModal({ course, onClose }: { course: any; onClose: () 
           {hubTab === "recordings" && (
             <div className="space-y-3">
               <h4 className="font-bold text-sm text-foreground">বিগত লাইভ ক্লাস রেকর্ডিং ও ফাইল</h4>
-              {recordings.map((rec, i) => (
-                <div key={rec.id || i} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 hover:border-primary/40 transition-colors">
-                  <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary grid place-items-center">
-                      <PlayCircle className="h-5 w-5" />
-                    </div>
-                    <div>
-                      <h5 className="font-semibold text-sm">{rec.title}</h5>
-                      <span className="text-xs text-muted-foreground">{rec.date}</span>
-                    </div>
-                  </div>
-                  {rec.url ? (
-                    <a
-                      href={rec.url}
-                      target="_blank"
-                      rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-accent"
-                    >
-                      ভিডিও দেখুন <ExternalLink className="h-3 w-3" />
-                    </a>
-                  ) : (
-                    <span className="text-xs text-muted-foreground italic">প্রসেসিং হচ্ছে</span>
-                  )}
+              {recordings.length === 0 ? (
+                <div className="rounded-xl border border-dashed border-border bg-muted/20 p-8 text-center space-y-2">
+                  <PlayCircle className="h-8 w-8 text-muted-foreground mx-auto opacity-50" />
+                  <div className="font-semibold text-sm text-foreground">এখনো কোনো ক্লাস রেকর্ডিং ভিডিও আপলোড করা হয়নি</div>
+                  <p className="text-xs text-muted-foreground">মেন্টর লাইভ ক্লাস সম্পন্ন করার পর রেকর্ডিং ভিডিও আপলোড করলে এখানে দেখতে পাবেন।</p>
                 </div>
-              ))}
+              ) : (
+                recordings.map((rec, i) => (
+                  <div key={rec.id || i} className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 hover:border-primary/40 transition-colors">
+                    <div className="flex items-center gap-3">
+                      <div className="h-10 w-10 rounded-lg bg-primary/10 text-primary grid place-items-center">
+                        <PlayCircle className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <h5 className="font-semibold text-sm">{rec.title}</h5>
+                        <span className="text-xs text-muted-foreground">{rec.date}</span>
+                      </div>
+                    </div>
+                    {rec.url ? (
+                      <a
+                        href={rec.url}
+                        target="_blank"
+                        rel="noreferrer"
+                        className="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-semibold hover:bg-accent"
+                      >
+                        ভিডিও দেখুন <ExternalLink className="h-3 w-3" />
+                      </a>
+                    ) : (
+                      <span className="text-xs text-muted-foreground italic">প্রসেসিং হচ্ছে</span>
+                    )}
+                  </div>
+                ))
+              )}
             </div>
           )}
 
