@@ -446,6 +446,9 @@ function AdminSettingsPage() {
           <Field label="Facebook URL"><TextInput value={form.facebookUrl} onChange={(e) => set("facebookUrl", e.target.value)} /></Field>
           <Field label="YouTube URL"><TextInput value={form.youtubeUrl} onChange={(e) => set("youtubeUrl", e.target.value)} /></Field>
           <Field label="Instagram URL"><TextInput value={form.instagramUrl} onChange={(e) => set("instagramUrl", e.target.value)} /></Field>
+          <Field label="Threads URL" hint="থ্রেড একাউন্ট লিংক (যেমন: https://threads.net/@username)">
+            <TextInput value={form.threadsUrl ?? form.linkedinUrl ?? ""} onChange={(e) => set("threadsUrl", e.target.value)} placeholder="https://threads.net/@yourbrand" />
+          </Field>
           <Field label="LinkedIn URL"><TextInput value={form.linkedinUrl} onChange={(e) => set("linkedinUrl", e.target.value)} /></Field>
         </div>
       </section>

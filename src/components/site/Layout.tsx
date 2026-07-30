@@ -22,6 +22,14 @@ const NAV = [
   { to: "/contact", label: "যোগাযোগ" },
 ] as const;
 
+function ThreadsIcon({ className = "h-4 w-4" }: { className?: string }) {
+  return (
+    <svg className={className} viewBox="0 0 192 192" fill="currentColor">
+      <path d="M141.537 88.9883C140.71 88.5919 139.87 88.2104 139.017 87.8451C137.587 73.123 129.569 63.8566 116.516 63.5359C104.912 63.2504 94.6713 70.8038 90.9634 81.6575C89.508 85.9189 88.8016 90.6272 88.8924 95.3941C89.043 103.35 92.4282 110.835 98.3496 116.143C104.271 121.452 112.213 124.12 120.355 123.541C130.407 122.827 138.835 116.671 142.179 107.014L159.227 113.111C154.075 127.971 141.139 137.423 125.688 138.528C113.197 139.422 100.999 135.327 91.9056 127.176C82.8122 119.026 77.6111 107.527 77.3797 95.3032C77.0782 79.3789 84.7797 64.913 97.4589 57.5755C110.138 50.238 125.751 51.1895 137.491 60.0152C149.231 68.8409 155.334 84.1843 153.155 99.4121C150.149 120.402 134.425 137.382 113.626 142.062C92.8276 146.741 71.0772 138.169 59.0062 120.526C46.9351 102.883 47.0182 79.4354 59.2152 61.8741C71.4122 44.3129 93.1873 35.8829 113.978 40.7107C126.973 43.7285 138.271 51.2721 145.89 62.0084L160.771 51.3418C150.812 37.3082 136.042 27.4475 119.055 23.5029C91.8785 17.1923 63.4146 28.2128 47.4705 51.1693C31.5264 74.1258 31.4177 104.776 47.1969 127.839C62.9761 150.902 91.408 162.107 118.599 155.99C145.79 149.873 166.345 127.676 170.274 100.24C173.238 79.5222 164.935 58.6477 148.962 46.6406C132.989 34.6335 111.748 33.3391 94.4965 43.3218C77.2452 53.3045 66.7675 72.9859 67.1777 94.6083C67.4925 111.238 74.5684 126.882 86.9405 137.971C99.3126 149.06 115.908 154.631 132.898 153.414L131.674 136.216C120.407 137.023 109.394 133.324 101.18 125.964C92.9658 118.604 88.2709 108.22 88.062 97.1852C87.8016 83.398 94.469 70.8762 105.446 64.5249C116.423 58.1736 129.937 58.9972 140.09 66.6373C150.243 74.2774 155.526 87.5592 153.64 100.742C151.054 118.805 137.525 133.414 119.638 137.439C101.751 141.464 83.0487 134.092 72.6702 118.924C62.2917 103.756 62.3631 83.597 72.8466 68.4975C83.3301 53.398 102.052 46.1492 119.927 50.3006L116.155 66.5293Z" />
+    </svg>
+  );
+}
+
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { settings } = useSiteSettings();
@@ -162,6 +170,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         <div aria-hidden className="pointer-events-none absolute -bottom-24 right-0 h-72 w-72 rounded-full bg-indigo-400/20 blur-3xl" />
 
         <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-14 pb-8">
+
           <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-4">
             {/* Brand */}
             <div className="lg:pr-4">
@@ -177,7 +186,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                   { Icon: Facebook, label: "Facebook", href: settings.facebookUrl },
                   { Icon: Youtube, label: "YouTube", href: settings.youtubeUrl },
                   { Icon: Instagram, label: "Instagram", href: settings.instagramUrl },
-                  { Icon: Linkedin, label: "LinkedIn", href: settings.linkedinUrl },
+                  { Icon: ThreadsIcon, label: "Threads", href: settings.threadsUrl || settings.linkedinUrl },
                 ].map(({ Icon, label, href }) => (
                   <a
                     key={label}
