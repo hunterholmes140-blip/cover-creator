@@ -384,12 +384,19 @@ function AdminSettingsPage() {
 
       {/* Brand */}
       <section className="rounded-xl border border-border bg-card p-6 space-y-4">
-        <h2 className="text-lg font-semibold">ব্র্যান্ড</h2>
+        <h2 className="text-lg font-semibold border-b border-border pb-2">ব্র্যান্ড ও ব্রাউজার টাইটেল (Brand & Web Title)</h2>
+        <Field label="ব্রাউজার পেইজ টাইটেল (Browser Tab Title)" hint="যে টেক্সটটি একদম উপরে ব্রাউজার ট্যাবে এবং গুগলে সার্চ করলে দেখাবে">
+          <TextInput
+            value={form.siteTitle || ""}
+            onChange={(e) => set("siteTitle", e.target.value)}
+            placeholder="Vencon Academy — বাংলাদেশের অনলাইন লার্নিং প্ল্যাটফর্ম"
+          />
+        </Field>
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="ব্র্যান্ডের নাম">
+          <Field label="ব্র্যান্ডের নাম (Brand Name)">
             <TextInput value={form.brandName} onChange={(e) => set("brandName", e.target.value)} />
           </Field>
-          <Field label="ট্যাগলাইন">
+          <Field label="ট্যাগলাইন (Tagline)">
             <TextInput value={form.brandTagline} onChange={(e) => set("brandTagline", e.target.value)} />
           </Field>
         </div>

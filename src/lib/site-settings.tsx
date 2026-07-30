@@ -10,6 +10,7 @@ import { useContent } from "./content-store";
 
 export type SiteSettings = {
   brandName: string;
+  siteTitle: string;
   brandTagline: string;
   whatsappNumber: string; // international format, e.g. 8801700000000
   phoneNumber: string;
@@ -28,12 +29,13 @@ export type SiteSettings = {
 };
 
 export const DEFAULT_SETTINGS: SiteSettings = {
-  brandName: "NextScale",
+  brandName: "Vencon",
+  siteTitle: "Vencon Academy — বাংলাদেশের অনলাইন লার্নিং প্ল্যাটফর্ম",
   brandTagline:
     "একজনকে মাছ ধরে দিলে সে একদিন খেতে পারবে; মাছ ধরা শেখালে সারাজীবন। আমরা শেখাই — সারাজীবনের জন্য।",
-  whatsappNumber: "8801700000000",
-  phoneNumber: "+8801700000000",
-  email: "support@nextscale.com",
+  whatsappNumber: "8801729690835",
+  phoneNumber: "+8801729690835",
+  email: "support@vencon.com.bd",
   facebookUrl: "#",
   youtubeUrl: "#",
   instagramUrl: "#",
@@ -66,6 +68,10 @@ function applyCssVars(s: SiteSettings) {
   root.style.setProperty("--footer-from", s.footerFrom);
   root.style.setProperty("--footer-via", s.footerVia);
   root.style.setProperty("--footer-to", s.footerTo);
+
+  if (s.siteTitle && s.siteTitle.trim()) {
+    document.title = s.siteTitle.trim();
+  }
 }
 
 export function SiteSettingsProvider({ children }: { children: ReactNode }) {
