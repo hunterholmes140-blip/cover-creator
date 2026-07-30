@@ -153,7 +153,7 @@ function upsertMeta(name: string, content: string) {
   tag.content = content;
 }
 
-async function sendCapiServerEvent(eventName: string, params?: Record<string, any>, eventId?: string) {
+async function sendCapiServerEvent(eventName: string, params?: Record<string, any>, eventId?: string, testCode?: string) {
   if (typeof window === "undefined") return;
   try {
     let email = params?.email;
@@ -179,6 +179,7 @@ async function sendCapiServerEvent(eventName: string, params?: Record<string, an
       body: JSON.stringify({
         event_name: eventName,
         event_id: eventId,
+        test_event_code: testCode,
         event_source_url: window.location.href,
         user_data: { em: email, ph: phone, fn, ln },
         custom_data: params,
@@ -216,12 +217,12 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
     const evtId = `pv_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     window.fbq("track", "PageView", {}, { eventID: evtId });
     if (settings.fb_capi_token) {
-      sendCapiServerEvent("PageView", {}, evtId);
+      sendCapiServerEvent("PageView", {}, evtId, settings.fb_test_event_code);
     }
     if (window.gtag && settings.ga_measurement_id) {
       window.gtag("event", "page_view", { page_path: pathname });
     }
-  }, [pathname, settings.fb_auto_pageview, settings.fb_pixel_id, settings.fb_capi_token, settings.ga_measurement_id]);
+  }, [pathname, settings.fb_auto_pageview, settings.fb_pixel_id, settings.fb_capi_token, settings.fb_test_event_code, settings.ga_measurement_id]);
 
   const track = useCallback(
     (event: string, params?: Record<string, any>, eventId?: string) => {
@@ -242,10 +243,10 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
       } catch { /* noop */ }
 
       if (settings.fb_capi_token) {
-        sendCapiServerEvent(event, params, generatedEvtId);
+        sendCapiServerEvent(event, params, generatedEvtId, settings.fb_test_event_code);
       }
     },
-    [settings.fb_pixel_id, settings.fb_capi_token],
+    [settings.fb_pixel_id, settings.fb_capi_token, settings.fb_test_event_code],
   );
 
   const update = useCallback((patch: Partial<MarketingSettings>) => setPatch(patch), [setPatch]);

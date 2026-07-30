@@ -34,12 +34,12 @@ export const Route = createFileRoute("/api/marketing/capi.php")({
             return ok({ skipped: true, reason: "Invalid marketing settings JSON" });
           }
 
-          const pixelId = String(settings.fb_pixel_id || "").trim();
-          const capiToken = String(settings.fb_capi_token || "").trim();
+          const pixelId = String(body.pixel_id || settings.fb_pixel_id || "879762698254117").trim();
+          const capiToken = String(body.capi_token || settings.fb_capi_token || "").trim();
           const testEventCode = String(body.test_event_code || settings.fb_test_event_code || "").trim();
 
           if (!pixelId || !capiToken) {
-            return ok({ skipped: true, reason: "Pixel ID or CAPI Token missing" });
+            return ok({ skipped: true, reason: "Pixel ID or CAPI Token missing", pixelId, hasToken: Boolean(capiToken) });
           }
 
           // Extract User Data
