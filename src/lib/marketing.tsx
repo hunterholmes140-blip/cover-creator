@@ -30,10 +30,10 @@ export type MarketingSettings = {
 };
 
 export const DEFAULT_MARKETING: MarketingSettings = {
-  fb_pixel_id: "1057270400502139",
+  fb_pixel_id: "879762698254117",
   fb_domain_verification: "",
   fb_capi_token: "",
-  fb_test_event_code: "",
+  fb_test_event_code: "TEST61125",
   fb_auto_pageview: true,
   fb_advanced_matching: true,
   ga_measurement_id: "",
@@ -228,13 +228,11 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
     }
     const evtId = `pv_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
     window.fbq("track", "PageView", {}, { eventID: evtId });
-    if (settings.fb_capi_token) {
-      sendCapiServerEvent("PageView", {}, evtId, settings.fb_test_event_code);
-    }
+    sendCapiServerEvent("PageView", {}, evtId, settings.fb_test_event_code);
     if (window.gtag && settings.ga_measurement_id) {
       window.gtag("event", "page_view", { page_path: pathname });
     }
-  }, [pathname, settings.fb_auto_pageview, settings.fb_pixel_id, settings.fb_capi_token, settings.fb_test_event_code, settings.ga_measurement_id]);
+  }, [pathname, settings.fb_auto_pageview, settings.fb_pixel_id, settings.fb_test_event_code, settings.ga_measurement_id]);
 
   const track = useCallback(
     (event: string, params?: Record<string, any>, eventId?: string) => {
@@ -257,11 +255,9 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
         else window.fbq(type, event, {}, opts);
       } catch { /* noop */ }
 
-      if (settings.fb_capi_token) {
-        sendCapiServerEvent(event, params, generatedEvtId, settings.fb_test_event_code);
-      }
+      sendCapiServerEvent(event, params, generatedEvtId, settings.fb_test_event_code);
     },
-    [settings.fb_pixel_id, settings.fb_capi_token, settings.fb_test_event_code],
+    [settings.fb_pixel_id, settings.fb_test_event_code],
   );
 
   const update = useCallback((patch: Partial<MarketingSettings>) => setPatch(patch), [setPatch]);
