@@ -153,6 +153,40 @@ function upsertMeta(name: string, content: string) {
   tag.content = content;
 }
 
+async function sendCapiServerEvent(eventName: string, params?: Record<string, any>, eventId?: string) {
+  if (typeof window === "undefined") return;
+  try {
+    let email = params?.email;
+    let phone = params?.phone;
+    let name = params?.name;
+    try {
+      const stored = localStorage.getItem("nextscale_user");
+      if (stored) {
+        const u = JSON.parse(stored);
+        if (!email) email = u?.email;
+        if (!phone) phone = u?.phone;
+        if (!name) name = u?.name;
+      }
+    } catch {}
+
+    const parts = (name || "").trim().split(/\s+/).filter(Boolean);
+    const fn = parts[0] || "";
+    const ln = parts.slice(1).join(" ") || "";
+
+    await fetch("/api/marketing/capi.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        event_name: eventName,
+        event_id: eventId,
+        event_source_url: window.location.href,
+        user_data: { em: email, ph: phone, fn, ln },
+        custom_data: params,
+      }),
+    });
+  } catch { /* noop */ }
+}
+
 export function MarketingProvider({ children }: { children: ReactNode }) {
   const [settings, setPatch, setAll] = useContent<MarketingSettings>(KEY, DEFAULT_MARKETING);
   const initedPixel = useRef<string>("");
@@ -179,19 +213,22 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     if (!settings.fb_auto_pageview || !settings.fb_pixel_id || typeof window === "undefined") return;
     if (!window.fbq) return;
-    const opts: any = {};
-    if (settings.fb_test_event_code) opts.eventID = undefined; // Pixel uses test via query
-    window.fbq("track", "PageView");
+    const evtId = `pv_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+    window.fbq("track", "PageView", {}, { eventID: evtId });
+    if (settings.fb_capi_token) {
+      sendCapiServerEvent("PageView", {}, evtId);
+    }
     if (window.gtag && settings.ga_measurement_id) {
       window.gtag("event", "page_view", { page_path: pathname });
     }
-  }, [pathname, settings.fb_auto_pageview, settings.fb_pixel_id, settings.fb_test_event_code, settings.ga_measurement_id]);
+  }, [pathname, settings.fb_auto_pageview, settings.fb_pixel_id, settings.fb_capi_token, settings.ga_measurement_id]);
 
   const track = useCallback(
     (event: string, params?: Record<string, any>, eventId?: string) => {
       if (typeof window === "undefined" || !window.fbq || !settings.fb_pixel_id) return;
-      const opts: any = {};
-      if (eventId) opts.eventID = eventId;
+      const generatedEvtId = eventId || `evt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
+      const opts: any = { eventID: generatedEvtId };
+
       // Standard vs custom
       const std = new Set([
         "PageView", "ViewContent", "Search", "AddToCart", "AddToWishlist",
@@ -200,12 +237,15 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
       ]);
       const type = std.has(event) ? "track" : "trackCustom";
       try {
-        if (params && opts.eventID) window.fbq(type, event, params, opts);
-        else if (params) window.fbq(type, event, params);
-        else window.fbq(type, event);
+        if (params) window.fbq(type, event, params, opts);
+        else window.fbq(type, event, {}, opts);
       } catch { /* noop */ }
+
+      if (settings.fb_capi_token) {
+        sendCapiServerEvent(event, params, generatedEvtId);
+      }
     },
-    [settings.fb_pixel_id],
+    [settings.fb_pixel_id, settings.fb_capi_token],
   );
 
   const update = useCallback((patch: Partial<MarketingSettings>) => setPatch(patch), [setPatch]);
@@ -224,6 +264,7 @@ export function useMarketing() {
 /** Convenience — safe no-op when provider is missing */
 export function track(event: string, params?: Record<string, any>) {
   if (typeof window === "undefined" || !window.fbq) return;
+  const evtId = `evt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
   const std = new Set([
     "PageView", "ViewContent", "Search", "AddToCart", "AddToWishlist",
     "InitiateCheckout", "AddPaymentInfo", "Purchase", "Lead",
@@ -231,7 +272,8 @@ export function track(event: string, params?: Record<string, any>) {
   ]);
   const type = std.has(event) ? "track" : "trackCustom";
   try {
-    if (params) window.fbq(type, event, params);
-    else window.fbq(type, event);
+    if (params) window.fbq(type, event, params, { eventID: evtId });
+    else window.fbq(type, event, {}, { eventID: evtId });
   } catch { /* noop */ }
+  sendCapiServerEvent(event, params, evtId);
 }
