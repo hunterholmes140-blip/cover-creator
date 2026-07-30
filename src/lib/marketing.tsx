@@ -99,26 +99,29 @@ function injectPixel(pixelId: string, advancedMatching: boolean, userData?: { em
 
   const matchData = advancedMatching ? getAdvancedMatchingData(userData) : {};
 
+  if (!document.getElementById("fb-pixel-script")) {
+    /* eslint-disable */
+    (function (f: any, b, e, v, n?: any, t?: any, s?: any) {
+      n = f.fbq = function () {
+        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+      };
+      if (!f._fbq) f._fbq = n;
+      n.push = n; n.loaded = true; n.version = "2.0"; n.queue = [];
+      t = b.createElement(e); t.id = "fb-pixel-script"; t.async = true;
+      t.src = v;
+      s = b.getElementsByTagName(e)[0];
+      if (s && s.parentNode) {
+        s.parentNode.insertBefore(t, s);
+      } else {
+        b.head.appendChild(t);
+      }
+    })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+    /* eslint-enable */
+  }
+
   if (window.fbq) {
     try { window.fbq("init", pixelId, matchData); } catch { /* noop */ }
-    return;
   }
-  // Meta Pixel base code
-  /* eslint-disable */
-  (function (f: any, b, e, v, n?: any, t?: any, s?: any) {
-    if (f.fbq) return;
-    n = f.fbq = function () {
-      n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-    };
-    if (!f._fbq) f._fbq = n;
-    n.push = n; n.loaded = true; n.version = "2.0"; n.queue = [];
-    t = b.createElement(e); t.async = true;
-    t.src = v;
-    s = b.getElementsByTagName(e)[0];
-    s.parentNode.insertBefore(t, s);
-  })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
-  /* eslint-enable */
-  window.fbq("init", pixelId, matchData);
 }
 
 function injectGA(id: string) {
