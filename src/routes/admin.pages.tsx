@@ -84,7 +84,7 @@ export const DEFAULT_PAGES: PageItem[] = [
 ];
 
 function PagesAdmin() {
-  const { data: items, save } = useContent<PageItem[]>("pages_content", DEFAULT_PAGES);
+  const [items, , save] = useContent<PageItem[]>("pages_content", DEFAULT_PAGES);
   const toast = useToast();
   const [selectedId, setSelectedId] = useState<string>("privacy-policy");
   const [selected, setSelected] = useState<PageItem | null>(null);

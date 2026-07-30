@@ -18,7 +18,7 @@ export const Route = createFileRoute("/free-courses")({
 });
 
 function FreeCoursesPage() {
-  const { data: pages } = useContent<PageItem[]>("pages_content", DEFAULT_PAGES);
+  const [pages] = useContent<PageItem[]>("pages_content", DEFAULT_PAGES);
   const pageList = Array.isArray(pages) && pages.length > 0 ? pages : DEFAULT_PAGES;
   const pageData = pageList.find((p) => p.slug === "free-courses" || p.id === "free-courses") || DEFAULT_PAGES[5];
 

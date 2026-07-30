@@ -56,7 +56,15 @@ function readLocal<T>(key: string, fallback: T): T {
   if (typeof window === "undefined") return fallback;
   try {
     const raw = localStorage.getItem(LS_PREFIX + key);
-    return raw ? { ...(fallback as any), ...JSON.parse(raw) } : fallback;
+    if (!raw) return fallback;
+    const parsed = JSON.parse(raw);
+    if (Array.isArray(fallback) && Array.isArray(parsed)) {
+      return parsed as any;
+    }
+    if (typeof fallback === "object" && fallback !== null && typeof parsed === "object" && parsed !== null && !Array.isArray(parsed)) {
+      return { ...(fallback as any), ...parsed };
+    }
+    return parsed as any;
   } catch {
     return fallback;
   }
@@ -75,8 +83,13 @@ function ensureInit<T>(key: string, defaults: T) {
   cache.set(key, readLocal(key, defaults));
   if (USE_REMOTE) {
     fetchRemote(key).then((v) => {
-      if (v && typeof v === "object") {
-        const merged = { ...(defaults as any), ...v };
+      if (v !== undefined && v !== null) {
+        let merged: any = v;
+        if (Array.isArray(defaults) && Array.isArray(v)) {
+          merged = v;
+        } else if (typeof defaults === "object" && defaults !== null && typeof v === "object" && !Array.isArray(v)) {
+          merged = { ...(defaults as any), ...v };
+        }
         cache.set(key, merged);
         writeLocal(key, merged);
         notify(key);
@@ -85,7 +98,7 @@ function ensureInit<T>(key: string, defaults: T) {
   }
 }
 
-export function useContent<T extends object>(
+export function useContent<T>(
   key: string,
   defaults: T,
 ): [T, (patch: Partial<T>) => void, (next: T) => void] {
@@ -103,7 +116,7 @@ export function useContent<T extends object>(
 
   const setPatch = (patch: Partial<T>) => {
     const cur = (cache.get(key) ?? defaults) as T;
-    const next = { ...cur, ...patch } as T;
+    const next = Array.isArray(cur) ? (patch as any) : { ...cur, ...patch };
     cache.set(key, next);
     writeLocal(key, next);
     notify(key);

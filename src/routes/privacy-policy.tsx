@@ -16,7 +16,7 @@ export const Route = createFileRoute("/privacy-policy")({
 });
 
 function PrivacyPage() {
-  const { data: pages } = useContent<PageItem[]>("pages_content", DEFAULT_PAGES);
+  const [pages] = useContent<PageItem[]>("pages_content", DEFAULT_PAGES);
   const pageList = Array.isArray(pages) && pages.length > 0 ? pages : DEFAULT_PAGES;
   const pageData = pageList.find((p) => p.slug === "privacy-policy" || p.id === "privacy-policy") || DEFAULT_PAGES[1];
 

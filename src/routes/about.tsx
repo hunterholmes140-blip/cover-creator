@@ -17,7 +17,7 @@ export const Route = createFileRoute("/about")({
 });
 
 function AboutPage() {
-  const { data: pages } = useContent<PageItem[]>("pages_content", DEFAULT_PAGES);
+  const [pages] = useContent<PageItem[]>("pages_content", DEFAULT_PAGES);
   const pageList = Array.isArray(pages) && pages.length > 0 ? pages : DEFAULT_PAGES;
   const pageData = pageList.find((p) => p.slug === "about" || p.id === "about") || DEFAULT_PAGES[0];
 
