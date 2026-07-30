@@ -74,7 +74,6 @@ export function ImageUpload({
   hint?: string;
 }) {
   const inputRef = useRef<HTMLInputElement>(null);
-  const [showUrl, setShowUrl] = useState(false);
   const [busy, setBusy] = useState(false);
 
   const previewCls =
@@ -100,21 +99,22 @@ export function ImageUpload({
   };
 
   return (
-    <div className="space-y-2">
-      <div className="flex flex-wrap items-start gap-3">
+    <div className="space-y-3">
+      <div className="flex flex-wrap items-start gap-4">
+        {/* Preview Box */}
         <div
-          className={`relative ${previewCls} rounded-md border border-dashed border-border bg-muted/40 overflow-hidden grid place-items-center`}
+          className={`relative ${previewCls} rounded-lg border border-dashed border-border bg-muted/40 overflow-hidden grid place-items-center shrink-0 shadow-sm`}
         >
           {value ? (
             <>
-              <img src={value} alt="" className="h-full w-full object-cover" />
+              <img src={value} alt="Preview" className="h-full w-full object-cover" />
               <button
                 type="button"
                 onClick={() => onChange("")}
-                className="absolute top-1 right-1 rounded-full bg-black/60 text-white p-0.5 hover:bg-black/80"
-                title="সরান"
+                className="absolute top-1 right-1 rounded-full bg-black/70 text-white p-1 hover:bg-red-600 transition-colors"
+                title="ছবি সরান"
               >
-                <X className="h-3 w-3" />
+                <X className="h-3.5 w-3.5" />
               </button>
             </>
           ) : (
@@ -124,13 +124,15 @@ export function ImageUpload({
                 alt="নমুনা"
                 className="h-full w-full object-cover opacity-40"
               />
-              <span className="absolute inset-x-0 bottom-0 text-[9px] font-medium text-white bg-black/55 px-1 py-0.5 text-center">
+              <span className="absolute inset-x-0 bottom-0 text-[9px] font-medium text-white bg-black/60 px-1 py-0.5 text-center">
                 নমুনা
               </span>
             </>
           )}
         </div>
-        <div className="flex flex-col gap-2">
+
+        {/* Controls: Direct Upload & URL Input Side by Side */}
+        <div className="flex-1 min-w-[240px] space-y-2.5">
           <input
             ref={inputRef}
             type="file"
@@ -138,36 +140,37 @@ export function ImageUpload({
             className="hidden"
             onChange={(e) => handleFile(e.target.files?.[0])}
           />
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={() => inputRef.current?.click()}
-            disabled={busy}
-          >
-            <Upload className="h-3.5 w-3.5" />
-            {busy ? "প্রসেস হচ্ছে..." : "ছবি আপ্লোড"}
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            size="sm"
-            onClick={() => setShowUrl((s) => !s)}
-          >
-            <LinkIcon className="h-3.5 w-3.5" />
-            URL দিয়ে
-          </Button>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={() => inputRef.current?.click()}
+              disabled={busy}
+              className="bg-primary/10 text-primary hover:bg-primary/20 border border-primary/20"
+            >
+              <Upload className="h-4 w-4 mr-1.5" />
+              {busy ? "ছবি প্রসেস হচ্ছে..." : "ডিভাইস থেকে ফাইল আপলোড"}
+            </Button>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-muted-foreground">
+              <LinkIcon className="h-3.5 w-3.5" />
+            </div>
+            <Input
+              value={value.startsWith("data:") ? "" : value}
+              onChange={(e) => onChange(e.target.value)}
+              placeholder="অথবা সরাসরি ছবির লিংক (https://...) বসান"
+              className="pl-8 text-xs"
+            />
+          </div>
+
+          <div className="text-[11px] text-muted-foreground leading-relaxed">
+            {hintText} · ডিভাইস থেকে ফাইল আপলোড করুন অথবা সরাসরি ইমেজের URL পেস্ট করুন।
+          </div>
         </div>
-      </div>
-      {showUrl && (
-        <Input
-          value={value.startsWith("data:") ? "" : value}
-          onChange={(e) => onChange(e.target.value)}
-          placeholder="https://..."
-        />
-      )}
-      <div className="text-[11px] text-muted-foreground leading-relaxed">
-        {hintText} · JPG/PNG/WEBP — অটো রিসাইজ হবে (max {maxDim}px)।
       </div>
     </div>
   );
