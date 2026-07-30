@@ -156,6 +156,12 @@ function upsertMeta(name: string, content: string) {
   tag.content = content;
 }
 
+function getCookie(name: string): string {
+  if (typeof document === "undefined") return "";
+  const match = document.cookie.match(new RegExp("(^| )" + name + "=([^;]+)"));
+  return match ? decodeURIComponent(match[2]) : "";
+}
+
 async function sendCapiServerEvent(eventName: string, params?: Record<string, any>, eventId?: string, testCode?: string) {
   if (typeof window === "undefined") return;
   try {
@@ -175,6 +181,8 @@ async function sendCapiServerEvent(eventName: string, params?: Record<string, an
     const parts = (name || "").trim().split(/\s+/).filter(Boolean);
     const fn = parts[0] || "";
     const ln = parts.slice(1).join(" ") || "";
+    const fbp = getCookie("_fbp");
+    const fbc = getCookie("_fbc");
 
     await fetch("/api/marketing/capi.php", {
       method: "POST",
@@ -184,7 +192,7 @@ async function sendCapiServerEvent(eventName: string, params?: Record<string, an
         event_id: eventId,
         test_event_code: testCode,
         event_source_url: window.location.href,
-        user_data: { em: email, ph: phone, fn, ln },
+        user_data: { em: email, ph: phone, fn, ln, fbp, fbc },
         custom_data: params,
       }),
     });
@@ -227,7 +235,7 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
       try { window.fbq("set", "testEventCode", settings.fb_test_event_code.trim()); } catch {}
     }
     const evtId = `pv_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-    window.fbq("track", "PageView", {}, { eventID: evtId });
+    window.fbq("track", "PageView", {}, { eventID: evtId, event_id: evtId });
     sendCapiServerEvent("PageView", {}, evtId, settings.fb_test_event_code);
     if (window.gtag && settings.ga_measurement_id) {
       window.gtag("event", "page_view", { page_path: pathname });
@@ -241,7 +249,7 @@ export function MarketingProvider({ children }: { children: ReactNode }) {
         try { window.fbq("set", "testEventCode", settings.fb_test_event_code.trim()); } catch {}
       }
       const generatedEvtId = eventId || `evt_${Date.now()}_${Math.random().toString(36).substring(2, 6)}`;
-      const opts: any = { eventID: generatedEvtId };
+      const opts: any = { eventID: generatedEvtId, event_id: generatedEvtId };
 
       // Standard vs custom
       const std = new Set([

@@ -49,6 +49,10 @@ export const Route = createFileRoute("/api/marketing/capi.php")({
           const userAgent = request.headers.get("user-agent") || "";
 
           const rawUser = body.user_data || {};
+          const cookieHeader = request.headers.get("cookie") || "";
+          const fbp = String(rawUser.fbp || cookieHeader.match(/_fbp=([^;]+)/)?.[1] || "").trim();
+          const fbc = String(rawUser.fbc || cookieHeader.match(/_fbc=([^;]+)/)?.[1] || "").trim();
+
           const emailHash = rawUser.em ? (rawUser.em.length === 64 ? rawUser.em : sha256(rawUser.em)) : "";
           const phoneHash = rawUser.ph ? (rawUser.ph.length === 64 ? rawUser.ph : sha256(rawUser.ph.replace(/[^\d]/g, ""))) : "";
           const fnHash = rawUser.fn ? (rawUser.fn.length === 64 ? rawUser.fn : sha256(rawUser.fn)) : "";
@@ -66,6 +70,8 @@ export const Route = createFileRoute("/api/marketing/capi.php")({
             user_data: {
               client_ip_address: clientIp,
               client_user_agent: userAgent,
+              ...(fbp ? { fbp } : {}),
+              ...(fbc ? { fbc } : {}),
               ...(emailHash ? { em: [emailHash] } : {}),
               ...(phoneHash ? { ph: [phoneHash] } : {}),
               ...(fnHash ? { fn: [fnHash] } : {}),
