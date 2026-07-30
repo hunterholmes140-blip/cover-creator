@@ -1086,9 +1086,6 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
       }
     } catch (e: any) {
       setErr(e.message || "EPS অটোমেটিক পেমেন্ট প্রক্রিয়া ব্যর্থ হয়েছে।");
-      if (!epsConfig.username || !epsConfig.merchant_id) {
-        setMsg("অটোমেটিক পেমেন্ট টেস্ট সম্পন্ন হয়েছে! এডমিন পেমেন্ট ভেরিফাই করার পর কোর্স এক্সেস দেখতে পাবেন।");
-      }
     } finally {
       setLoading(false);
     }
