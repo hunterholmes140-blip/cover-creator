@@ -26,7 +26,7 @@ function EnrolledCourseHubModal({ course, onClose }: { course: any; onClose: () 
   }, []);
 
   const liveUrl = course.live_class_link || "https://zoom.us";
-  const routine = course.class_routine || "প্রতি রবি, মঙ্গল, বৃহস্পতি রাত ৯:০০ টা";
+  const routine = course.class_routine && course.class_routine.trim() ? course.class_routine.trim() : null;
   const notice = course.notice || "আজকের ক্লাসের নির্ধারিত টপিক সোর্স কোড ড্রাইভে আপলোড করা হয়েছে।";
 
   // Parse real recordings (do not show fake mock data if admin hasn't uploaded any)
@@ -239,13 +239,15 @@ function EnrolledCourseHubModal({ course, onClose }: { course: any; onClose: () 
                 )}
               </div>
 
-              <div className="rounded-xl border border-border bg-muted/30 p-4 flex items-center justify-between gap-4">
-                <div>
-                  <div className="text-xs text-muted-foreground">ক্লাস রুটিন & সময়সূচী</div>
-                  <div className="text-sm md:text-base font-bold text-foreground mt-0.5">{routine}</div>
+              {routine && (
+                <div className="rounded-xl border border-border bg-muted/30 p-4 flex items-center justify-between gap-4">
+                  <div>
+                    <div className="text-xs text-muted-foreground">ক্লাস রুটিন & সময়সূচী</div>
+                    <div className="text-sm md:text-base font-bold text-foreground mt-0.5">{routine}</div>
+                  </div>
+                  <Clock className="h-6 w-6 text-primary" />
                 </div>
-                <Clock className="h-6 w-6 text-primary" />
-              </div>
+              )}
             </div>
           )}
 
@@ -416,25 +418,40 @@ function DashboardPage() {
             ) : (
               <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
                 {courses.map((c) => (
-                  <div key={c.id} className="rounded-xl border border-border bg-card p-5 flex flex-col justify-between hover:shadow-lg hover:border-primary/40 transition-all">
+                  <div key={c.id} className="rounded-2xl border border-border bg-card overflow-hidden flex flex-col justify-between hover:shadow-xl hover:border-primary/40 transition-all group">
                     <div>
-                      <div className="flex items-center justify-between gap-2 mb-2">
-                        <span className="inline-flex items-center gap-1 rounded-full bg-red-500/10 text-red-600 px-2.5 py-0.5 text-xs font-bold animate-pulse">
-                          ● লাইভ এক্সেস
+                      {/* Course Thumbnail Image */}
+                      <div className="relative aspect-video w-full overflow-hidden bg-muted">
+                        {c.thumbnail ? (
+                          <img
+                            src={c.thumbnail}
+                            alt={c.title}
+                            className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
+                          />
+                        ) : (
+                          <div className="h-full w-full bg-gradient-to-br from-orange-500/20 via-amber-500/20 to-primary/30 flex items-center justify-center font-bold text-muted-foreground text-xs">
+                            Vencon Academy
+                          </div>
+                        )}
+                        <span className="absolute top-3 left-3 inline-flex items-center gap-1 rounded-full bg-red-600/90 text-white backdrop-blur-md px-3 py-1 text-xs font-bold shadow-md">
+                          <Radio className="h-3 w-3 animate-pulse" /> লাইভ এক্সেস
                         </span>
-                        <span className="text-xs text-muted-foreground">{c.instructor}</span>
                       </div>
-                      <h3 className="font-bold text-lg leading-snug">{c.title}</h3>
-                      <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{c.short_description || "লাইভ ক্লাস, সাপোর্ট গ্রুপ ও রেকর্ডিং সুবিধা।"}</p>
+
+                      <div className="p-5">
+                        <div className="text-xs text-muted-foreground font-medium mb-1">ইন্সট্রাক্টর: {c.instructor}</div>
+                        <h3 className="font-bold text-lg leading-snug text-foreground group-hover:text-primary transition-colors">{c.title}</h3>
+                        <p className="text-xs text-muted-foreground mt-2 line-clamp-2">{c.short_description || "লাইভ ক্লাস, সাপোর্ট গ্রুপ ও রেকর্ডিং সুবিধা।"}</p>
+                      </div>
                     </div>
 
-                    <div className="mt-6 pt-4 border-t border-border flex items-center justify-between gap-2">
+                    <div className="p-5 pt-0">
                       <button
                         type="button"
                         onClick={() => setSelectedCourse(c)}
-                        className="w-full inline-flex items-center justify-center gap-2 rounded-lg bg-primary text-primary-foreground px-4 py-2.5 text-xs font-bold shadow hover:bg-primary/90 transition-colors"
+                        className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-primary text-primary-foreground px-4 py-3 text-xs font-bold shadow-md hover:bg-primary/90 transition-all hover:scale-[1.02]"
                       >
-                        <Radio className="h-3.5 w-3.5 text-red-400" /> কোর্স এক্সেস হাব ➔
+                        <Radio className="h-4 w-4 text-red-400" /> কোর্স এক্সেস হাব ➔
                       </button>
                     </div>
                   </div>
