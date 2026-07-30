@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { SiteLayout } from "@/components/site/Layout";
-import { Users, DollarSign, Award, ArrowRight } from "lucide-react";
+import { Users, Wallet, Award, ArrowRight } from "lucide-react";
 import { useContent } from "@/lib/content-store";
 import { DEFAULT_PAGES, PageItem } from "@/routes/admin.pages";
 
@@ -22,7 +22,7 @@ function AffiliatePage() {
   const pageData = pageList.find((p) => p.slug === "affiliate" || p.id === "affiliate") || DEFAULT_PAGES[4];
 
   const perks = [
-    { icon: DollarSign, title: "৩০% কমিশন", desc: "প্রতিটি সফল সেলে আকর্ষণীয় কমিশন।" },
+    { icon: Wallet, title: "৩০% কমিশন", desc: "প্রতিটি সফল সেলে আকর্ষণীয় কমিশন।" },
     { icon: Users, title: "রিয়েল-টাইম ড্যাশবোর্ড", desc: "ক্লিক, সাইনআপ, সেল—সব লাইভ দেখুন।" },
     { icon: Award, title: "মাসিক পেআউট", desc: "বিকাশ/ব্যাংকে সরাসরি পেমেন্ট।" },
   ];

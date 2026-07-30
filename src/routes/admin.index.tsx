@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
-  BookOpen, Users, ShoppingCart, DollarSign, FileText, Video, User, FolderTree,
+  BookOpen, Users, ShoppingCart, Wallet, FileText, Video, User, FolderTree,
 } from "lucide-react";
 import { useTrainers, useBlog, useVideos } from "@/lib/admin-store";
 import { useLiveCourses, useLiveOrders, useLiveUsers, useLiveCategories } from "@/lib/live-store";
@@ -29,7 +29,7 @@ function AdminHome() {
     { label: "মোট কোর্স", value: courses.length, Icon: BookOpen, color: "text-blue-500" },
     { label: "মোট ইউজার", value: users.length, Icon: User, color: "text-emerald-500" },
     { label: "মোট অর্ডার", value: orders.length, Icon: ShoppingCart, color: "text-amber-500" },
-    { label: "মোট রেভিনিউ", value: taka(revenue), Icon: DollarSign, color: "text-primary" },
+    { label: "মোট রেভিনিউ", value: taka(revenue), Icon: Wallet, color: "text-primary" },
   ];
 
   const quick = [

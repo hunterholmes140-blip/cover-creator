@@ -89,8 +89,8 @@ function AdminAnalyticsPage() {
         <div className="rounded-2xl border border-border bg-card p-5 space-y-2 shadow-sm">
           <div className="flex items-center justify-between text-muted-foreground">
             <span className="text-xs font-semibold uppercase tracking-wider">সর্বমোট রাজস্ব</span>
-            <div className="h-9 w-9 rounded-xl bg-green-500/10 text-green-600 grid place-items-center">
-              <DollarSign className="h-5 w-5" />
+            <div className="h-9 w-9 rounded-xl bg-green-500/10 text-green-600 grid place-items-center font-bold text-lg leading-none select-none">
+              ৳
             </div>
           </div>
           <div className="text-2xl font-bold text-foreground">
