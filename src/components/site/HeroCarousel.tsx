@@ -90,20 +90,13 @@ export function HeroCarousel({ slides }: { slides: HeroSlide[] }) {
         className="relative block w-full aspect-video rounded-3xl overflow-hidden shadow-2xl ring-1 ring-primary/20 bg-black group cursor-zoom-in"
       >
         {vid ? (
-          <>
-            <img
-              src={`https://img.youtube.com/vi/${vid}/hqdefault.jpg`}
-              alt={current.heading}
-              className="absolute inset-0 h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-            />
-            <iframe
-              key={`prev-${current.id}`}
-              className="absolute inset-0 h-full w-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"
-              src={`https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
-              title={current.heading}
-              allow="autoplay; encrypted-media"
-            />
-          </>
+          <iframe
+            key={`prev-${current.id}`}
+            className="absolute inset-0 h-full w-full pointer-events-none"
+            src={`https://www.youtube.com/embed/${vid}?autoplay=1&mute=1&loop=1&playlist=${vid}&controls=0&showinfo=0&modestbranding=1&rel=0&iv_load_policy=3&playsinline=1`}
+            title={current.heading}
+            allow="autoplay; encrypted-media"
+          />
         ) : null}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
         <div className="absolute inset-0 grid place-items-center">
