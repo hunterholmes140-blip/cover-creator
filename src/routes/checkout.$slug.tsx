@@ -3,9 +3,10 @@ import { useEffect, useState } from "react";
 import { CheckCircle2, Zap, ShieldCheck, Lock, ArrowRight, Tag } from "lucide-react";
 import { SiteLayout } from "@/components/site/Layout";
 import { EpsPaymentCard } from "@/components/site/EpsPaymentCard";
-import { api, getStoredUser } from "@/lib/api";
+import { api, getStoredUser, setAuth } from "@/lib/api";
 import { taka } from "@/lib/format";
 import { getEpsConfig, epsInitializePayment } from "@/lib/eps-client";
+import { track } from "@/lib/marketing";
 
 export const Route = createFileRoute("/checkout/$slug")({
   head: () => ({
@@ -149,6 +150,16 @@ function CheckoutPage() {
         }
       }
 
+      track("InitiateCheckout", {
+        content_ids: [String(course.id)],
+        content_name: course.title,
+        value: finalAmount,
+        currency: "BDT",
+        email: billing.email,
+        phone: billing.phone,
+        name: billing.name,
+      });
+
       const orderId = `ORD-${Date.now().toString().slice(-6)}`;
       const txId = `TXN${Date.now()}`;
       const currentUrl = typeof window !== "undefined" ? window.location.href : "";
@@ -168,6 +179,16 @@ function CheckoutPage() {
       });
 
       if (res.redirectUrl) {
+        track("Purchase", {
+          content_ids: [String(course.id)],
+          content_name: course.title,
+          value: finalAmount,
+          currency: "BDT",
+          email: billing.email,
+          phone: billing.phone,
+          name: billing.name,
+        });
+
         await api("orders/create.php", {
           method: "POST",
           auth: true,
