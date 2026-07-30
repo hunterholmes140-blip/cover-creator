@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import {
   Settings, LayoutDashboard, BookOpen, Users, ShoppingCart, Film, Video,
   FolderTree, FileText, User, CreditCard, FilePenLine, Menu, X, LogOut, Lock, Megaphone,
-  BarChart3, Tag,
+  BarChart3, Tag, Mail,
 } from "lucide-react";
 
 export const Route = createFileRoute("/admin")({
@@ -105,6 +105,7 @@ const GROUPS: NavGroup[] = [
       { to: "/admin", label: "ড্যাশবোর্ড", Icon: LayoutDashboard, exact: true },
       { to: "/admin/settings", label: "সাইট সেটিংস", Icon: Settings },
       { to: "/admin/marketing", label: "মার্কেটিং / Pixel", Icon: Megaphone },
+      { to: "/admin/email-settings", label: "ইমেইল নোটিফিকেশন", Icon: Mail },
     ],
   },
   {

@@ -29,12 +29,48 @@ export const Route = createFileRoute("/api/admin/orders.php")({
           await exec(`UPDATE orders SET status = ? WHERE id = ?`, [status, id]);
 
           if (status === "approved") {
-            const order = await qOne<any>(`SELECT user_id, course_id FROM orders WHERE id = ?`, [id]);
+            const order = await qOne<any>(
+              `SELECT o.id, o.user_id, o.course_id, o.amount, o.transaction_id, u.name AS user_name, u.email AS user_email, c.title AS course_title
+               FROM orders o
+               JOIN users u ON u.id = o.user_id
+               JOIN courses c ON c.id = o.course_id
+               WHERE o.id = ?`,
+              [id]
+            );
             if (order) {
               await exec(
                 `INSERT IGNORE INTO enrollments (user_id, course_id, order_id) VALUES (?, ?, ?)`,
                 [order.user_id, order.course_id, id],
               );
+              const { sendTemplatedEmail } = await import("@/lib/email.server");
+              sendTemplatedEmail("payment_success", order.user_email, {
+                user_name: order.user_name || "Student",
+                user_email: order.user_email,
+                course_title: order.course_title,
+                amount: order.amount,
+                transaction_id: order.transaction_id || `ORD-${id}`,
+                dashboard_url: "https://vencon.com.bd/dashboard",
+              }).catch(() => {});
+            }
+          } else if (status === "rejected") {
+            const order = await qOne<any>(
+              `SELECT o.id, o.amount, o.transaction_id, u.name AS user_name, u.email AS user_email, c.title AS course_title
+               FROM orders o
+               JOIN users u ON u.id = o.user_id
+               JOIN courses c ON c.id = o.course_id
+               WHERE o.id = ?`,
+              [id]
+            );
+            if (order) {
+              const { sendTemplatedEmail } = await import("@/lib/email.server");
+              sendTemplatedEmail("payment_failed", order.user_email, {
+                user_name: order.user_name || "Student",
+                user_email: order.user_email,
+                course_title: order.course_title,
+                amount: order.amount,
+                transaction_id: order.transaction_id || `ORD-${id}`,
+                dashboard_url: "https://vencon.com.bd/courses",
+              }).catch(() => {});
             }
           }
           return ok({ id, status });

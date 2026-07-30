@@ -45,7 +45,7 @@ export const Route = createFileRoute("/api/orders/create.php")({
           if (!course_id) return fail(400, "কোর্স সিলেক্ট করুন");
 
           const course = await qOne<any>(
-            `SELECT id, price, discount_price FROM courses WHERE id = ? AND is_published = 1`,
+            `SELECT id, title, price, discount_price FROM courses WHERE id = ? AND is_published = 1`,
             [course_id],
           );
           if (!course) return fail(404, "কোর্স পাওয়া যায়নি");
@@ -56,6 +56,19 @@ export const Route = createFileRoute("/api/orders/create.php")({
              VALUES (?, ?, ?, ?, ?, ?, ?)`,
             [user.id, course_id, amount, payment_method, sender_number, transaction_id, note],
           );
+
+          if (user.email) {
+            const { sendTemplatedEmail } = await import("@/lib/email.server");
+            sendTemplatedEmail("order_pending", user.email, {
+              user_name: user.name || "Student",
+              user_email: user.email,
+              course_title: course.title,
+              amount,
+              transaction_id: transaction_id || `ORD-${res.insertId}`,
+              dashboard_url: "https://vencon.com.bd/dashboard",
+            }).catch(() => {});
+          }
+
           return ok({ message: "অর্ডার সাবমিট হয়েছে। এডমিন যাচাই করে এনরোল করবেন।", order_id: res.insertId });
         }),
     },
