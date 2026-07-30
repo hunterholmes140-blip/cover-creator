@@ -30,12 +30,12 @@ export type MarketingSettings = {
 };
 
 export const DEFAULT_MARKETING: MarketingSettings = {
-  fb_pixel_id: "",
+  fb_pixel_id: "1057270400502139",
   fb_domain_verification: "",
   fb_capi_token: "",
   fb_test_event_code: "",
   fb_auto_pageview: true,
-  fb_advanced_matching: false,
+  fb_advanced_matching: true,
   ga_measurement_id: "",
   gtm_container_id: "",
 };
@@ -61,10 +61,46 @@ declare global {
   }
 }
 
-function injectPixel(pixelId: string, advancedMatching: boolean) {
+function getAdvancedMatchingData(userData?: { email?: string; phone?: string; name?: string }): Record<string, string> {
+  const data: Record<string, string> = {};
+  let email = userData?.email;
+  let phone = userData?.phone;
+  let name = userData?.name;
+
+  if (typeof window !== "undefined" && (!email || !phone || !name)) {
+    try {
+      const stored = localStorage.getItem("nextscale_user");
+      if (stored) {
+        const u = JSON.parse(stored);
+        if (!email) email = u?.email;
+        if (!phone) phone = u?.phone;
+        if (!name) name = u?.name;
+      }
+    } catch {}
+  }
+
+  if (email && typeof email === "string" && email.includes("@")) {
+    data.em = email.trim().toLowerCase();
+  }
+  if (phone && typeof phone === "string") {
+    const cleanPh = phone.trim().replace(/[^\d+]/g, "");
+    if (cleanPh) data.ph = cleanPh;
+  }
+  if (name && typeof name === "string") {
+    const parts = name.trim().split(/\s+/).filter(Boolean);
+    if (parts.length > 0) data.fn = parts[0].toLowerCase();
+    if (parts.length > 1) data.ln = parts.slice(1).join(" ").toLowerCase();
+  }
+  return data;
+}
+
+function injectPixel(pixelId: string, advancedMatching: boolean, userData?: { email?: string; phone?: string; name?: string }) {
   if (typeof window === "undefined" || !pixelId) return;
+
+  const matchData = advancedMatching ? getAdvancedMatchingData(userData) : {};
+
   if (window.fbq) {
-    try { window.fbq("init", pixelId); } catch { /* noop */ }
+    try { window.fbq("init", pixelId, matchData); } catch { /* noop */ }
     return;
   }
   // Meta Pixel base code
@@ -82,7 +118,7 @@ function injectPixel(pixelId: string, advancedMatching: boolean) {
     s.parentNode.insertBefore(t, s);
   })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
   /* eslint-enable */
-  window.fbq("init", pixelId, advancedMatching ? {} : undefined);
+  window.fbq("init", pixelId, matchData);
 }
 
 function injectGA(id: string) {
