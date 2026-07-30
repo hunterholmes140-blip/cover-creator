@@ -1057,7 +1057,7 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
           const regRes = await api<{ user: any; token: string }>("auth/register.php", {
             method: "POST",
             body: {
-              name: billing.name,
+              name: billing.name && billing.name.trim() ? billing.name.trim() : (billing.email ? billing.email.split("@")[0] : "Student"),
               email: billing.email,
               phone: billing.phone,
               password: userPw,

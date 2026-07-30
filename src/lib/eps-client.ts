@@ -153,6 +153,9 @@ export async function epsInitializePayment(
         course_id: input.courseId,
         order_no: input.customerOrderId,
         tx_id: input.merchantTransactionId,
+        customerEmail: input.customerEmail,
+        customerName: input.customerName,
+        customerPhone: input.customerPhone,
       },
     });
     if (res && res.redirectUrl) {
