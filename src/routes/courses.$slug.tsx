@@ -1048,6 +1048,43 @@ function EnrollModal({ course, amount, onClose }: { course: any; amount: number;
 
     setLoading(true);
     try {
+      // Auto register/login if user is guest
+      if (!getStoredUser()) {
+        const userPw = billing.password && billing.password.length >= 6
+          ? billing.password
+          : (billing.phone && billing.phone.length >= 6 ? billing.phone.slice(-6) : "123456");
+        try {
+          const regRes = await api<{ user: any; token: string }>("auth/register.php", {
+            method: "POST",
+            body: {
+              name: billing.name,
+              email: billing.email,
+              phone: billing.phone,
+              password: userPw,
+            },
+          });
+          if (regRes && regRes.token) {
+            setAuth(regRes.token, regRes.user);
+            setUser(regRes.user);
+          }
+        } catch (regErr: any) {
+          // If already registered, attempt login
+          try {
+            const loginRes = await api<{ user: any; token: string }>("auth/login.php", {
+              method: "POST",
+              body: {
+                email: billing.email,
+                password: userPw,
+              },
+            });
+            if (loginRes && loginRes.token) {
+              setAuth(loginRes.token, loginRes.user);
+              setUser(loginRes.user);
+            }
+          } catch {}
+        }
+      }
+
       const orderId = `ORD-${Date.now().toString().slice(-6)}`;
       const txId = `TXN${Date.now()}`;
       const currentUrl = typeof window !== "undefined" ? window.location.href : "";

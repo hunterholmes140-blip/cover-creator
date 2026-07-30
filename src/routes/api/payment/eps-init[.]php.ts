@@ -33,12 +33,35 @@ export const Route = createFileRoute("/api/payment/eps-init.php")({
     handlers: {
       POST: async ({ request }) =>
         handle(async () => {
-          const user = bearerFrom(request);
+          const body = await request.json().catch(() => ({}));
+          let user = bearerFrom(request);
+
           if (!user) {
-            return fail(401, "পেমেন্ট করতে প্রথমে আপনার অ্যাকাউন্টে লগইন করুন।");
+            const email = String(body.customerEmail || body.email || "").trim().toLowerCase();
+            const name = String(body.customerName || body.name || "").trim() || "Student";
+            const phone = String(body.customerPhone || body.phone || "").trim() || null;
+            const password = String(body.password || "").trim();
+
+            if (email) {
+              const existing = await qOne<any>(`SELECT id, name, email, phone FROM users WHERE email = ? LIMIT 1`, [email]);
+              if (existing) {
+                user = existing;
+              } else {
+                const defaultPw = password && password.length >= 6 ? password : (phone && phone.length >= 6 ? phone.slice(-6) : "123456");
+                const hash = await hashPassword(defaultPw);
+                const res = await exec(
+                  `INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)`,
+                  [name, email, phone, hash]
+                );
+                user = { id: res.insertId, name, email, phone };
+              }
+            }
           }
 
-          const body = await request.json().catch(() => ({}));
+          if (!user) {
+            return fail(401, "পেমেন্ট করতে অনুগ্রহ করে নাম ও ইমেইল ফিল্ডটি পূরণ করুন।");
+          }
+
           const course_id = Number(body.course_id);
           if (!course_id) return fail(400, "কোর্স আইডি সিলেক্ট করা হয়নি");
 
