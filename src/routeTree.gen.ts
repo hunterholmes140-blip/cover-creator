@@ -9,138 +9,90 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TrainersRouteImport } from './routes/trainers'
-import { Route as TermsRouteImport } from './routes/terms'
-import { Route as RegisterRouteImport } from './routes/register'
-import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
-import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
-import { Route as LoginRouteImport } from './routes/login'
-import { Route as FreeCoursesRouteImport } from './routes/free-courses'
-import { Route as FaqRouteImport } from './routes/faq'
-import { Route as DashboardRouteImport } from './routes/dashboard'
-import { Route as ContactRouteImport } from './routes/contact'
-import { Route as BlogRouteImport } from './routes/blog'
-import { Route as AffiliateRouteImport } from './routes/affiliate'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TrainersIndexRouteImport } from './routes/trainers.index'
-import { Route as CoursesIndexRouteImport } from './routes/courses.index'
+import { Route as AboutRouteImport } from './routes/about'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AffiliateRouteImport } from './routes/affiliate'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as ContactRouteImport } from './routes/contact'
+import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as FaqRouteImport } from './routes/faq'
+import { Route as FreeCoursesRouteImport } from './routes/free-courses'
+import { Route as LoginRouteImport } from './routes/login'
+import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
+import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as TermsRouteImport } from './routes/terms'
+import { Route as TrainersRouteImport } from './routes/trainers'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as TrainersSlugRouteImport } from './routes/trainers.$slug'
-import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
-import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
-import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
-import { Route as ApiContentDotphpRouteImport } from './routes/api/content[.]php'
-import { Route as AdminVideosRouteImport } from './routes/admin.videos'
-import { Route as AdminUsersRouteImport } from './routes/admin.users'
-import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
-import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
-import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
-import { Route as AdminPagesRouteImport } from './routes/admin.pages'
-import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
-import { Route as AdminMarketingRouteImport } from './routes/admin.marketing'
-import { Route as AdminHomepageRouteImport } from './routes/admin.homepage'
-import { Route as AdminHeroRouteImport } from './routes/admin.hero'
-import { Route as AdminFooterRouteImport } from './routes/admin.footer'
-import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
-import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminAnalyticsRouteImport } from './routes/admin.analytics'
 import { Route as AdminAuthPagesRouteImport } from './routes/admin.auth-pages'
-import { Route as AdminTrainersIndexRouteImport } from './routes/admin.trainers.index'
-import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
+import { Route as AdminCategoriesRouteImport } from './routes/admin.categories'
+import { Route as AdminCouponsRouteImport } from './routes/admin.coupons'
+import { Route as AdminEmailSettingsRouteImport } from './routes/admin.email-settings'
+import { Route as AdminFaqsRouteImport } from './routes/admin.faqs'
+import { Route as AdminFooterRouteImport } from './routes/admin.footer'
+import { Route as AdminHeroRouteImport } from './routes/admin.hero'
+import { Route as AdminHomepageRouteImport } from './routes/admin.homepage'
+import { Route as AdminMarketingRouteImport } from './routes/admin.marketing'
+import { Route as AdminOrdersRouteImport } from './routes/admin.orders'
+import { Route as AdminPagesRouteImport } from './routes/admin.pages'
+import { Route as AdminPaymentsRouteImport } from './routes/admin.payments'
+import { Route as AdminSettingsRouteImport } from './routes/admin.settings'
+import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
+import { Route as AdminUsersRouteImport } from './routes/admin.users'
+import { Route as AdminVideosRouteImport } from './routes/admin.videos'
+import { Route as ApiContentDotphpRouteImport } from './routes/api/content[.]php'
+import { Route as BlogIndexRouteImport } from './routes/blog.index'
+import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
+import { Route as CoursesIndexRouteImport } from './routes/courses.index'
+import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
+import { Route as TrainersIndexRouteImport } from './routes/trainers.index'
+import { Route as TrainersSlugRouteImport } from './routes/trainers.$slug'
 import { Route as AdminBlogIndexRouteImport } from './routes/admin.blog.index'
-import { Route as ApiOrdersMyOrdersDotphpRouteImport } from './routes/api/orders/my-orders[.]php'
-import { Route as ApiOrdersCreateDotphpRouteImport } from './routes/api/orders/create[.]php'
-import { Route as ApiCoursesMyCoursesDotphpRouteImport } from './routes/api/courses/my-courses[.]php'
-import { Route as ApiCoursesListDotphpRouteImport } from './routes/api/courses/list[.]php'
-import { Route as ApiCoursesDetailDotphpRouteImport } from './routes/api/courses/detail[.]php'
-import { Route as ApiCoursesCategoriesDotphpRouteImport } from './routes/api/courses/categories[.]php'
-import { Route as ApiContentTrainersDotphpRouteImport } from './routes/api/content/trainers[.]php'
-import { Route as ApiContentTestimonialsDotphpRouteImport } from './routes/api/content/testimonials[.]php'
-import { Route as ApiContentPostsDotphpRouteImport } from './routes/api/content/posts[.]php'
-import { Route as ApiContentFaqsDotphpRouteImport } from './routes/api/content/faqs[.]php'
-import { Route as ApiAuthRegisterDotphpRouteImport } from './routes/api/auth/register[.]php'
-import { Route as ApiAuthMeDotphpRouteImport } from './routes/api/auth/me[.]php'
-import { Route as ApiAuthLoginDotphpRouteImport } from './routes/api/auth/login[.]php'
-import { Route as ApiAuthAdminLoginDotphpRouteImport } from './routes/api/auth/admin-login[.]php'
-import { Route as ApiAdminUsersDotphpRouteImport } from './routes/api/admin/users[.]php'
-import { Route as ApiAdminStatsDotphpRouteImport } from './routes/api/admin/stats[.]php'
-import { Route as ApiAdminSettingsDotphpRouteImport } from './routes/api/admin/settings[.]php'
-import { Route as ApiAdminOrdersDotphpRouteImport } from './routes/api/admin/orders[.]php'
-import { Route as ApiAdminLessonsDotphpRouteImport } from './routes/api/admin/lessons[.]php'
-import { Route as ApiAdminCoursesDotphpRouteImport } from './routes/api/admin/courses[.]php'
-import { Route as ApiAdminContentDotphpRouteImport } from './routes/api/admin/content[.]php'
-import { Route as ApiAdminCategoriesDotphpRouteImport } from './routes/api/admin/categories[.]php'
-import { Route as AdminTrainersNewRouteImport } from './routes/admin.trainers.new'
-import { Route as AdminTrainersSlugRouteImport } from './routes/admin.trainers.$slug'
-import { Route as AdminCoursesNewRouteImport } from './routes/admin.courses.new'
-import { Route as AdminCoursesSlugRouteImport } from './routes/admin.courses.$slug'
-import { Route as AdminBlogNewRouteImport } from './routes/admin.blog.new'
 import { Route as AdminBlogSlugRouteImport } from './routes/admin.blog.$slug'
+import { Route as AdminBlogNewRouteImport } from './routes/admin.blog.new'
+import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
+import { Route as AdminCoursesSlugRouteImport } from './routes/admin.courses.$slug'
+import { Route as AdminCoursesNewRouteImport } from './routes/admin.courses.new'
+import { Route as AdminTrainersIndexRouteImport } from './routes/admin.trainers.index'
+import { Route as AdminTrainersSlugRouteImport } from './routes/admin.trainers.$slug'
+import { Route as AdminTrainersNewRouteImport } from './routes/admin.trainers.new'
+import { Route as ApiAdminAnalyticsDotphpRouteImport } from './routes/api/admin/analytics[.]php'
+import { Route as ApiAdminCategoriesDotphpRouteImport } from './routes/api/admin/categories[.]php'
+import { Route as ApiAdminChangePasswordDotphpRouteImport } from './routes/api/admin/change-password[.]php'
+import { Route as ApiAdminContentDotphpRouteImport } from './routes/api/admin/content[.]php'
+import { Route as ApiAdminCouponsDotphpRouteImport } from './routes/api/admin/coupons[.]php'
+import { Route as ApiAdminCoursesDotphpRouteImport } from './routes/api/admin/courses[.]php'
+import { Route as ApiAdminEmailSettingsDotphpRouteImport } from './routes/api/admin/email-settings[.]php'
+import { Route as ApiAdminLessonsDotphpRouteImport } from './routes/api/admin/lessons[.]php'
+import { Route as ApiAdminOrdersDotphpRouteImport } from './routes/api/admin/orders[.]php'
+import { Route as ApiAdminSessionsDotphpRouteImport } from './routes/api/admin/sessions[.]php'
+import { Route as ApiAdminSettingsDotphpRouteImport } from './routes/api/admin/settings[.]php'
+import { Route as ApiAdminStatsDotphpRouteImport } from './routes/api/admin/stats[.]php'
+import { Route as ApiAdminUsersDotphpRouteImport } from './routes/api/admin/users[.]php'
+import { Route as ApiAuthAdminLoginDotphpRouteImport } from './routes/api/auth/admin-login[.]php'
+import { Route as ApiAuthLoginDotphpRouteImport } from './routes/api/auth/login[.]php'
+import { Route as ApiAuthMeDotphpRouteImport } from './routes/api/auth/me[.]php'
+import { Route as ApiAuthRegisterDotphpRouteImport } from './routes/api/auth/register[.]php'
+import { Route as ApiContentFaqsDotphpRouteImport } from './routes/api/content/faqs[.]php'
+import { Route as ApiContentPostsDotphpRouteImport } from './routes/api/content/posts[.]php'
+import { Route as ApiContentTestimonialsDotphpRouteImport } from './routes/api/content/testimonials[.]php'
+import { Route as ApiContentTrainersDotphpRouteImport } from './routes/api/content/trainers[.]php'
+import { Route as ApiCouponsValidateDotphpRouteImport } from './routes/api/coupons/validate[.]php'
+import { Route as ApiCoursesCategoriesDotphpRouteImport } from './routes/api/courses/categories[.]php'
+import { Route as ApiCoursesDetailDotphpRouteImport } from './routes/api/courses/detail[.]php'
+import { Route as ApiCoursesListDotphpRouteImport } from './routes/api/courses/list[.]php'
+import { Route as ApiCoursesMyCoursesDotphpRouteImport } from './routes/api/courses/my-courses[.]php'
+import { Route as ApiMarketingCapiDotphpRouteImport } from './routes/api/marketing/capi[.]php'
+import { Route as ApiOrdersCreateDotphpRouteImport } from './routes/api/orders/create[.]php'
+import { Route as ApiOrdersMyOrdersDotphpRouteImport } from './routes/api/orders/my-orders[.]php'
+import { Route as ApiPaymentEpsInitDotphpRouteImport } from './routes/api/payment/eps-init[.]php'
 
-const TrainersRoute = TrainersRouteImport.update({
-  id: '/trainers',
-  path: '/trainers',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegisterRoute = RegisterRouteImport.update({
-  id: '/register',
-  path: '/register',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RefundPolicyRoute = RefundPolicyRouteImport.update({
-  id: '/refund-policy',
-  path: '/refund-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
-  id: '/privacy-policy',
-  path: '/privacy-policy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FreeCoursesRoute = FreeCoursesRouteImport.update({
-  id: '/free-courses',
-  path: '/free-courses',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FaqRoute = FaqRouteImport.update({
-  id: '/faq',
-  path: '/faq',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/contact',
-  path: '/contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/blog',
-  path: '/blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AffiliateRoute = AffiliateRouteImport.update({
-  id: '/affiliate',
-  path: '/affiliate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminRoute = AdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -148,19 +100,69 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TrainersIndexRoute = TrainersIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => TrainersRoute,
+const AffiliateRoute = AffiliateRouteImport.update({
+  id: '/affiliate',
+  path: '/affiliate',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const CoursesIndexRoute = CoursesIndexRouteImport.update({
-  id: '/courses/',
-  path: '/courses/',
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/contact',
+  path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardRoute = DashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FaqRoute = FaqRouteImport.update({
+  id: '/faq',
+  path: '/faq',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FreeCoursesRoute = FreeCoursesRouteImport.update({
+  id: '/free-courses',
+  path: '/free-courses',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/privacy-policy',
+  path: '/privacy-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundPolicyRoute = RefundPolicyRouteImport.update({
+  id: '/refund-policy',
+  path: '/refund-policy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrainersRoute = TrainersRouteImport.update({
+  id: '/trainers',
+  path: '/trainers',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
@@ -168,94 +170,9 @@ const AdminIndexRoute = AdminIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const TrainersSlugRoute = TrainersSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => TrainersRoute,
-} as any)
-const CoursesSlugRoute = CoursesSlugRouteImport.update({
-  id: '/courses/$slug',
-  path: '/courses/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckoutSlugRoute = CheckoutSlugRouteImport.update({
-  id: '/checkout/$slug',
-  path: '/checkout/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/$slug',
-  path: '/$slug',
-  getParentRoute: () => BlogRoute,
-} as any)
-const ApiContentDotphpRoute = ApiContentDotphpRouteImport.update({
-  id: '/api/content.php',
-  path: '/api/content.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminVideosRoute = AdminVideosRouteImport.update({
-  id: '/videos',
-  path: '/videos',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminUsersRoute = AdminUsersRouteImport.update({
-  id: '/users',
-  path: '/users',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
-  id: '/testimonials',
-  path: '/testimonials',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminSettingsRoute = AdminSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
-  id: '/payments',
-  path: '/payments',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPagesRoute = AdminPagesRouteImport.update({
-  id: '/pages',
-  path: '/pages',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminOrdersRoute = AdminOrdersRouteImport.update({
-  id: '/orders',
-  path: '/orders',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminMarketingRoute = AdminMarketingRouteImport.update({
-  id: '/marketing',
-  path: '/marketing',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminHomepageRoute = AdminHomepageRouteImport.update({
-  id: '/homepage',
-  path: '/homepage',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminHeroRoute = AdminHeroRouteImport.update({
-  id: '/hero',
-  path: '/hero',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFooterRoute = AdminFooterRouteImport.update({
-  id: '/footer',
-  path: '/footer',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminFaqsRoute = AdminFaqsRouteImport.update({
-  id: '/faqs',
-  path: '/faqs',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
-  id: '/categories',
-  path: '/categories',
+const AdminAnalyticsRoute = AdminAnalyticsRouteImport.update({
+  id: '/analytics',
+  path: '/analytics',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminAuthPagesRoute = AdminAuthPagesRouteImport.update({
@@ -263,9 +180,134 @@ const AdminAuthPagesRoute = AdminAuthPagesRouteImport.update({
   path: '/auth-pages',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminTrainersIndexRoute = AdminTrainersIndexRouteImport.update({
-  id: '/trainers/',
-  path: '/trainers/',
+const AdminCategoriesRoute = AdminCategoriesRouteImport.update({
+  id: '/categories',
+  path: '/categories',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCouponsRoute = AdminCouponsRouteImport.update({
+  id: '/coupons',
+  path: '/coupons',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEmailSettingsRoute = AdminEmailSettingsRouteImport.update({
+  id: '/email-settings',
+  path: '/email-settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFaqsRoute = AdminFaqsRouteImport.update({
+  id: '/faqs',
+  path: '/faqs',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminFooterRoute = AdminFooterRouteImport.update({
+  id: '/footer',
+  path: '/footer',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHeroRoute = AdminHeroRouteImport.update({
+  id: '/hero',
+  path: '/hero',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminHomepageRoute = AdminHomepageRouteImport.update({
+  id: '/homepage',
+  path: '/homepage',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminMarketingRoute = AdminMarketingRouteImport.update({
+  id: '/marketing',
+  path: '/marketing',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminOrdersRoute = AdminOrdersRouteImport.update({
+  id: '/orders',
+  path: '/orders',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPagesRoute = AdminPagesRouteImport.update({
+  id: '/pages',
+  path: '/pages',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPaymentsRoute = AdminPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminSettingsRoute = AdminSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTestimonialsRoute = AdminTestimonialsRouteImport.update({
+  id: '/testimonials',
+  path: '/testimonials',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminUsersRoute = AdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminVideosRoute = AdminVideosRouteImport.update({
+  id: '/videos',
+  path: '/videos',
+  getParentRoute: () => AdminRoute,
+} as any)
+const ApiContentDotphpRoute = ApiContentDotphpRouteImport.update({
+  id: '/api/content.php',
+  path: '/api/content.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
+} as any)
+const BlogSlugRoute = BlogSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => BlogRoute,
+} as any)
+const CheckoutSlugRoute = CheckoutSlugRouteImport.update({
+  id: '/checkout/$slug',
+  path: '/checkout/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesIndexRoute = CoursesIndexRouteImport.update({
+  id: '/courses/',
+  path: '/courses/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CoursesSlugRoute = CoursesSlugRouteImport.update({
+  id: '/courses/$slug',
+  path: '/courses/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TrainersIndexRoute = TrainersIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TrainersRoute,
+} as any)
+const TrainersSlugRoute = TrainersSlugRouteImport.update({
+  id: '/$slug',
+  path: '/$slug',
+  getParentRoute: () => TrainersRoute,
+} as any)
+const AdminBlogIndexRoute = AdminBlogIndexRouteImport.update({
+  id: '/blog/',
+  path: '/blog/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBlogSlugRoute = AdminBlogSlugRouteImport.update({
+  id: '/blog/$slug',
+  path: '/blog/$slug',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminBlogNewRoute = AdminBlogNewRouteImport.update({
+  id: '/blog/new',
+  path: '/blog/new',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
@@ -273,118 +315,34 @@ const AdminCoursesIndexRoute = AdminCoursesIndexRouteImport.update({
   path: '/courses/',
   getParentRoute: () => AdminRoute,
 } as any)
-const AdminBlogIndexRoute = AdminBlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
+const AdminCoursesSlugRoute = AdminCoursesSlugRouteImport.update({
+  id: '/courses/$slug',
+  path: '/courses/$slug',
   getParentRoute: () => AdminRoute,
 } as any)
-const ApiOrdersMyOrdersDotphpRoute = ApiOrdersMyOrdersDotphpRouteImport.update({
-  id: '/api/orders/my-orders.php',
-  path: '/api/orders/my-orders.php',
-  getParentRoute: () => rootRouteImport,
+const AdminCoursesNewRoute = AdminCoursesNewRouteImport.update({
+  id: '/courses/new',
+  path: '/courses/new',
+  getParentRoute: () => AdminRoute,
 } as any)
-const ApiOrdersCreateDotphpRoute = ApiOrdersCreateDotphpRouteImport.update({
-  id: '/api/orders/create.php',
-  path: '/api/orders/create.php',
-  getParentRoute: () => rootRouteImport,
+const AdminTrainersIndexRoute = AdminTrainersIndexRouteImport.update({
+  id: '/trainers/',
+  path: '/trainers/',
+  getParentRoute: () => AdminRoute,
 } as any)
-const ApiCoursesMyCoursesDotphpRoute =
-  ApiCoursesMyCoursesDotphpRouteImport.update({
-    id: '/api/courses/my-courses.php',
-    path: '/api/courses/my-courses.php',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiCoursesListDotphpRoute = ApiCoursesListDotphpRouteImport.update({
-  id: '/api/courses/list.php',
-  path: '/api/courses/list.php',
-  getParentRoute: () => rootRouteImport,
+const AdminTrainersSlugRoute = AdminTrainersSlugRouteImport.update({
+  id: '/trainers/$slug',
+  path: '/trainers/$slug',
+  getParentRoute: () => AdminRoute,
 } as any)
-const ApiCoursesDetailDotphpRoute = ApiCoursesDetailDotphpRouteImport.update({
-  id: '/api/courses/detail.php',
-  path: '/api/courses/detail.php',
-  getParentRoute: () => rootRouteImport,
+const AdminTrainersNewRoute = AdminTrainersNewRouteImport.update({
+  id: '/trainers/new',
+  path: '/trainers/new',
+  getParentRoute: () => AdminRoute,
 } as any)
-const ApiCoursesCategoriesDotphpRoute =
-  ApiCoursesCategoriesDotphpRouteImport.update({
-    id: '/api/courses/categories.php',
-    path: '/api/courses/categories.php',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiContentTrainersDotphpRoute =
-  ApiContentTrainersDotphpRouteImport.update({
-    id: '/api/content/trainers.php',
-    path: '/api/content/trainers.php',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiContentTestimonialsDotphpRoute =
-  ApiContentTestimonialsDotphpRouteImport.update({
-    id: '/api/content/testimonials.php',
-    path: '/api/content/testimonials.php',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const ApiContentPostsDotphpRoute = ApiContentPostsDotphpRouteImport.update({
-  id: '/api/content/posts.php',
-  path: '/api/content/posts.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiContentFaqsDotphpRoute = ApiContentFaqsDotphpRouteImport.update({
-  id: '/api/content/faqs.php',
-  path: '/api/content/faqs.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthRegisterDotphpRoute = ApiAuthRegisterDotphpRouteImport.update({
-  id: '/api/auth/register.php',
-  path: '/api/auth/register.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthMeDotphpRoute = ApiAuthMeDotphpRouteImport.update({
-  id: '/api/auth/me.php',
-  path: '/api/auth/me.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthLoginDotphpRoute = ApiAuthLoginDotphpRouteImport.update({
-  id: '/api/auth/login.php',
-  path: '/api/auth/login.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAuthAdminLoginDotphpRoute = ApiAuthAdminLoginDotphpRouteImport.update({
-  id: '/api/auth/admin-login.php',
-  path: '/api/auth/admin-login.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminUsersDotphpRoute = ApiAdminUsersDotphpRouteImport.update({
-  id: '/api/admin/users.php',
-  path: '/api/admin/users.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminStatsDotphpRoute = ApiAdminStatsDotphpRouteImport.update({
-  id: '/api/admin/stats.php',
-  path: '/api/admin/stats.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminSettingsDotphpRoute = ApiAdminSettingsDotphpRouteImport.update({
-  id: '/api/admin/settings.php',
-  path: '/api/admin/settings.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminOrdersDotphpRoute = ApiAdminOrdersDotphpRouteImport.update({
-  id: '/api/admin/orders.php',
-  path: '/api/admin/orders.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminLessonsDotphpRoute = ApiAdminLessonsDotphpRouteImport.update({
-  id: '/api/admin/lessons.php',
-  path: '/api/admin/lessons.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminCoursesDotphpRoute = ApiAdminCoursesDotphpRouteImport.update({
-  id: '/api/admin/courses.php',
-  path: '/api/admin/courses.php',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiAdminContentDotphpRoute = ApiAdminContentDotphpRouteImport.update({
-  id: '/api/admin/content.php',
-  path: '/api/admin/content.php',
+const ApiAdminAnalyticsDotphpRoute = ApiAdminAnalyticsDotphpRouteImport.update({
+  id: '/api/admin/analytics.php',
+  path: '/api/admin/analytics.php',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAdminCategoriesDotphpRoute =
@@ -393,35 +351,152 @@ const ApiAdminCategoriesDotphpRoute =
     path: '/api/admin/categories.php',
     getParentRoute: () => rootRouteImport,
   } as any)
-const AdminTrainersNewRoute = AdminTrainersNewRouteImport.update({
-  id: '/trainers/new',
-  path: '/trainers/new',
-  getParentRoute: () => AdminRoute,
+const ApiAdminChangePasswordDotphpRoute =
+  ApiAdminChangePasswordDotphpRouteImport.update({
+    id: '/api/admin/change-password.php',
+    path: '/api/admin/change-password.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAdminContentDotphpRoute = ApiAdminContentDotphpRouteImport.update({
+  id: '/api/admin/content.php',
+  path: '/api/admin/content.php',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminTrainersSlugRoute = AdminTrainersSlugRouteImport.update({
-  id: '/trainers/$slug',
-  path: '/trainers/$slug',
-  getParentRoute: () => AdminRoute,
+const ApiAdminCouponsDotphpRoute = ApiAdminCouponsDotphpRouteImport.update({
+  id: '/api/admin/coupons.php',
+  path: '/api/admin/coupons.php',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminCoursesNewRoute = AdminCoursesNewRouteImport.update({
-  id: '/courses/new',
-  path: '/courses/new',
-  getParentRoute: () => AdminRoute,
+const ApiAdminCoursesDotphpRoute = ApiAdminCoursesDotphpRouteImport.update({
+  id: '/api/admin/courses.php',
+  path: '/api/admin/courses.php',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminCoursesSlugRoute = AdminCoursesSlugRouteImport.update({
-  id: '/courses/$slug',
-  path: '/courses/$slug',
-  getParentRoute: () => AdminRoute,
+const ApiAdminEmailSettingsDotphpRoute =
+  ApiAdminEmailSettingsDotphpRouteImport.update({
+    id: '/api/admin/email-settings.php',
+    path: '/api/admin/email-settings.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiAdminLessonsDotphpRoute = ApiAdminLessonsDotphpRouteImport.update({
+  id: '/api/admin/lessons.php',
+  path: '/api/admin/lessons.php',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBlogNewRoute = AdminBlogNewRouteImport.update({
-  id: '/blog/new',
-  path: '/blog/new',
-  getParentRoute: () => AdminRoute,
+const ApiAdminOrdersDotphpRoute = ApiAdminOrdersDotphpRouteImport.update({
+  id: '/api/admin/orders.php',
+  path: '/api/admin/orders.php',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdminBlogSlugRoute = AdminBlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
-  getParentRoute: () => AdminRoute,
+const ApiAdminSessionsDotphpRoute = ApiAdminSessionsDotphpRouteImport.update({
+  id: '/api/admin/sessions.php',
+  path: '/api/admin/sessions.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminSettingsDotphpRoute = ApiAdminSettingsDotphpRouteImport.update({
+  id: '/api/admin/settings.php',
+  path: '/api/admin/settings.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminStatsDotphpRoute = ApiAdminStatsDotphpRouteImport.update({
+  id: '/api/admin/stats.php',
+  path: '/api/admin/stats.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAdminUsersDotphpRoute = ApiAdminUsersDotphpRouteImport.update({
+  id: '/api/admin/users.php',
+  path: '/api/admin/users.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthAdminLoginDotphpRoute = ApiAuthAdminLoginDotphpRouteImport.update({
+  id: '/api/auth/admin-login.php',
+  path: '/api/auth/admin-login.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthLoginDotphpRoute = ApiAuthLoginDotphpRouteImport.update({
+  id: '/api/auth/login.php',
+  path: '/api/auth/login.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthMeDotphpRoute = ApiAuthMeDotphpRouteImport.update({
+  id: '/api/auth/me.php',
+  path: '/api/auth/me.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiAuthRegisterDotphpRoute = ApiAuthRegisterDotphpRouteImport.update({
+  id: '/api/auth/register.php',
+  path: '/api/auth/register.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContentFaqsDotphpRoute = ApiContentFaqsDotphpRouteImport.update({
+  id: '/api/content/faqs.php',
+  path: '/api/content/faqs.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContentPostsDotphpRoute = ApiContentPostsDotphpRouteImport.update({
+  id: '/api/content/posts.php',
+  path: '/api/content/posts.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiContentTestimonialsDotphpRoute =
+  ApiContentTestimonialsDotphpRouteImport.update({
+    id: '/api/content/testimonials.php',
+    path: '/api/content/testimonials.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiContentTrainersDotphpRoute =
+  ApiContentTrainersDotphpRouteImport.update({
+    id: '/api/content/trainers.php',
+    path: '/api/content/trainers.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCouponsValidateDotphpRoute =
+  ApiCouponsValidateDotphpRouteImport.update({
+    id: '/api/coupons/validate.php',
+    path: '/api/coupons/validate.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCoursesCategoriesDotphpRoute =
+  ApiCoursesCategoriesDotphpRouteImport.update({
+    id: '/api/courses/categories.php',
+    path: '/api/courses/categories.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiCoursesDetailDotphpRoute = ApiCoursesDetailDotphpRouteImport.update({
+  id: '/api/courses/detail.php',
+  path: '/api/courses/detail.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoursesListDotphpRoute = ApiCoursesListDotphpRouteImport.update({
+  id: '/api/courses/list.php',
+  path: '/api/courses/list.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCoursesMyCoursesDotphpRoute =
+  ApiCoursesMyCoursesDotphpRouteImport.update({
+    id: '/api/courses/my-courses.php',
+    path: '/api/courses/my-courses.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiMarketingCapiDotphpRoute = ApiMarketingCapiDotphpRouteImport.update({
+  id: '/api/marketing/capi.php',
+  path: '/api/marketing/capi.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOrdersCreateDotphpRoute = ApiOrdersCreateDotphpRouteImport.update({
+  id: '/api/orders/create.php',
+  path: '/api/orders/create.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiOrdersMyOrdersDotphpRoute = ApiOrdersMyOrdersDotphpRouteImport.update({
+  id: '/api/orders/my-orders.php',
+  path: '/api/orders/my-orders.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPaymentEpsInitDotphpRoute = ApiPaymentEpsInitDotphpRouteImport.update({
+  id: '/api/payment/eps-init.php',
+  path: '/api/payment/eps-init.php',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -440,8 +515,11 @@ export interface FileRoutesByFullPath {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/trainers': typeof TrainersRouteWithChildren
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/auth-pages': typeof AdminAuthPagesRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/email-settings': typeof AdminEmailSettingsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/footer': typeof AdminFooterRoute
   '/admin/hero': typeof AdminHeroRoute
@@ -460,6 +538,7 @@ export interface FileRoutesByFullPath {
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/trainers/': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
@@ -468,11 +547,16 @@ export interface FileRoutesByFullPath {
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
+  '/api/admin/analytics.php': typeof ApiAdminAnalyticsDotphpRoute
   '/api/admin/categories.php': typeof ApiAdminCategoriesDotphpRoute
+  '/api/admin/change-password.php': typeof ApiAdminChangePasswordDotphpRoute
   '/api/admin/content.php': typeof ApiAdminContentDotphpRoute
+  '/api/admin/coupons.php': typeof ApiAdminCouponsDotphpRoute
   '/api/admin/courses.php': typeof ApiAdminCoursesDotphpRoute
+  '/api/admin/email-settings.php': typeof ApiAdminEmailSettingsDotphpRoute
   '/api/admin/lessons.php': typeof ApiAdminLessonsDotphpRoute
   '/api/admin/orders.php': typeof ApiAdminOrdersDotphpRoute
+  '/api/admin/sessions.php': typeof ApiAdminSessionsDotphpRoute
   '/api/admin/settings.php': typeof ApiAdminSettingsDotphpRoute
   '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
   '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
@@ -484,12 +568,15 @@ export interface FileRoutesByFullPath {
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
   '/api/content/trainers.php': typeof ApiContentTrainersDotphpRoute
+  '/api/coupons/validate.php': typeof ApiCouponsValidateDotphpRoute
   '/api/courses/categories.php': typeof ApiCoursesCategoriesDotphpRoute
   '/api/courses/detail.php': typeof ApiCoursesDetailDotphpRoute
   '/api/courses/list.php': typeof ApiCoursesListDotphpRoute
   '/api/courses/my-courses.php': typeof ApiCoursesMyCoursesDotphpRoute
+  '/api/marketing/capi.php': typeof ApiMarketingCapiDotphpRoute
   '/api/orders/create.php': typeof ApiOrdersCreateDotphpRoute
   '/api/orders/my-orders.php': typeof ApiOrdersMyOrdersDotphpRoute
+  '/api/payment/eps-init.php': typeof ApiPaymentEpsInitDotphpRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
   '/admin/trainers/': typeof AdminTrainersIndexRoute
@@ -498,7 +585,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/affiliate': typeof AffiliateRoute
-  '/blog': typeof BlogRouteWithChildren
   '/contact': typeof ContactRoute
   '/dashboard': typeof DashboardRoute
   '/faq': typeof FaqRoute
@@ -508,8 +594,11 @@ export interface FileRoutesByTo {
   '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/auth-pages': typeof AdminAuthPagesRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/email-settings': typeof AdminEmailSettingsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/footer': typeof AdminFooterRoute
   '/admin/hero': typeof AdminHeroRoute
@@ -528,6 +617,7 @@ export interface FileRoutesByTo {
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin': typeof AdminIndexRoute
+  '/blog': typeof BlogIndexRoute
   '/courses': typeof CoursesIndexRoute
   '/trainers': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
@@ -536,11 +626,16 @@ export interface FileRoutesByTo {
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
+  '/api/admin/analytics.php': typeof ApiAdminAnalyticsDotphpRoute
   '/api/admin/categories.php': typeof ApiAdminCategoriesDotphpRoute
+  '/api/admin/change-password.php': typeof ApiAdminChangePasswordDotphpRoute
   '/api/admin/content.php': typeof ApiAdminContentDotphpRoute
+  '/api/admin/coupons.php': typeof ApiAdminCouponsDotphpRoute
   '/api/admin/courses.php': typeof ApiAdminCoursesDotphpRoute
+  '/api/admin/email-settings.php': typeof ApiAdminEmailSettingsDotphpRoute
   '/api/admin/lessons.php': typeof ApiAdminLessonsDotphpRoute
   '/api/admin/orders.php': typeof ApiAdminOrdersDotphpRoute
+  '/api/admin/sessions.php': typeof ApiAdminSessionsDotphpRoute
   '/api/admin/settings.php': typeof ApiAdminSettingsDotphpRoute
   '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
   '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
@@ -552,12 +647,15 @@ export interface FileRoutesByTo {
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
   '/api/content/trainers.php': typeof ApiContentTrainersDotphpRoute
+  '/api/coupons/validate.php': typeof ApiCouponsValidateDotphpRoute
   '/api/courses/categories.php': typeof ApiCoursesCategoriesDotphpRoute
   '/api/courses/detail.php': typeof ApiCoursesDetailDotphpRoute
   '/api/courses/list.php': typeof ApiCoursesListDotphpRoute
   '/api/courses/my-courses.php': typeof ApiCoursesMyCoursesDotphpRoute
+  '/api/marketing/capi.php': typeof ApiMarketingCapiDotphpRoute
   '/api/orders/create.php': typeof ApiOrdersCreateDotphpRoute
   '/api/orders/my-orders.php': typeof ApiOrdersMyOrdersDotphpRoute
+  '/api/payment/eps-init.php': typeof ApiPaymentEpsInitDotphpRoute
   '/admin/blog': typeof AdminBlogIndexRoute
   '/admin/courses': typeof AdminCoursesIndexRoute
   '/admin/trainers': typeof AdminTrainersIndexRoute
@@ -579,8 +677,11 @@ export interface FileRoutesById {
   '/register': typeof RegisterRoute
   '/terms': typeof TermsRoute
   '/trainers': typeof TrainersRouteWithChildren
+  '/admin/analytics': typeof AdminAnalyticsRoute
   '/admin/auth-pages': typeof AdminAuthPagesRoute
   '/admin/categories': typeof AdminCategoriesRoute
+  '/admin/coupons': typeof AdminCouponsRoute
+  '/admin/email-settings': typeof AdminEmailSettingsRoute
   '/admin/faqs': typeof AdminFaqsRoute
   '/admin/footer': typeof AdminFooterRoute
   '/admin/hero': typeof AdminHeroRoute
@@ -599,6 +700,7 @@ export interface FileRoutesById {
   '/courses/$slug': typeof CoursesSlugRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin/': typeof AdminIndexRoute
+  '/blog/': typeof BlogIndexRoute
   '/courses/': typeof CoursesIndexRoute
   '/trainers/': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
@@ -607,11 +709,16 @@ export interface FileRoutesById {
   '/admin/courses/new': typeof AdminCoursesNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
+  '/api/admin/analytics.php': typeof ApiAdminAnalyticsDotphpRoute
   '/api/admin/categories.php': typeof ApiAdminCategoriesDotphpRoute
+  '/api/admin/change-password.php': typeof ApiAdminChangePasswordDotphpRoute
   '/api/admin/content.php': typeof ApiAdminContentDotphpRoute
+  '/api/admin/coupons.php': typeof ApiAdminCouponsDotphpRoute
   '/api/admin/courses.php': typeof ApiAdminCoursesDotphpRoute
+  '/api/admin/email-settings.php': typeof ApiAdminEmailSettingsDotphpRoute
   '/api/admin/lessons.php': typeof ApiAdminLessonsDotphpRoute
   '/api/admin/orders.php': typeof ApiAdminOrdersDotphpRoute
+  '/api/admin/sessions.php': typeof ApiAdminSessionsDotphpRoute
   '/api/admin/settings.php': typeof ApiAdminSettingsDotphpRoute
   '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
   '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
@@ -623,12 +730,15 @@ export interface FileRoutesById {
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
   '/api/content/trainers.php': typeof ApiContentTrainersDotphpRoute
+  '/api/coupons/validate.php': typeof ApiCouponsValidateDotphpRoute
   '/api/courses/categories.php': typeof ApiCoursesCategoriesDotphpRoute
   '/api/courses/detail.php': typeof ApiCoursesDetailDotphpRoute
   '/api/courses/list.php': typeof ApiCoursesListDotphpRoute
   '/api/courses/my-courses.php': typeof ApiCoursesMyCoursesDotphpRoute
+  '/api/marketing/capi.php': typeof ApiMarketingCapiDotphpRoute
   '/api/orders/create.php': typeof ApiOrdersCreateDotphpRoute
   '/api/orders/my-orders.php': typeof ApiOrdersMyOrdersDotphpRoute
+  '/api/payment/eps-init.php': typeof ApiPaymentEpsInitDotphpRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
   '/admin/trainers/': typeof AdminTrainersIndexRoute
@@ -651,8 +761,11 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/trainers'
+    | '/admin/analytics'
     | '/admin/auth-pages'
     | '/admin/categories'
+    | '/admin/coupons'
+    | '/admin/email-settings'
     | '/admin/faqs'
     | '/admin/footer'
     | '/admin/hero'
@@ -671,6 +784,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/trainers/$slug'
     | '/admin/'
+    | '/blog/'
     | '/courses/'
     | '/trainers/'
     | '/admin/blog/$slug'
@@ -679,11 +793,16 @@ export interface FileRouteTypes {
     | '/admin/courses/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
+    | '/api/admin/analytics.php'
     | '/api/admin/categories.php'
+    | '/api/admin/change-password.php'
     | '/api/admin/content.php'
+    | '/api/admin/coupons.php'
     | '/api/admin/courses.php'
+    | '/api/admin/email-settings.php'
     | '/api/admin/lessons.php'
     | '/api/admin/orders.php'
+    | '/api/admin/sessions.php'
     | '/api/admin/settings.php'
     | '/api/admin/stats.php'
     | '/api/admin/users.php'
@@ -695,12 +814,15 @@ export interface FileRouteTypes {
     | '/api/content/posts.php'
     | '/api/content/testimonials.php'
     | '/api/content/trainers.php'
+    | '/api/coupons/validate.php'
     | '/api/courses/categories.php'
     | '/api/courses/detail.php'
     | '/api/courses/list.php'
     | '/api/courses/my-courses.php'
+    | '/api/marketing/capi.php'
     | '/api/orders/create.php'
     | '/api/orders/my-orders.php'
+    | '/api/payment/eps-init.php'
     | '/admin/blog/'
     | '/admin/courses/'
     | '/admin/trainers/'
@@ -709,7 +831,6 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/affiliate'
-    | '/blog'
     | '/contact'
     | '/dashboard'
     | '/faq'
@@ -719,8 +840,11 @@ export interface FileRouteTypes {
     | '/refund-policy'
     | '/register'
     | '/terms'
+    | '/admin/analytics'
     | '/admin/auth-pages'
     | '/admin/categories'
+    | '/admin/coupons'
+    | '/admin/email-settings'
     | '/admin/faqs'
     | '/admin/footer'
     | '/admin/hero'
@@ -739,6 +863,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/trainers/$slug'
     | '/admin'
+    | '/blog'
     | '/courses'
     | '/trainers'
     | '/admin/blog/$slug'
@@ -747,11 +872,16 @@ export interface FileRouteTypes {
     | '/admin/courses/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
+    | '/api/admin/analytics.php'
     | '/api/admin/categories.php'
+    | '/api/admin/change-password.php'
     | '/api/admin/content.php'
+    | '/api/admin/coupons.php'
     | '/api/admin/courses.php'
+    | '/api/admin/email-settings.php'
     | '/api/admin/lessons.php'
     | '/api/admin/orders.php'
+    | '/api/admin/sessions.php'
     | '/api/admin/settings.php'
     | '/api/admin/stats.php'
     | '/api/admin/users.php'
@@ -763,12 +893,15 @@ export interface FileRouteTypes {
     | '/api/content/posts.php'
     | '/api/content/testimonials.php'
     | '/api/content/trainers.php'
+    | '/api/coupons/validate.php'
     | '/api/courses/categories.php'
     | '/api/courses/detail.php'
     | '/api/courses/list.php'
     | '/api/courses/my-courses.php'
+    | '/api/marketing/capi.php'
     | '/api/orders/create.php'
     | '/api/orders/my-orders.php'
+    | '/api/payment/eps-init.php'
     | '/admin/blog'
     | '/admin/courses'
     | '/admin/trainers'
@@ -789,8 +922,11 @@ export interface FileRouteTypes {
     | '/register'
     | '/terms'
     | '/trainers'
+    | '/admin/analytics'
     | '/admin/auth-pages'
     | '/admin/categories'
+    | '/admin/coupons'
+    | '/admin/email-settings'
     | '/admin/faqs'
     | '/admin/footer'
     | '/admin/hero'
@@ -809,6 +945,7 @@ export interface FileRouteTypes {
     | '/courses/$slug'
     | '/trainers/$slug'
     | '/admin/'
+    | '/blog/'
     | '/courses/'
     | '/trainers/'
     | '/admin/blog/$slug'
@@ -817,11 +954,16 @@ export interface FileRouteTypes {
     | '/admin/courses/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
+    | '/api/admin/analytics.php'
     | '/api/admin/categories.php'
+    | '/api/admin/change-password.php'
     | '/api/admin/content.php'
+    | '/api/admin/coupons.php'
     | '/api/admin/courses.php'
+    | '/api/admin/email-settings.php'
     | '/api/admin/lessons.php'
     | '/api/admin/orders.php'
+    | '/api/admin/sessions.php'
     | '/api/admin/settings.php'
     | '/api/admin/stats.php'
     | '/api/admin/users.php'
@@ -833,12 +975,15 @@ export interface FileRouteTypes {
     | '/api/content/posts.php'
     | '/api/content/testimonials.php'
     | '/api/content/trainers.php'
+    | '/api/coupons/validate.php'
     | '/api/courses/categories.php'
     | '/api/courses/detail.php'
     | '/api/courses/list.php'
     | '/api/courses/my-courses.php'
+    | '/api/marketing/capi.php'
     | '/api/orders/create.php'
     | '/api/orders/my-orders.php'
+    | '/api/payment/eps-init.php'
     | '/admin/blog/'
     | '/admin/courses/'
     | '/admin/trainers/'
@@ -864,11 +1009,16 @@ export interface RootRouteChildren {
   CheckoutSlugRoute: typeof CheckoutSlugRoute
   CoursesSlugRoute: typeof CoursesSlugRoute
   CoursesIndexRoute: typeof CoursesIndexRoute
+  ApiAdminAnalyticsDotphpRoute: typeof ApiAdminAnalyticsDotphpRoute
   ApiAdminCategoriesDotphpRoute: typeof ApiAdminCategoriesDotphpRoute
+  ApiAdminChangePasswordDotphpRoute: typeof ApiAdminChangePasswordDotphpRoute
   ApiAdminContentDotphpRoute: typeof ApiAdminContentDotphpRoute
+  ApiAdminCouponsDotphpRoute: typeof ApiAdminCouponsDotphpRoute
   ApiAdminCoursesDotphpRoute: typeof ApiAdminCoursesDotphpRoute
+  ApiAdminEmailSettingsDotphpRoute: typeof ApiAdminEmailSettingsDotphpRoute
   ApiAdminLessonsDotphpRoute: typeof ApiAdminLessonsDotphpRoute
   ApiAdminOrdersDotphpRoute: typeof ApiAdminOrdersDotphpRoute
+  ApiAdminSessionsDotphpRoute: typeof ApiAdminSessionsDotphpRoute
   ApiAdminSettingsDotphpRoute: typeof ApiAdminSettingsDotphpRoute
   ApiAdminStatsDotphpRoute: typeof ApiAdminStatsDotphpRoute
   ApiAdminUsersDotphpRoute: typeof ApiAdminUsersDotphpRoute
@@ -880,105 +1030,24 @@ export interface RootRouteChildren {
   ApiContentPostsDotphpRoute: typeof ApiContentPostsDotphpRoute
   ApiContentTestimonialsDotphpRoute: typeof ApiContentTestimonialsDotphpRoute
   ApiContentTrainersDotphpRoute: typeof ApiContentTrainersDotphpRoute
+  ApiCouponsValidateDotphpRoute: typeof ApiCouponsValidateDotphpRoute
   ApiCoursesCategoriesDotphpRoute: typeof ApiCoursesCategoriesDotphpRoute
   ApiCoursesDetailDotphpRoute: typeof ApiCoursesDetailDotphpRoute
   ApiCoursesListDotphpRoute: typeof ApiCoursesListDotphpRoute
   ApiCoursesMyCoursesDotphpRoute: typeof ApiCoursesMyCoursesDotphpRoute
+  ApiMarketingCapiDotphpRoute: typeof ApiMarketingCapiDotphpRoute
   ApiOrdersCreateDotphpRoute: typeof ApiOrdersCreateDotphpRoute
   ApiOrdersMyOrdersDotphpRoute: typeof ApiOrdersMyOrdersDotphpRoute
+  ApiPaymentEpsInitDotphpRoute: typeof ApiPaymentEpsInitDotphpRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/trainers': {
-      id: '/trainers'
-      path: '/trainers'
-      fullPath: '/trainers'
-      preLoaderRoute: typeof TrainersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/register': {
-      id: '/register'
-      path: '/register'
-      fullPath: '/register'
-      preLoaderRoute: typeof RegisterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/refund-policy': {
-      id: '/refund-policy'
-      path: '/refund-policy'
-      fullPath: '/refund-policy'
-      preLoaderRoute: typeof RefundPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/privacy-policy': {
-      id: '/privacy-policy'
-      path: '/privacy-policy'
-      fullPath: '/privacy-policy'
-      preLoaderRoute: typeof PrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/free-courses': {
-      id: '/free-courses'
-      path: '/free-courses'
-      fullPath: '/free-courses'
-      preLoaderRoute: typeof FreeCoursesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/faq': {
-      id: '/faq'
-      path: '/faq'
-      fullPath: '/faq'
-      preLoaderRoute: typeof FaqRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof DashboardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/contact': {
-      id: '/contact'
-      path: '/contact'
-      fullPath: '/contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog': {
-      id: '/blog'
-      path: '/blog'
-      fullPath: '/blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/affiliate': {
-      id: '/affiliate'
-      path: '/affiliate'
-      fullPath: '/affiliate'
-      preLoaderRoute: typeof AffiliateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -988,25 +1057,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/trainers/': {
-      id: '/trainers/'
-      path: '/'
-      fullPath: '/trainers/'
-      preLoaderRoute: typeof TrainersIndexRouteImport
-      parentRoute: typeof TrainersRoute
+    '/affiliate': {
+      id: '/affiliate'
+      path: '/affiliate'
+      fullPath: '/affiliate'
+      preLoaderRoute: typeof AffiliateRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/courses/': {
-      id: '/courses/'
-      path: '/courses'
-      fullPath: '/courses/'
-      preLoaderRoute: typeof CoursesIndexRouteImport
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contact': {
+      id: '/contact'
+      path: '/contact'
+      fullPath: '/contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/dashboard': {
+      id: '/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/faq': {
+      id: '/faq'
+      path: '/faq'
+      fullPath: '/faq'
+      preLoaderRoute: typeof FaqRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/free-courses': {
+      id: '/free-courses'
+      path: '/free-courses'
+      fullPath: '/free-courses'
+      preLoaderRoute: typeof FreeCoursesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy-policy': {
+      id: '/privacy-policy'
+      path: '/privacy-policy'
+      fullPath: '/privacy-policy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/refund-policy': {
+      id: '/refund-policy'
+      path: '/refund-policy'
+      fullPath: '/refund-policy'
+      preLoaderRoute: typeof RefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trainers': {
+      id: '/trainers'
+      path: '/trainers'
+      fullPath: '/trainers'
+      preLoaderRoute: typeof TrainersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin/': {
@@ -1016,130 +1155,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/trainers/$slug': {
-      id: '/trainers/$slug'
-      path: '/$slug'
-      fullPath: '/trainers/$slug'
-      preLoaderRoute: typeof TrainersSlugRouteImport
-      parentRoute: typeof TrainersRoute
-    }
-    '/courses/$slug': {
-      id: '/courses/$slug'
-      path: '/courses/$slug'
-      fullPath: '/courses/$slug'
-      preLoaderRoute: typeof CoursesSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/checkout/$slug': {
-      id: '/checkout/$slug'
-      path: '/checkout/$slug'
-      fullPath: '/checkout/$slug'
-      preLoaderRoute: typeof CheckoutSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/blog/$slug': {
-      id: '/blog/$slug'
-      path: '/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
-      parentRoute: typeof BlogRoute
-    }
-    '/api/content.php': {
-      id: '/api/content.php'
-      path: '/api/content.php'
-      fullPath: '/api/content.php'
-      preLoaderRoute: typeof ApiContentDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/videos': {
-      id: '/admin/videos'
-      path: '/videos'
-      fullPath: '/admin/videos'
-      preLoaderRoute: typeof AdminVideosRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/users': {
-      id: '/admin/users'
-      path: '/users'
-      fullPath: '/admin/users'
-      preLoaderRoute: typeof AdminUsersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/testimonials': {
-      id: '/admin/testimonials'
-      path: '/testimonials'
-      fullPath: '/admin/testimonials'
-      preLoaderRoute: typeof AdminTestimonialsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/settings': {
-      id: '/admin/settings'
-      path: '/settings'
-      fullPath: '/admin/settings'
-      preLoaderRoute: typeof AdminSettingsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/payments': {
-      id: '/admin/payments'
-      path: '/payments'
-      fullPath: '/admin/payments'
-      preLoaderRoute: typeof AdminPaymentsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/pages': {
-      id: '/admin/pages'
-      path: '/pages'
-      fullPath: '/admin/pages'
-      preLoaderRoute: typeof AdminPagesRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/orders': {
-      id: '/admin/orders'
-      path: '/orders'
-      fullPath: '/admin/orders'
-      preLoaderRoute: typeof AdminOrdersRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/marketing': {
-      id: '/admin/marketing'
-      path: '/marketing'
-      fullPath: '/admin/marketing'
-      preLoaderRoute: typeof AdminMarketingRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/homepage': {
-      id: '/admin/homepage'
-      path: '/homepage'
-      fullPath: '/admin/homepage'
-      preLoaderRoute: typeof AdminHomepageRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/hero': {
-      id: '/admin/hero'
-      path: '/hero'
-      fullPath: '/admin/hero'
-      preLoaderRoute: typeof AdminHeroRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/footer': {
-      id: '/admin/footer'
-      path: '/footer'
-      fullPath: '/admin/footer'
-      preLoaderRoute: typeof AdminFooterRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/faqs': {
-      id: '/admin/faqs'
-      path: '/faqs'
-      fullPath: '/admin/faqs'
-      preLoaderRoute: typeof AdminFaqsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/categories': {
-      id: '/admin/categories'
-      path: '/categories'
-      fullPath: '/admin/categories'
-      preLoaderRoute: typeof AdminCategoriesRouteImport
+    '/admin/analytics': {
+      id: '/admin/analytics'
+      path: '/analytics'
+      fullPath: '/admin/analytics'
+      preLoaderRoute: typeof AdminAnalyticsRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/auth-pages': {
@@ -1149,214 +1169,172 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminAuthPagesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/trainers/': {
-      id: '/admin/trainers/'
-      path: '/trainers'
-      fullPath: '/admin/trainers/'
-      preLoaderRoute: typeof AdminTrainersIndexRouteImport
+    '/admin/categories': {
+      id: '/admin/categories'
+      path: '/categories'
+      fullPath: '/admin/categories'
+      preLoaderRoute: typeof AdminCategoriesRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/courses/': {
-      id: '/admin/courses/'
-      path: '/courses'
-      fullPath: '/admin/courses/'
-      preLoaderRoute: typeof AdminCoursesIndexRouteImport
+    '/admin/coupons': {
+      id: '/admin/coupons'
+      path: '/coupons'
+      fullPath: '/admin/coupons'
+      preLoaderRoute: typeof AdminCouponsRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/admin/email-settings': {
+      id: '/admin/email-settings'
+      path: '/email-settings'
+      fullPath: '/admin/email-settings'
+      preLoaderRoute: typeof AdminEmailSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/faqs': {
+      id: '/admin/faqs'
+      path: '/faqs'
+      fullPath: '/admin/faqs'
+      preLoaderRoute: typeof AdminFaqsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/footer': {
+      id: '/admin/footer'
+      path: '/footer'
+      fullPath: '/admin/footer'
+      preLoaderRoute: typeof AdminFooterRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/hero': {
+      id: '/admin/hero'
+      path: '/hero'
+      fullPath: '/admin/hero'
+      preLoaderRoute: typeof AdminHeroRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/homepage': {
+      id: '/admin/homepage'
+      path: '/homepage'
+      fullPath: '/admin/homepage'
+      preLoaderRoute: typeof AdminHomepageRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/marketing': {
+      id: '/admin/marketing'
+      path: '/marketing'
+      fullPath: '/admin/marketing'
+      preLoaderRoute: typeof AdminMarketingRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/orders': {
+      id: '/admin/orders'
+      path: '/orders'
+      fullPath: '/admin/orders'
+      preLoaderRoute: typeof AdminOrdersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/pages': {
+      id: '/admin/pages'
+      path: '/pages'
+      fullPath: '/admin/pages'
+      preLoaderRoute: typeof AdminPagesRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/payments': {
+      id: '/admin/payments'
+      path: '/payments'
+      fullPath: '/admin/payments'
+      preLoaderRoute: typeof AdminPaymentsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/settings': {
+      id: '/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AdminSettingsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/testimonials': {
+      id: '/admin/testimonials'
+      path: '/testimonials'
+      fullPath: '/admin/testimonials'
+      preLoaderRoute: typeof AdminTestimonialsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/users': {
+      id: '/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AdminUsersRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/videos': {
+      id: '/admin/videos'
+      path: '/videos'
+      fullPath: '/admin/videos'
+      preLoaderRoute: typeof AdminVideosRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/content.php': {
+      id: '/api/content.php'
+      path: '/api/content.php'
+      fullPath: '/api/content.php'
+      preLoaderRoute: typeof ApiContentDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
+    }
+    '/blog/$slug': {
+      id: '/blog/$slug'
+      path: '/$slug'
+      fullPath: '/blog/$slug'
+      preLoaderRoute: typeof BlogSlugRouteImport
+      parentRoute: typeof BlogRoute
+    }
+    '/checkout/$slug': {
+      id: '/checkout/$slug'
+      path: '/checkout/$slug'
+      fullPath: '/checkout/$slug'
+      preLoaderRoute: typeof CheckoutSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/': {
+      id: '/courses/'
+      path: '/courses'
+      fullPath: '/courses/'
+      preLoaderRoute: typeof CoursesIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/courses/$slug': {
+      id: '/courses/$slug'
+      path: '/courses/$slug'
+      fullPath: '/courses/$slug'
+      preLoaderRoute: typeof CoursesSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/trainers/': {
+      id: '/trainers/'
+      path: '/'
+      fullPath: '/trainers/'
+      preLoaderRoute: typeof TrainersIndexRouteImport
+      parentRoute: typeof TrainersRoute
+    }
+    '/trainers/$slug': {
+      id: '/trainers/$slug'
+      path: '/$slug'
+      fullPath: '/trainers/$slug'
+      preLoaderRoute: typeof TrainersSlugRouteImport
+      parentRoute: typeof TrainersRoute
     }
     '/admin/blog/': {
       id: '/admin/blog/'
       path: '/blog'
       fullPath: '/admin/blog/'
       preLoaderRoute: typeof AdminBlogIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/api/orders/my-orders.php': {
-      id: '/api/orders/my-orders.php'
-      path: '/api/orders/my-orders.php'
-      fullPath: '/api/orders/my-orders.php'
-      preLoaderRoute: typeof ApiOrdersMyOrdersDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/orders/create.php': {
-      id: '/api/orders/create.php'
-      path: '/api/orders/create.php'
-      fullPath: '/api/orders/create.php'
-      preLoaderRoute: typeof ApiOrdersCreateDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/courses/my-courses.php': {
-      id: '/api/courses/my-courses.php'
-      path: '/api/courses/my-courses.php'
-      fullPath: '/api/courses/my-courses.php'
-      preLoaderRoute: typeof ApiCoursesMyCoursesDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/courses/list.php': {
-      id: '/api/courses/list.php'
-      path: '/api/courses/list.php'
-      fullPath: '/api/courses/list.php'
-      preLoaderRoute: typeof ApiCoursesListDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/courses/detail.php': {
-      id: '/api/courses/detail.php'
-      path: '/api/courses/detail.php'
-      fullPath: '/api/courses/detail.php'
-      preLoaderRoute: typeof ApiCoursesDetailDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/courses/categories.php': {
-      id: '/api/courses/categories.php'
-      path: '/api/courses/categories.php'
-      fullPath: '/api/courses/categories.php'
-      preLoaderRoute: typeof ApiCoursesCategoriesDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/content/trainers.php': {
-      id: '/api/content/trainers.php'
-      path: '/api/content/trainers.php'
-      fullPath: '/api/content/trainers.php'
-      preLoaderRoute: typeof ApiContentTrainersDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/content/testimonials.php': {
-      id: '/api/content/testimonials.php'
-      path: '/api/content/testimonials.php'
-      fullPath: '/api/content/testimonials.php'
-      preLoaderRoute: typeof ApiContentTestimonialsDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/content/posts.php': {
-      id: '/api/content/posts.php'
-      path: '/api/content/posts.php'
-      fullPath: '/api/content/posts.php'
-      preLoaderRoute: typeof ApiContentPostsDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/content/faqs.php': {
-      id: '/api/content/faqs.php'
-      path: '/api/content/faqs.php'
-      fullPath: '/api/content/faqs.php'
-      preLoaderRoute: typeof ApiContentFaqsDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/register.php': {
-      id: '/api/auth/register.php'
-      path: '/api/auth/register.php'
-      fullPath: '/api/auth/register.php'
-      preLoaderRoute: typeof ApiAuthRegisterDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/me.php': {
-      id: '/api/auth/me.php'
-      path: '/api/auth/me.php'
-      fullPath: '/api/auth/me.php'
-      preLoaderRoute: typeof ApiAuthMeDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/login.php': {
-      id: '/api/auth/login.php'
-      path: '/api/auth/login.php'
-      fullPath: '/api/auth/login.php'
-      preLoaderRoute: typeof ApiAuthLoginDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/auth/admin-login.php': {
-      id: '/api/auth/admin-login.php'
-      path: '/api/auth/admin-login.php'
-      fullPath: '/api/auth/admin-login.php'
-      preLoaderRoute: typeof ApiAuthAdminLoginDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin/users.php': {
-      id: '/api/admin/users.php'
-      path: '/api/admin/users.php'
-      fullPath: '/api/admin/users.php'
-      preLoaderRoute: typeof ApiAdminUsersDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin/stats.php': {
-      id: '/api/admin/stats.php'
-      path: '/api/admin/stats.php'
-      fullPath: '/api/admin/stats.php'
-      preLoaderRoute: typeof ApiAdminStatsDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin/settings.php': {
-      id: '/api/admin/settings.php'
-      path: '/api/admin/settings.php'
-      fullPath: '/api/admin/settings.php'
-      preLoaderRoute: typeof ApiAdminSettingsDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin/orders.php': {
-      id: '/api/admin/orders.php'
-      path: '/api/admin/orders.php'
-      fullPath: '/api/admin/orders.php'
-      preLoaderRoute: typeof ApiAdminOrdersDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin/lessons.php': {
-      id: '/api/admin/lessons.php'
-      path: '/api/admin/lessons.php'
-      fullPath: '/api/admin/lessons.php'
-      preLoaderRoute: typeof ApiAdminLessonsDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin/courses.php': {
-      id: '/api/admin/courses.php'
-      path: '/api/admin/courses.php'
-      fullPath: '/api/admin/courses.php'
-      preLoaderRoute: typeof ApiAdminCoursesDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin/content.php': {
-      id: '/api/admin/content.php'
-      path: '/api/admin/content.php'
-      fullPath: '/api/admin/content.php'
-      preLoaderRoute: typeof ApiAdminContentDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/admin/categories.php': {
-      id: '/api/admin/categories.php'
-      path: '/api/admin/categories.php'
-      fullPath: '/api/admin/categories.php'
-      preLoaderRoute: typeof ApiAdminCategoriesDotphpRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/trainers/new': {
-      id: '/admin/trainers/new'
-      path: '/trainers/new'
-      fullPath: '/admin/trainers/new'
-      preLoaderRoute: typeof AdminTrainersNewRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/trainers/$slug': {
-      id: '/admin/trainers/$slug'
-      path: '/trainers/$slug'
-      fullPath: '/admin/trainers/$slug'
-      preLoaderRoute: typeof AdminTrainersSlugRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/courses/new': {
-      id: '/admin/courses/new'
-      path: '/courses/new'
-      fullPath: '/admin/courses/new'
-      preLoaderRoute: typeof AdminCoursesNewRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/courses/$slug': {
-      id: '/admin/courses/$slug'
-      path: '/courses/$slug'
-      fullPath: '/admin/courses/$slug'
-      preLoaderRoute: typeof AdminCoursesSlugRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/blog/new': {
-      id: '/admin/blog/new'
-      path: '/blog/new'
-      fullPath: '/admin/blog/new'
-      preLoaderRoute: typeof AdminBlogNewRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/blog/$slug': {
@@ -1366,12 +1344,274 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogSlugRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/blog/new': {
+      id: '/admin/blog/new'
+      path: '/blog/new'
+      fullPath: '/admin/blog/new'
+      preLoaderRoute: typeof AdminBlogNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/courses/': {
+      id: '/admin/courses/'
+      path: '/courses'
+      fullPath: '/admin/courses/'
+      preLoaderRoute: typeof AdminCoursesIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/courses/$slug': {
+      id: '/admin/courses/$slug'
+      path: '/courses/$slug'
+      fullPath: '/admin/courses/$slug'
+      preLoaderRoute: typeof AdminCoursesSlugRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/courses/new': {
+      id: '/admin/courses/new'
+      path: '/courses/new'
+      fullPath: '/admin/courses/new'
+      preLoaderRoute: typeof AdminCoursesNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/trainers/': {
+      id: '/admin/trainers/'
+      path: '/trainers'
+      fullPath: '/admin/trainers/'
+      preLoaderRoute: typeof AdminTrainersIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/trainers/$slug': {
+      id: '/admin/trainers/$slug'
+      path: '/trainers/$slug'
+      fullPath: '/admin/trainers/$slug'
+      preLoaderRoute: typeof AdminTrainersSlugRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/trainers/new': {
+      id: '/admin/trainers/new'
+      path: '/trainers/new'
+      fullPath: '/admin/trainers/new'
+      preLoaderRoute: typeof AdminTrainersNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/api/admin/analytics.php': {
+      id: '/api/admin/analytics.php'
+      path: '/api/admin/analytics.php'
+      fullPath: '/api/admin/analytics.php'
+      preLoaderRoute: typeof ApiAdminAnalyticsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/categories.php': {
+      id: '/api/admin/categories.php'
+      path: '/api/admin/categories.php'
+      fullPath: '/api/admin/categories.php'
+      preLoaderRoute: typeof ApiAdminCategoriesDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/change-password.php': {
+      id: '/api/admin/change-password.php'
+      path: '/api/admin/change-password.php'
+      fullPath: '/api/admin/change-password.php'
+      preLoaderRoute: typeof ApiAdminChangePasswordDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/content.php': {
+      id: '/api/admin/content.php'
+      path: '/api/admin/content.php'
+      fullPath: '/api/admin/content.php'
+      preLoaderRoute: typeof ApiAdminContentDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/coupons.php': {
+      id: '/api/admin/coupons.php'
+      path: '/api/admin/coupons.php'
+      fullPath: '/api/admin/coupons.php'
+      preLoaderRoute: typeof ApiAdminCouponsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/courses.php': {
+      id: '/api/admin/courses.php'
+      path: '/api/admin/courses.php'
+      fullPath: '/api/admin/courses.php'
+      preLoaderRoute: typeof ApiAdminCoursesDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/email-settings.php': {
+      id: '/api/admin/email-settings.php'
+      path: '/api/admin/email-settings.php'
+      fullPath: '/api/admin/email-settings.php'
+      preLoaderRoute: typeof ApiAdminEmailSettingsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/lessons.php': {
+      id: '/api/admin/lessons.php'
+      path: '/api/admin/lessons.php'
+      fullPath: '/api/admin/lessons.php'
+      preLoaderRoute: typeof ApiAdminLessonsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/orders.php': {
+      id: '/api/admin/orders.php'
+      path: '/api/admin/orders.php'
+      fullPath: '/api/admin/orders.php'
+      preLoaderRoute: typeof ApiAdminOrdersDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/sessions.php': {
+      id: '/api/admin/sessions.php'
+      path: '/api/admin/sessions.php'
+      fullPath: '/api/admin/sessions.php'
+      preLoaderRoute: typeof ApiAdminSessionsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/settings.php': {
+      id: '/api/admin/settings.php'
+      path: '/api/admin/settings.php'
+      fullPath: '/api/admin/settings.php'
+      preLoaderRoute: typeof ApiAdminSettingsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/stats.php': {
+      id: '/api/admin/stats.php'
+      path: '/api/admin/stats.php'
+      fullPath: '/api/admin/stats.php'
+      preLoaderRoute: typeof ApiAdminStatsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/admin/users.php': {
+      id: '/api/admin/users.php'
+      path: '/api/admin/users.php'
+      fullPath: '/api/admin/users.php'
+      preLoaderRoute: typeof ApiAdminUsersDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/admin-login.php': {
+      id: '/api/auth/admin-login.php'
+      path: '/api/auth/admin-login.php'
+      fullPath: '/api/auth/admin-login.php'
+      preLoaderRoute: typeof ApiAuthAdminLoginDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/login.php': {
+      id: '/api/auth/login.php'
+      path: '/api/auth/login.php'
+      fullPath: '/api/auth/login.php'
+      preLoaderRoute: typeof ApiAuthLoginDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/me.php': {
+      id: '/api/auth/me.php'
+      path: '/api/auth/me.php'
+      fullPath: '/api/auth/me.php'
+      preLoaderRoute: typeof ApiAuthMeDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/register.php': {
+      id: '/api/auth/register.php'
+      path: '/api/auth/register.php'
+      fullPath: '/api/auth/register.php'
+      preLoaderRoute: typeof ApiAuthRegisterDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/content/faqs.php': {
+      id: '/api/content/faqs.php'
+      path: '/api/content/faqs.php'
+      fullPath: '/api/content/faqs.php'
+      preLoaderRoute: typeof ApiContentFaqsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/content/posts.php': {
+      id: '/api/content/posts.php'
+      path: '/api/content/posts.php'
+      fullPath: '/api/content/posts.php'
+      preLoaderRoute: typeof ApiContentPostsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/content/testimonials.php': {
+      id: '/api/content/testimonials.php'
+      path: '/api/content/testimonials.php'
+      fullPath: '/api/content/testimonials.php'
+      preLoaderRoute: typeof ApiContentTestimonialsDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/content/trainers.php': {
+      id: '/api/content/trainers.php'
+      path: '/api/content/trainers.php'
+      fullPath: '/api/content/trainers.php'
+      preLoaderRoute: typeof ApiContentTrainersDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/coupons/validate.php': {
+      id: '/api/coupons/validate.php'
+      path: '/api/coupons/validate.php'
+      fullPath: '/api/coupons/validate.php'
+      preLoaderRoute: typeof ApiCouponsValidateDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/courses/categories.php': {
+      id: '/api/courses/categories.php'
+      path: '/api/courses/categories.php'
+      fullPath: '/api/courses/categories.php'
+      preLoaderRoute: typeof ApiCoursesCategoriesDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/courses/detail.php': {
+      id: '/api/courses/detail.php'
+      path: '/api/courses/detail.php'
+      fullPath: '/api/courses/detail.php'
+      preLoaderRoute: typeof ApiCoursesDetailDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/courses/list.php': {
+      id: '/api/courses/list.php'
+      path: '/api/courses/list.php'
+      fullPath: '/api/courses/list.php'
+      preLoaderRoute: typeof ApiCoursesListDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/courses/my-courses.php': {
+      id: '/api/courses/my-courses.php'
+      path: '/api/courses/my-courses.php'
+      fullPath: '/api/courses/my-courses.php'
+      preLoaderRoute: typeof ApiCoursesMyCoursesDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/marketing/capi.php': {
+      id: '/api/marketing/capi.php'
+      path: '/api/marketing/capi.php'
+      fullPath: '/api/marketing/capi.php'
+      preLoaderRoute: typeof ApiMarketingCapiDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/orders/create.php': {
+      id: '/api/orders/create.php'
+      path: '/api/orders/create.php'
+      fullPath: '/api/orders/create.php'
+      preLoaderRoute: typeof ApiOrdersCreateDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/orders/my-orders.php': {
+      id: '/api/orders/my-orders.php'
+      path: '/api/orders/my-orders.php'
+      fullPath: '/api/orders/my-orders.php'
+      preLoaderRoute: typeof ApiOrdersMyOrdersDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/payment/eps-init.php': {
+      id: '/api/payment/eps-init.php'
+      path: '/api/payment/eps-init.php'
+      fullPath: '/api/payment/eps-init.php'
+      preLoaderRoute: typeof ApiPaymentEpsInitDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AdminRouteChildren {
+  AdminAnalyticsRoute: typeof AdminAnalyticsRoute
   AdminAuthPagesRoute: typeof AdminAuthPagesRoute
   AdminCategoriesRoute: typeof AdminCategoriesRoute
+  AdminCouponsRoute: typeof AdminCouponsRoute
+  AdminEmailSettingsRoute: typeof AdminEmailSettingsRoute
   AdminFaqsRoute: typeof AdminFaqsRoute
   AdminFooterRoute: typeof AdminFooterRoute
   AdminHeroRoute: typeof AdminHeroRoute
@@ -1397,8 +1637,11 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAnalyticsRoute: AdminAnalyticsRoute,
   AdminAuthPagesRoute: AdminAuthPagesRoute,
   AdminCategoriesRoute: AdminCategoriesRoute,
+  AdminCouponsRoute: AdminCouponsRoute,
+  AdminEmailSettingsRoute: AdminEmailSettingsRoute,
   AdminFaqsRoute: AdminFaqsRoute,
   AdminFooterRoute: AdminFooterRoute,
   AdminHeroRoute: AdminHeroRoute,
@@ -1427,10 +1670,12 @@ const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 const BlogRouteChildren: BlogRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
@@ -1469,11 +1714,16 @@ const rootRouteChildren: RootRouteChildren = {
   CheckoutSlugRoute: CheckoutSlugRoute,
   CoursesSlugRoute: CoursesSlugRoute,
   CoursesIndexRoute: CoursesIndexRoute,
+  ApiAdminAnalyticsDotphpRoute: ApiAdminAnalyticsDotphpRoute,
   ApiAdminCategoriesDotphpRoute: ApiAdminCategoriesDotphpRoute,
+  ApiAdminChangePasswordDotphpRoute: ApiAdminChangePasswordDotphpRoute,
   ApiAdminContentDotphpRoute: ApiAdminContentDotphpRoute,
+  ApiAdminCouponsDotphpRoute: ApiAdminCouponsDotphpRoute,
   ApiAdminCoursesDotphpRoute: ApiAdminCoursesDotphpRoute,
+  ApiAdminEmailSettingsDotphpRoute: ApiAdminEmailSettingsDotphpRoute,
   ApiAdminLessonsDotphpRoute: ApiAdminLessonsDotphpRoute,
   ApiAdminOrdersDotphpRoute: ApiAdminOrdersDotphpRoute,
+  ApiAdminSessionsDotphpRoute: ApiAdminSessionsDotphpRoute,
   ApiAdminSettingsDotphpRoute: ApiAdminSettingsDotphpRoute,
   ApiAdminStatsDotphpRoute: ApiAdminStatsDotphpRoute,
   ApiAdminUsersDotphpRoute: ApiAdminUsersDotphpRoute,
@@ -1485,12 +1735,15 @@ const rootRouteChildren: RootRouteChildren = {
   ApiContentPostsDotphpRoute: ApiContentPostsDotphpRoute,
   ApiContentTestimonialsDotphpRoute: ApiContentTestimonialsDotphpRoute,
   ApiContentTrainersDotphpRoute: ApiContentTrainersDotphpRoute,
+  ApiCouponsValidateDotphpRoute: ApiCouponsValidateDotphpRoute,
   ApiCoursesCategoriesDotphpRoute: ApiCoursesCategoriesDotphpRoute,
   ApiCoursesDetailDotphpRoute: ApiCoursesDetailDotphpRoute,
   ApiCoursesListDotphpRoute: ApiCoursesListDotphpRoute,
   ApiCoursesMyCoursesDotphpRoute: ApiCoursesMyCoursesDotphpRoute,
+  ApiMarketingCapiDotphpRoute: ApiMarketingCapiDotphpRoute,
   ApiOrdersCreateDotphpRoute: ApiOrdersCreateDotphpRoute,
   ApiOrdersMyOrdersDotphpRoute: ApiOrdersMyOrdersDotphpRoute,
+  ApiPaymentEpsInitDotphpRoute: ApiPaymentEpsInitDotphpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

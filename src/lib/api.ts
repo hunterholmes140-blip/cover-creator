@@ -64,6 +64,11 @@ export function setStoredUser(user: any) {
   localStorage.setItem(USER_KEY, JSON.stringify(user));
 }
 
+export function setAuth(token: string, user: any) {
+  setToken(token);
+  setStoredUser(user);
+}
+
 type ApiOpts = {
   method?: "GET" | "POST" | "PUT" | "DELETE";
   body?: any;
