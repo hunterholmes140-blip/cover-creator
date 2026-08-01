@@ -73,9 +73,11 @@ import { Route as ApiAdminSettingsDotphpRouteImport } from './routes/api/admin/s
 import { Route as ApiAdminStatsDotphpRouteImport } from './routes/api/admin/stats[.]php'
 import { Route as ApiAdminUsersDotphpRouteImport } from './routes/api/admin/users[.]php'
 import { Route as ApiAuthAdminLoginDotphpRouteImport } from './routes/api/auth/admin-login[.]php'
+import { Route as ApiAuthForgotPasswordDotphpRouteImport } from './routes/api/auth/forgot-password[.]php'
 import { Route as ApiAuthLoginDotphpRouteImport } from './routes/api/auth/login[.]php'
 import { Route as ApiAuthMeDotphpRouteImport } from './routes/api/auth/me[.]php'
 import { Route as ApiAuthRegisterDotphpRouteImport } from './routes/api/auth/register[.]php'
+import { Route as ApiAuthResetPasswordDotphpRouteImport } from './routes/api/auth/reset-password[.]php'
 import { Route as ApiContentFaqsDotphpRouteImport } from './routes/api/content/faqs[.]php'
 import { Route as ApiContentPostsDotphpRouteImport } from './routes/api/content/posts[.]php'
 import { Route as ApiContentTestimonialsDotphpRouteImport } from './routes/api/content/testimonials[.]php'
@@ -414,6 +416,12 @@ const ApiAuthAdminLoginDotphpRoute = ApiAuthAdminLoginDotphpRouteImport.update({
   path: '/api/auth/admin-login.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthForgotPasswordDotphpRoute =
+  ApiAuthForgotPasswordDotphpRouteImport.update({
+    id: '/api/auth/forgot-password.php',
+    path: '/api/auth/forgot-password.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiAuthLoginDotphpRoute = ApiAuthLoginDotphpRouteImport.update({
   id: '/api/auth/login.php',
   path: '/api/auth/login.php',
@@ -429,6 +437,12 @@ const ApiAuthRegisterDotphpRoute = ApiAuthRegisterDotphpRouteImport.update({
   path: '/api/auth/register.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiAuthResetPasswordDotphpRoute =
+  ApiAuthResetPasswordDotphpRouteImport.update({
+    id: '/api/auth/reset-password.php',
+    path: '/api/auth/reset-password.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiContentFaqsDotphpRoute = ApiContentFaqsDotphpRouteImport.update({
   id: '/api/content/faqs.php',
   path: '/api/content/faqs.php',
@@ -568,9 +582,11 @@ export interface FileRoutesByFullPath {
   '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
   '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
   '/api/auth/admin-login.php': typeof ApiAuthAdminLoginDotphpRoute
+  '/api/auth/forgot-password.php': typeof ApiAuthForgotPasswordDotphpRoute
   '/api/auth/login.php': typeof ApiAuthLoginDotphpRoute
   '/api/auth/me.php': typeof ApiAuthMeDotphpRoute
   '/api/auth/register.php': typeof ApiAuthRegisterDotphpRoute
+  '/api/auth/reset-password.php': typeof ApiAuthResetPasswordDotphpRoute
   '/api/content/faqs.php': typeof ApiContentFaqsDotphpRoute
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
@@ -648,9 +664,11 @@ export interface FileRoutesByTo {
   '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
   '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
   '/api/auth/admin-login.php': typeof ApiAuthAdminLoginDotphpRoute
+  '/api/auth/forgot-password.php': typeof ApiAuthForgotPasswordDotphpRoute
   '/api/auth/login.php': typeof ApiAuthLoginDotphpRoute
   '/api/auth/me.php': typeof ApiAuthMeDotphpRoute
   '/api/auth/register.php': typeof ApiAuthRegisterDotphpRoute
+  '/api/auth/reset-password.php': typeof ApiAuthResetPasswordDotphpRoute
   '/api/content/faqs.php': typeof ApiContentFaqsDotphpRoute
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
@@ -732,9 +750,11 @@ export interface FileRoutesById {
   '/api/admin/stats.php': typeof ApiAdminStatsDotphpRoute
   '/api/admin/users.php': typeof ApiAdminUsersDotphpRoute
   '/api/auth/admin-login.php': typeof ApiAuthAdminLoginDotphpRoute
+  '/api/auth/forgot-password.php': typeof ApiAuthForgotPasswordDotphpRoute
   '/api/auth/login.php': typeof ApiAuthLoginDotphpRoute
   '/api/auth/me.php': typeof ApiAuthMeDotphpRoute
   '/api/auth/register.php': typeof ApiAuthRegisterDotphpRoute
+  '/api/auth/reset-password.php': typeof ApiAuthResetPasswordDotphpRoute
   '/api/content/faqs.php': typeof ApiContentFaqsDotphpRoute
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
@@ -817,9 +837,11 @@ export interface FileRouteTypes {
     | '/api/admin/stats.php'
     | '/api/admin/users.php'
     | '/api/auth/admin-login.php'
+    | '/api/auth/forgot-password.php'
     | '/api/auth/login.php'
     | '/api/auth/me.php'
     | '/api/auth/register.php'
+    | '/api/auth/reset-password.php'
     | '/api/content/faqs.php'
     | '/api/content/posts.php'
     | '/api/content/testimonials.php'
@@ -897,9 +919,11 @@ export interface FileRouteTypes {
     | '/api/admin/stats.php'
     | '/api/admin/users.php'
     | '/api/auth/admin-login.php'
+    | '/api/auth/forgot-password.php'
     | '/api/auth/login.php'
     | '/api/auth/me.php'
     | '/api/auth/register.php'
+    | '/api/auth/reset-password.php'
     | '/api/content/faqs.php'
     | '/api/content/posts.php'
     | '/api/content/testimonials.php'
@@ -980,9 +1004,11 @@ export interface FileRouteTypes {
     | '/api/admin/stats.php'
     | '/api/admin/users.php'
     | '/api/auth/admin-login.php'
+    | '/api/auth/forgot-password.php'
     | '/api/auth/login.php'
     | '/api/auth/me.php'
     | '/api/auth/register.php'
+    | '/api/auth/reset-password.php'
     | '/api/content/faqs.php'
     | '/api/content/posts.php'
     | '/api/content/testimonials.php'
@@ -1036,9 +1062,11 @@ export interface RootRouteChildren {
   ApiAdminStatsDotphpRoute: typeof ApiAdminStatsDotphpRoute
   ApiAdminUsersDotphpRoute: typeof ApiAdminUsersDotphpRoute
   ApiAuthAdminLoginDotphpRoute: typeof ApiAuthAdminLoginDotphpRoute
+  ApiAuthForgotPasswordDotphpRoute: typeof ApiAuthForgotPasswordDotphpRoute
   ApiAuthLoginDotphpRoute: typeof ApiAuthLoginDotphpRoute
   ApiAuthMeDotphpRoute: typeof ApiAuthMeDotphpRoute
   ApiAuthRegisterDotphpRoute: typeof ApiAuthRegisterDotphpRoute
+  ApiAuthResetPasswordDotphpRoute: typeof ApiAuthResetPasswordDotphpRoute
   ApiContentFaqsDotphpRoute: typeof ApiContentFaqsDotphpRoute
   ApiContentPostsDotphpRoute: typeof ApiContentPostsDotphpRoute
   ApiContentTestimonialsDotphpRoute: typeof ApiContentTestimonialsDotphpRoute
@@ -1505,6 +1533,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthAdminLoginDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/auth/forgot-password.php': {
+      id: '/api/auth/forgot-password.php'
+      path: '/api/auth/forgot-password.php'
+      fullPath: '/api/auth/forgot-password.php'
+      preLoaderRoute: typeof ApiAuthForgotPasswordDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/auth/login.php': {
       id: '/api/auth/login.php'
       path: '/api/auth/login.php'
@@ -1524,6 +1559,13 @@ declare module '@tanstack/react-router' {
       path: '/api/auth/register.php'
       fullPath: '/api/auth/register.php'
       preLoaderRoute: typeof ApiAuthRegisterDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/auth/reset-password.php': {
+      id: '/api/auth/reset-password.php'
+      path: '/api/auth/reset-password.php'
+      fullPath: '/api/auth/reset-password.php'
+      preLoaderRoute: typeof ApiAuthResetPasswordDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/content/faqs.php': {
@@ -1749,9 +1791,11 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAdminStatsDotphpRoute: ApiAdminStatsDotphpRoute,
   ApiAdminUsersDotphpRoute: ApiAdminUsersDotphpRoute,
   ApiAuthAdminLoginDotphpRoute: ApiAuthAdminLoginDotphpRoute,
+  ApiAuthForgotPasswordDotphpRoute: ApiAuthForgotPasswordDotphpRoute,
   ApiAuthLoginDotphpRoute: ApiAuthLoginDotphpRoute,
   ApiAuthMeDotphpRoute: ApiAuthMeDotphpRoute,
   ApiAuthRegisterDotphpRoute: ApiAuthRegisterDotphpRoute,
+  ApiAuthResetPasswordDotphpRoute: ApiAuthResetPasswordDotphpRoute,
   ApiContentFaqsDotphpRoute: ApiContentFaqsDotphpRoute,
   ApiContentPostsDotphpRoute: ApiContentPostsDotphpRoute,
   ApiContentTestimonialsDotphpRoute: ApiContentTestimonialsDotphpRoute,
