@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { Trash2, Search, Save, Check, BookOpen, X, ShieldCheck, Plus } from "lucide-react";
-import { useLiveUsers } from "@/lib/live-store";
+import { useLiveUsers, useLiveCourses } from "@/lib/live-store";
 import { PageHeader, Card, Input, Button, ConfirmDialog, useToast, Empty } from "@/components/admin/ui";
 import { api } from "@/lib/api";
 import { taka } from "@/lib/format";
@@ -12,6 +12,7 @@ export const Route = createFileRoute("/admin/users")({
 
 function UsersAdmin() {
   const { items, remove, loading, error, update, refresh } = useLiveUsers();
+  const { items: liveCourses } = useLiveCourses();
   const toast = useToast();
   const [q, setQ] = useState("");
   const [confirmId, setConfirmId] = useState<any>(null);
@@ -63,6 +64,12 @@ function UsersAdmin() {
   const openCourseModal = async (user: any) => {
     setActiveModalUser(user);
     setLoadingModalData(true);
+
+    // Immediate fallback with liveCourses from store
+    if (liveCourses && liveCourses.length > 0) {
+      setAllCourses(liveCourses);
+    }
+
     try {
       const res = await api("admin/users.php", {
         method: "POST",
@@ -73,26 +80,25 @@ function UsersAdmin() {
       let fetchedEnrollments = res?.enrollments || [];
       let fetchedCourses = res?.all_courses || [];
 
-      // Fallback: If all_courses is empty, fetch from admin/courses.php
       if (!fetchedCourses || fetchedCourses.length === 0) {
-        const coursesRes = await api("admin/courses.php", { auth: true }).catch(() => null);
-        if (coursesRes?.courses && coursesRes.courses.length > 0) {
-          fetchedCourses = coursesRes.courses;
+        if (liveCourses && liveCourses.length > 0) {
+          fetchedCourses = liveCourses;
         } else {
-          const publicRes = await api("courses/list.php").catch(() => null);
-          if (publicRes?.courses) fetchedCourses = publicRes.courses;
+          const coursesRes = await api("admin/courses.php", { auth: true }).catch(() => null);
+          if (coursesRes?.courses && coursesRes.courses.length > 0) {
+            fetchedCourses = coursesRes.courses;
+          }
         }
       }
 
       setUserEnrollments(fetchedEnrollments);
-      setAllCourses(fetchedCourses);
+      if (fetchedCourses && fetchedCourses.length > 0) {
+        setAllCourses(fetchedCourses);
+      }
     } catch (err: any) {
       console.error("Course list error:", err);
-      const fallbackRes = await api("admin/courses.php", { auth: true }).catch(() => null);
-      if (fallbackRes?.courses) {
-        setAllCourses(fallbackRes.courses);
-      } else {
-        toast.show("কোর্স তালিকা লোড করতে সমস্যা হয়েছে");
+      if (liveCourses && liveCourses.length > 0) {
+        setAllCourses(liveCourses);
       }
     } finally {
       setLoadingModalData(false);
@@ -269,7 +275,7 @@ function UsersAdmin() {
               </div>
             </div>
 
-            {loadingModalData ? (
+            {loadingModalData && allCourses.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">কোর্স তালিকা লোড হচ্ছে...</div>
             ) : allCourses.length === 0 ? (
               <div className="py-8 text-center text-sm text-muted-foreground">কোনো কোর্স পাওয়া যায়নি।</div>
