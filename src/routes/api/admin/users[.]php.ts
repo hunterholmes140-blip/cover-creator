@@ -19,6 +19,51 @@ export const Route = createFileRoute("/api/admin/users.php")({
           return ok({ users });
         }),
 
+      POST: async ({ request }) =>
+        handle(async () => {
+          requireAdmin(request);
+          const body = await request.json().catch(() => ({}));
+          const user_id = Number(body.user_id);
+          const course_id = Number(body.course_id);
+          const action = String(body.action || "list"); // "list" | "enroll" | "unenroll"
+
+          if (!user_id) return fail(400, "user_id প্রয়োজন");
+
+          if (action === "list") {
+            const enrollments = await q(
+              `SELECT e.course_id, c.title AS course_title, e.created_at
+               FROM enrollments e
+               JOIN courses c ON c.id = e.course_id
+               WHERE e.user_id = ?`,
+              [user_id]
+            );
+            const allCourses = await q(`SELECT id, title, price, discount_price FROM courses WHERE is_published = 1 ORDER BY title ASC`);
+            return ok({ user_id, enrollments, all_courses: allCourses });
+          }
+
+          if (!course_id) return fail(400, "course_id প্রয়োজন");
+
+          if (action === "enroll") {
+            await exec(
+              `INSERT IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)`,
+              [user_id, course_id]
+            );
+            await exec(
+              `INSERT INTO orders (user_id, course_id, amount, payment_method, note, status)
+               VALUES (?, ?, 0, 'manual', 'Admin Manual Activation', 'approved')`,
+              [user_id, course_id]
+            ).catch(() => {});
+            return ok({ user_id, course_id, enrolled: true, message: "কোর্স ম্যানুয়ালি এক্টিভ করা হয়েছে" });
+          }
+
+          if (action === "unenroll") {
+            await exec(`DELETE FROM enrollments WHERE user_id = ? AND course_id = ?`, [user_id, course_id]);
+            return ok({ user_id, course_id, enrolled: false, message: "কোর্স এক্সেস সরিয়ে দেওয়া হয়েছে" });
+          }
+
+          return fail(400, "Invalid action");
+        }),
+
       PUT: async ({ request }) =>
         handle(async () => {
           requireAdmin(request);
