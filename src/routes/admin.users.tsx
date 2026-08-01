@@ -248,7 +248,7 @@ function UsersAdmin() {
             {loadingModalData ? (
               <div className="py-8 text-center text-sm text-muted-foreground">কোর্স তালিকা লোড হচ্ছে...</div>
             ) : allCourses.length === 0 ? (
-              <div className="py-8 text-center text-sm text-muted-foreground">কোনো পাবলিশড কোর্স পাওয়া যায়নি।</div>
+              <div className="py-8 text-center text-sm text-muted-foreground">কোনো কোর্স পাওয়া যায়নি।</div>
             ) : (
               <div className="space-y-3 max-h-[350px] overflow-y-auto pr-1">
                 <div className="text-xs font-bold text-muted-foreground uppercase tracking-wider">উপলব্ধ কোর্সসমূহ</div>

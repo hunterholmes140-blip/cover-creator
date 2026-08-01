@@ -37,7 +37,7 @@ export const Route = createFileRoute("/api/admin/users.php")({
                WHERE e.user_id = ?`,
               [user_id]
             );
-            const allCourses = await q(`SELECT id, title, price, discount_price FROM courses WHERE is_published = 1 ORDER BY title ASC`);
+            const allCourses = await q(`SELECT id, title, price, discount_price, is_published FROM courses ORDER BY id DESC`);
             return ok({ user_id, enrollments, all_courses: allCourses });
           }
 
