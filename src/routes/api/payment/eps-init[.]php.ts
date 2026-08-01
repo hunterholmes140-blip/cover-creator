@@ -33,28 +33,44 @@ export const Route = createFileRoute("/api/payment/eps-init.php")({
     handlers: {
       POST: async ({ request }) =>
         handle(async () => {
-          const body = await request.json().catch(() => ({}));
-          let user = bearerFrom(request);
+          let authUser = bearerFrom(request);
 
-          if (!user) {
-            const email = String(body.customerEmail || body.email || "").trim().toLowerCase();
-            const name = String(body.customerName || body.name || "").trim() || "Student";
-            const phone = String(body.customerPhone || body.phone || "").trim() || null;
-            const password = String(body.password || "").trim();
+          const email = String(body.customerEmail || body.email || (authUser ? authUser.email : "")).trim().toLowerCase();
+          const name = String(body.customerName || body.name || "").trim() || "Student";
+          const phone = String(body.customerPhone || body.phone || "").trim() || null;
+          const userPassword = String(body.password || "").trim();
 
-            if (email) {
-              const existing = await qOne<any>(`SELECT id, name, email, phone FROM users WHERE email = ? LIMIT 1`, [email]);
-              if (existing) {
-                user = existing;
-              } else {
-                const defaultPw = password && password.length >= 6 ? password : (phone && phone.length >= 6 ? phone.slice(-6) : "123456");
-                const hash = await hashPassword(defaultPw);
-                const res = await exec(
-                  `INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)`,
-                  [name, email, phone, hash]
-                );
-                user = { id: res.insertId, name, email, phone };
+          let user: any = null;
+
+          if (authUser && authUser.id) {
+            const dbUser = await qOne<any>(`SELECT id, name, email, phone FROM users WHERE id = ? LIMIT 1`, [authUser.id]);
+            if (dbUser) {
+              user = dbUser;
+              if ((name && name !== "Student" && dbUser.name !== name) || (phone && dbUser.phone !== phone)) {
+                await exec(`UPDATE users SET name = COALESCE(?, name), phone = COALESCE(?, phone) WHERE id = ?`, [
+                  name !== "Student" ? name : null,
+                  phone || null,
+                  user.id,
+                ]).catch(() => {});
               }
+            }
+          }
+
+          if (!user && email) {
+            const existing = await qOne<any>(`SELECT id, name, email, phone FROM users WHERE email = ? LIMIT 1`, [email]);
+            if (existing) {
+              user = existing;
+              if (phone && !existing.phone) {
+                await exec(`UPDATE users SET phone = ? WHERE id = ?`, [phone, existing.id]).catch(() => {});
+              }
+            } else {
+              const defaultPw = userPassword && userPassword.length >= 6 ? userPassword : (phone && phone.length >= 6 ? phone.slice(-6) : "123456");
+              const hash = await hashPassword(defaultPw);
+              const res = await exec(
+                `INSERT INTO users (name, email, phone, password) VALUES (?, ?, ?, ?)`,
+                [name || "Student", email, phone, hash]
+              );
+              user = { id: res.insertId, name: name || "Student", email, phone };
             }
           }
 
@@ -66,7 +82,7 @@ export const Route = createFileRoute("/api/payment/eps-init.php")({
           if (!course_id) return fail(400, "কোর্স আইডি সিলেক্ট করা হয়নি");
 
           const course = await qOne<any>(
-            `SELECT id, title, price, discount_price FROM courses WHERE id = ? AND is_published = 1`,
+            `SELECT id, title, price, discount_price FROM courses WHERE id = ?`,
             [course_id]
           );
           if (!course) return fail(404, "কোর্স পাওয়া যায়নি");

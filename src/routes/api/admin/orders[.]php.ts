@@ -9,10 +9,14 @@ export const Route = createFileRoute("/api/admin/orders.php")({
         handle(async () => {
           requireAdmin(request);
           const orders = await q(
-            `SELECT o.*, u.name AS user_name, u.email AS user_email, u.phone AS user_phone, c.title AS course_title
+            `SELECT o.*, 
+                    COALESCE(u.name, 'ইউজার (Student)') AS user_name, 
+                    COALESCE(u.email, 'N/A') AS user_email, 
+                    COALESCE(u.phone, 'N/A') AS user_phone, 
+                    COALESCE(c.title, 'কোর্স (Course)') AS course_title
              FROM orders o
-             JOIN users u ON u.id = o.user_id
-             JOIN courses c ON c.id = o.course_id
+             LEFT JOIN users u ON u.id = o.user_id
+             LEFT JOIN courses c ON c.id = o.course_id
              ORDER BY o.created_at DESC`,
           );
           return ok({ orders });
@@ -23,7 +27,7 @@ export const Route = createFileRoute("/api/admin/orders.php")({
           requireAdmin(request);
           const b = await request.json().catch(() => ({}));
           const id = Number(b.id);
-          const status = ["pending", "approved", "rejected"].includes(b.status) ? b.status : null;
+          const status = ["pending", "approved", "rejected", "failed"].includes(b.status) ? b.status : null;
           if (!id || !status) return fail(400, "id ও status প্রয়োজন");
 
           await exec(`UPDATE orders SET status = ? WHERE id = ?`, [status, id]);
@@ -32,8 +36,8 @@ export const Route = createFileRoute("/api/admin/orders.php")({
             const order = await qOne<any>(
               `SELECT o.id, o.user_id, o.course_id, o.amount, o.transaction_id, u.name AS user_name, u.email AS user_email, c.title AS course_title
                FROM orders o
-               JOIN users u ON u.id = o.user_id
-               JOIN courses c ON c.id = o.course_id
+               LEFT JOIN users u ON u.id = o.user_id
+               LEFT JOIN courses c ON c.id = o.course_id
                WHERE o.id = ?`,
               [id]
             );
@@ -41,7 +45,7 @@ export const Route = createFileRoute("/api/admin/orders.php")({
               await exec(
                 `INSERT IGNORE INTO enrollments (user_id, course_id, order_id) VALUES (?, ?, ?)`,
                 [order.user_id, order.course_id, id],
-              );
+              ).catch(() => {});
               const { sendTemplatedEmail } = await import("@/lib/email.server");
               sendTemplatedEmail("payment_success", order.user_email, {
                 user_name: order.user_name || "Student",
@@ -52,12 +56,12 @@ export const Route = createFileRoute("/api/admin/orders.php")({
                 dashboard_url: "https://vencon.com.bd/dashboard",
               }).catch(() => {});
             }
-          } else if (status === "rejected") {
+          } else if (status === "rejected" || status === "failed") {
             const order = await qOne<any>(
               `SELECT o.id, o.amount, o.transaction_id, u.name AS user_name, u.email AS user_email, c.title AS course_title
                FROM orders o
-               JOIN users u ON u.id = o.user_id
-               JOIN courses c ON c.id = o.course_id
+               LEFT JOIN users u ON u.id = o.user_id
+               LEFT JOIN courses c ON c.id = o.course_id
                WHERE o.id = ?`,
               [id]
             );

@@ -45,9 +45,9 @@ export const Route = createFileRoute("/api/payment/eps-verify.php")({
           // Fetch order from DB
           let order: any = null;
           if (txId) {
-            order = await qOne<any>(`SELECT o.*, u.name AS user_name, u.email AS user_email, c.title AS course_title FROM orders o JOIN users u ON u.id = o.user_id JOIN courses c ON c.id = o.course_id WHERE o.transaction_id = ? LIMIT 1`, [txId]);
+            order = await qOne<any>(`SELECT o.*, u.name AS user_name, u.email AS user_email, c.title AS course_title FROM orders o LEFT JOIN users u ON u.id = o.user_id LEFT JOIN courses c ON c.id = o.course_id WHERE o.transaction_id = ? LIMIT 1`, [txId]);
           } else if (orderId) {
-            order = await qOne<any>(`SELECT o.*, u.name AS user_name, u.email AS user_email, c.title AS course_title FROM orders o JOIN users u ON u.id = o.user_id JOIN courses c ON c.id = o.course_id WHERE o.id = ? LIMIT 1`, [orderId]);
+            order = await qOne<any>(`SELECT o.*, u.name AS user_name, u.email AS user_email, c.title AS course_title FROM orders o LEFT JOIN users u ON u.id = o.user_id LEFT JOIN courses c ON c.id = o.course_id WHERE o.id = ? LIMIT 1`, [orderId]);
           }
 
           if (!order) {
