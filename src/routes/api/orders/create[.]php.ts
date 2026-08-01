@@ -36,9 +36,12 @@ export const Route = createFileRoute("/api/orders/create.php")({
             return fail(401, "অর্ডার করতে আপনার নাম ও ইমেইল ফিল্ড পূরণ করুন।");
           }
           const course_id = Number(body.course_id);
-          const payment_method = ["bkash", "nagad", "rocket", "manual"].includes(body.payment_method)
-            ? body.payment_method
-            : "bkash";
+          const rawMethod = String(body.payment_method || "").toLowerCase();
+          const isEps = rawMethod === "eps_online" || rawMethod === "eps";
+          const payment_method = ["bkash", "nagad", "rocket", "manual"].includes(rawMethod)
+            ? rawMethod
+            : "manual";
+
           const sender_number = String(body.sender_number || "").trim() || null;
           const transaction_id = String(body.transaction_id || "").trim() || null;
           const note = String(body.note || "").trim() || null;
@@ -51,25 +54,52 @@ export const Route = createFileRoute("/api/orders/create.php")({
           if (!course) return fail(404, "কোর্স পাওয়া যায়নি");
           const amount = course.discount_price ?? course.price;
 
+          const status = isEps ? "approved" : "pending";
+
           const res = await exec(
-            `INSERT INTO orders (user_id, course_id, amount, payment_method, sender_number, transaction_id, note)
-             VALUES (?, ?, ?, ?, ?, ?, ?)`,
-            [user.id, course_id, amount, payment_method, sender_number, transaction_id, note],
+            `INSERT INTO orders (user_id, course_id, amount, payment_method, sender_number, transaction_id, note, status)
+             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
+            [user.id, course_id, amount, payment_method, sender_number, transaction_id, note, status],
           );
+
+          if (isEps) {
+            // Auto-enroll user for EPS online payments
+            await exec(
+              `INSERT IGNORE INTO enrollments (user_id, course_id, order_id) VALUES (?, ?, ?)`,
+              [user.id, course_id, res.insertId],
+            );
+          }
 
           if (user.email) {
             const { sendTemplatedEmail } = await import("@/lib/email.server");
-            sendTemplatedEmail("order_pending", user.email, {
-              user_name: user.name || "Student",
-              user_email: user.email,
-              course_title: course.title,
-              amount,
-              transaction_id: transaction_id || `ORD-${res.insertId}`,
-              dashboard_url: "https://vencon.com.bd/dashboard",
-            }).catch(() => {});
+            if (isEps) {
+              sendTemplatedEmail("payment_success", user.email, {
+                user_name: user.name || "Student",
+                user_email: user.email,
+                course_title: course.title,
+                amount,
+                transaction_id: transaction_id || `ORD-${res.insertId}`,
+                dashboard_url: "https://vencon.com.bd/dashboard",
+              }).catch(() => {});
+            } else {
+              sendTemplatedEmail("order_pending", user.email, {
+                user_name: user.name || "Student",
+                user_email: user.email,
+                course_title: course.title,
+                amount,
+                transaction_id: transaction_id || `ORD-${res.insertId}`,
+                dashboard_url: "https://vencon.com.bd/dashboard",
+              }).catch(() => {});
+            }
           }
 
-          return ok({ message: "অর্ডার সাবমিট হয়েছে। এডমিন যাচাই করে এনরোল করবেন।", order_id: res.insertId });
+          return ok({
+            message: isEps
+              ? "পেমেন্ট সফল এবং কোর্স অটোমেটিক এনরোল করা হয়েছে।"
+              : "অর্ডার সাবমিট হয়েছে। এডমিন যাচাই করে এনরোল করবেন।",
+            order_id: res.insertId,
+            auto_enrolled: isEps,
+          });
         }),
     },
   },
