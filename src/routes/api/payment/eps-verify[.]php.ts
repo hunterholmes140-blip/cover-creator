@@ -178,13 +178,13 @@ export const Route = createFileRoute("/api/payment/eps-verify.php")({
               eps_status: epsStatus,
             });
           } else {
-            // Update order status to rejected / payment failed
-            await exec(`UPDATE orders SET status = 'rejected' WHERE id = ?`, [order.id]);
+            // Update order status to failed / payment failure
+            await exec(`UPDATE orders SET status = 'failed' WHERE id = ?`, [order.id]);
 
             return ok({
               verified: false,
-              status: "rejected",
-              message: "পেমেন্ট সম্পূর্ণ হয়নি বা ভেরিফিকেশনে ব্যর্থ হয়েছে (Payment Failed/Canceled)।",
+              status: "failed",
+              message: "পেমেন্ট সম্পূর্ণ হয়নি বা ভেরিফিকেশনে ব্যর্থ হয়েছে (Payment Failure)।",
               eps_status: epsStatus,
             });
           }

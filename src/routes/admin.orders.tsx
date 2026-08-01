@@ -1,16 +1,21 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Check, X, Trash2, Search, Eye, Phone, Mail, MapPin, User, FileText, Calendar, CreditCard, Zap } from "lucide-react";
+import { Check, X, Trash2, Search, Eye, Phone, Mail, MapPin, User, FileText, Calendar, CreditCard, Filter, RotateCcw } from "lucide-react";
 import { useLiveOrders } from "@/lib/live-store";
 import { taka } from "@/lib/format";
 import { PageHeader, Card, Input, Button, Badge, ConfirmDialog, useToast, Empty } from "@/components/admin/ui";
-import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/orders")({
   component: OrdersAdmin,
 });
 
-const STATUSES = ["all", "pending", "approved", "rejected"] as const;
+const STATUSES = [
+  { id: "all", label: "সব অর্ডার" },
+  { id: "approved", label: "এপ্রুভড" },
+  { id: "pending", label: "পেন্ডিং" },
+  { id: "failed", label: "পেমেন্ট ফেইলার" },
+  { id: "rejected", label: "বাতিল" },
+] as const;
 
 function getPaymentLabel(o: any) {
   const pm = String(o.payment_method || "").toLowerCase();
@@ -25,19 +30,83 @@ function getPaymentLabel(o: any) {
   return "EPS Online Gateway";
 }
 
-function OrdersAdmin() {
+function renderStatusBadge(status: string) {
+  const s = String(status || "").toLowerCase();
+  if (s === "approved") {
+    return <Badge color="green">এপ্রুভড (Approved)</Badge>;
+  }
+  if (s === "pending") {
+    return <Badge color="amber">পেন্ডিং (Pending)</Badge>;
+  }
+  if (s === "failed") {
+    return <Badge color="red">পেমেন্ট ফেইলার</Badge>;
+  }
+  if (s === "rejected") {
+    return <Badge color="red">পেমেন্ট ফেইলার / বাতিল</Badge>;
+  }
+  return <Badge color="gray">{status}</Badge>;
+}
+
+export function OrdersAdmin() {
   const { items, update, remove, loading, error } = useLiveOrders();
   const toast = useToast();
   const [q, setQ] = useState("");
-  const [status, setStatus] = useState<(typeof STATUSES)[number]>("all");
+  const [status, setStatus] = useState<string>("all");
+  const [startDate, setStartDate] = useState<string>("");
+  const [endDate, setEndDate] = useState<string>("");
   const [confirmId, setConfirmId] = useState<any>(null);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
-  const [verifyingId, setVerifyingId] = useState<number | null>(null);
+
+  // Quick Date Helpers
+  const setQuickDate = (type: "today" | "7days" | "month" | "all") => {
+    const today = new Date();
+    const formatDate = (d: Date) => d.toISOString().split("T")[0];
+
+    if (type === "today") {
+      const str = formatDate(today);
+      setStartDate(str);
+      setEndDate(str);
+    } else if (type === "7days") {
+      const past = new Date();
+      past.setDate(today.getDate() - 7);
+      setStartDate(formatDate(past));
+      setEndDate(formatDate(today));
+    } else if (type === "month") {
+      const firstDay = new Date(today.getFullYear(), today.getMonth(), 1);
+      setStartDate(formatDate(firstDay));
+      setEndDate(formatDate(today));
+    } else {
+      setStartDate("");
+      setEndDate("");
+    }
+  };
 
   const filtered = useMemo(() => {
     const s = q.toLowerCase().trim();
+
     return items.filter((o: any) => {
-      if (status !== "all" && o.status !== status) return false;
+      // 1. Status Filter
+      const ordStatus = String(o.status || "").toLowerCase();
+      if (status !== "all") {
+        if (status === "failed") {
+          // match status failed or rejected
+          if (ordStatus !== "failed" && ordStatus !== "rejected") return false;
+        } else if (ordStatus !== status) {
+          return false;
+        }
+      }
+
+      // 2. Date Filter
+      if (startDate || endDate) {
+        let orderDateStr = "";
+        if (o.created_at) {
+          orderDateStr = String(o.created_at).split("T")[0].split(" ")[0];
+        }
+        if (startDate && orderDateStr < startDate) return false;
+        if (endDate && orderDateStr > endDate) return false;
+      }
+
+      // 3. Search Filter
       if (!s) return true;
       const phone = o.user_phone || o.sender_number || "";
       const label = getPaymentLabel(o).toLowerCase();
@@ -51,45 +120,20 @@ function OrdersAdmin() {
         label.includes(s)
       );
     });
-  }, [items, q, status]);
+  }, [items, q, status, startDate, endDate]);
 
   const setStatusFor = async (id: any, s: string) => {
     try {
       await update(id, { status: s });
-      toast.show(`অর্ডার ${s}`);
+      toast.show(`অর্ডার স্ট্যাটাস ${s} করা হয়েছে`);
     } catch (e: any) {
       toast.show(e?.message || "আপডেট ব্যর্থ");
     }
   };
 
-  const handleVerifyEps = async (o: any) => {
-    if (!o.transaction_id) {
-      toast.show("ট্রানজেকশন আইডি পাওয়া যায়নি");
-      return;
-    }
-    setVerifyingId(o.id);
-    try {
-      const res = await api<{ verified: boolean; message?: string }>("payment/eps-verify.php", {
-        method: "POST",
-        body: { transaction_id: o.transaction_id, order_id: o.id },
-      });
-      if (res?.verified) {
-        toast.show("⚡ EPS পেমেন্ট সফল ও ভেরিফাইড! অর্ডার এপ্রুভ হয়েছে।");
-        await update(o.id, { status: "approved" });
-      } else {
-        toast.show(`❌ ${res?.message || "EPS পেমেন্ট সম্পন্ন হয়নি বা বাতিল হয়েছে।"}`);
-        await update(o.id, { status: "rejected" });
-      }
-    } catch (err: any) {
-      toast.show("ভেরিফিকেশনে সমস্যা: " + (err.message || "ত্রুটি"));
-    } finally {
-      setVerifyingId(null);
-    }
-  };
-
   return (
     <div className="max-w-6xl mx-auto space-y-6">
-      <PageHeader title="অর্ডার ম্যানেজমেন্ট" subtitle={`মোট ${items.length} টি অর্ডার।`} />
+      <PageHeader title="অর্ডার ম্যানেজমেন্ট" subtitle={`মোট ${items.length} টি অর্ডারের মধ্যে ফিল্টার অনুযায়ী ${filtered.length} টি দেখাচ্ছে।`} />
 
       {error && (
         <div className="rounded-md border border-destructive/30 bg-destructive/10 px-4 py-2 text-sm text-destructive">
@@ -97,25 +141,107 @@ function OrdersAdmin() {
         </div>
       )}
 
-      <div className="flex flex-wrap gap-2 items-center">
-        <div className="relative flex-1 max-w-sm">
-          <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="নাম, ইমেইল, ফোন, TrxID দিয়ে সার্চ..." className="pl-9" />
+      {/* Control Panel: Search, Date Range, Status Filter */}
+      <Card className="p-4 space-y-4 bg-card border-border shadow-sm">
+        {/* Search and Date Pickers */}
+        <div className="grid gap-3 md:grid-cols-12 items-center">
+          {/* Search Box */}
+          <div className="md:col-span-4 relative">
+            <Search className="h-4 w-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+            <Input value={q} onChange={(e) => setQ(e.target.value)} placeholder="নাম, ইমেইল, ফোন, TrxID দিয়ে সার্চ..." className="pl-9 text-xs" />
+          </div>
+
+          {/* Date Range Inputs */}
+          <div className="md:col-span-8 flex flex-wrap items-center gap-2 justify-end">
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+              <Calendar className="h-4 w-4 text-primary shrink-0" />
+              <span>শুরু:</span>
+              <Input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="w-36 text-xs h-8 py-1 px-2"
+              />
+            </div>
+
+            <div className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+              <span>শেষ:</span>
+              <Input
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+                className="w-36 text-xs h-8 py-1 px-2"
+              />
+            </div>
+
+            {/* Quick Date Range Buttons */}
+            <div className="flex items-center gap-1">
+              <Button size="sm" variant="secondary" onClick={() => setQuickDate("today")} className="h-8 px-2 text-[11px]">
+                আজকে
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => setQuickDate("7days")} className="h-8 px-2 text-[11px]">
+                গত ৭ দিন
+              </Button>
+              <Button size="sm" variant="secondary" onClick={() => setQuickDate("month")} className="h-8 px-2 text-[11px]">
+                এই মাস
+              </Button>
+              {(startDate || endDate) && (
+                <Button size="sm" variant="danger" onClick={() => setQuickDate("all")} className="h-8 px-2 text-[11px] gap-1" title="তারিখ রিসেট করুন">
+                  <RotateCcw className="h-3 w-3" /> রিসেট
+                </Button>
+              )}
+            </div>
+          </div>
         </div>
-        <div className="flex gap-1">
-          {STATUSES.map((s) => (
-            <button
-              key={s}
-              onClick={() => setStatus(s)}
-              className={`rounded-md px-3 py-1.5 text-xs font-medium border capitalize ${
-                status === s ? "bg-primary text-primary-foreground border-primary" : "border-border hover:bg-accent"
-              }`}
-            >
-              {s}
-            </button>
-          ))}
+
+        {/* Status Tabs */}
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <span className="text-xs font-bold text-muted-foreground mr-1 flex items-center gap-1">
+              <Filter className="h-3.5 w-3.5 text-primary" /> ফিল্টার:
+            </span>
+            {STATUSES.map((st) => {
+              const count = items.filter((o: any) => {
+                const s = String(o.status || "").toLowerCase();
+                if (st.id === "all") return true;
+                if (st.id === "failed") return s === "failed" || s === "rejected";
+                return s === st.id;
+              }).length;
+
+              return (
+                <button
+                  key={st.id}
+                  onClick={() => setStatus(st.id)}
+                  className={`rounded-lg px-3 py-1.5 text-xs font-semibold border transition-all flex items-center gap-1.5 ${
+                    status === st.id
+                      ? st.id === "failed" || st.id === "rejected"
+                        ? "bg-red-600 text-white border-red-600 shadow-sm"
+                        : st.id === "approved"
+                        ? "bg-green-600 text-white border-green-600 shadow-sm"
+                        : st.id === "pending"
+                        ? "bg-amber-600 text-white border-amber-600 shadow-sm"
+                        : "bg-primary text-primary-foreground border-primary shadow-sm"
+                      : "border-border hover:bg-muted/60 text-muted-foreground"
+                  }`}
+                >
+                  <span>{st.label}</span>
+                  <span className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+                    status === st.id ? "bg-white/20 text-white" : "bg-muted text-foreground"
+                  }`}>
+                    {count}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
+
+          {(startDate || endDate || q || status !== "all") && (
+            <div className="text-xs text-muted-foreground">
+              ফিল্টারকৃত মোট অর্ডারের পরিমাণ: <strong className="text-primary font-bold">{taka(filtered.reduce((sum, o) => sum + Number(o.amount || 0), 0))}</strong>
+            </div>
+          )}
         </div>
-      </div>
+      </Card>
 
       {loading && items.length === 0 ? (
         <Card><div className="p-6 text-sm text-muted-foreground text-center">লোড হচ্ছে…</div></Card>
@@ -178,37 +304,21 @@ function OrdersAdmin() {
                       </td>
                       <td className="p-3 font-bold text-foreground">{taka(o.amount)}</td>
                       <td className="p-3">
-                        <Badge color={o.status === "approved" ? "green" : o.status === "pending" ? "amber" : "red"}>
-                          {o.status}
-                        </Badge>
+                        {renderStatusBadge(o.status)}
                       </td>
                       <td className="p-3">
-                        <div className="flex gap-1 justify-end items-center flex-wrap">
+                        <div className="flex gap-1.5 justify-end items-center flex-wrap">
                           <Button size="sm" variant="secondary" onClick={() => setSelectedOrder(o)} title="সকল ইউজার তথ্য দেখুন">
                             <Eye className="h-3.5 w-3.5" /> ইউজার তথ্য
                           </Button>
-
-                          {o.transaction_id && (
-                            <Button
-                              size="sm"
-                              variant="secondary"
-                              onClick={() => handleVerifyEps(o)}
-                              disabled={verifyingId === o.id}
-                              title="EPS সার্ভার থেকে রিয়েল-টাইম পেমেন্ট স্টেটাস যাচাই করুন"
-                              className="border-primary/40 text-primary hover:bg-primary/10"
-                            >
-                              <Zap className="h-3.5 w-3.5 fill-primary" />
-                              {verifyingId === o.id ? "যাচাই হচ্ছে..." : "EPS ভেরিফাই"}
-                            </Button>
-                          )}
 
                           {o.status !== "approved" && (
                             <Button size="sm" variant="primary" onClick={() => setStatusFor(o.id, "approved")}>
                               <Check className="h-3 w-3" /> Approve
                             </Button>
                           )}
-                          {o.status !== "rejected" && (
-                            <Button size="sm" variant="secondary" onClick={() => setStatusFor(o.id, "rejected")}>
+                          {o.status !== "rejected" && o.status !== "failed" && (
+                            <Button size="sm" variant="secondary" onClick={() => setStatusFor(o.id, "failed")}>
                               <X className="h-3 w-3" /> Reject
                             </Button>
                           )}
@@ -226,126 +336,90 @@ function OrdersAdmin() {
         </Card>
       )}
 
-      {/* USER DETAILS MODAL */}
+      {/* 📋 Comprehensive User Details Popup Modal */}
       {selectedOrder && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-card border border-border rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-5 animate-in fade-in zoom-in duration-200">
-            <div className="flex items-center justify-between border-b border-border pb-3">
-              <h3 className="font-bold text-lg text-foreground flex items-center gap-2">
+          <div className="bg-card border border-border rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-6 relative animate-in fade-in zoom-in duration-150">
+            <button
+              onClick={() => setSelectedOrder(null)}
+              className="absolute right-4 top-4 text-muted-foreground hover:text-foreground text-lg font-bold h-8 w-8 rounded-full bg-muted flex items-center justify-center"
+            >
+              ✕
+            </button>
+
+            <div className="border-b border-border pb-3">
+              <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
                 <User className="h-5 w-5 text-primary" /> ইউজার ও অর্ডারের সম্পূর্ণ তথ্য
               </h3>
-              <button
-                onClick={() => setSelectedOrder(null)}
-                className="rounded-full p-1 text-muted-foreground hover:bg-accent hover:text-foreground"
-              >
-                <X className="h-5 w-5" />
-              </button>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                অর্ডার নং #{selectedOrder.id} • তারিখ: {selectedOrder.created_at}
+              </p>
             </div>
 
-            <div className="space-y-3.5 text-sm">
-              <div className="rounded-xl bg-muted/40 p-4 space-y-2.5">
+            <div className="space-y-4 text-sm">
+              {/* User Identity Section */}
+              <div className="bg-muted/40 rounded-xl p-3.5 space-y-2 border border-border">
+                <div className="text-xs font-bold text-primary uppercase tracking-wider">গ্রাহকের আইডেন্টিটি</div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">অর্ডার আইডি</span>
-                  <span className="font-mono font-bold text-primary">#{selectedOrder.id}</span>
+                  <span className="text-muted-foreground text-xs">নাম:</span>
+                  <span className="font-semibold text-foreground">{selectedOrder.user_name || "N/A"}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">তারিখ ও সময়</span>
-                  <span className="text-xs font-medium flex items-center gap-1">
-                    <Calendar className="h-3.5 w-3.5 text-muted-foreground" />
-                    {selectedOrder.created_at}
+                  <span className="text-muted-foreground text-xs">ইমেইল:</span>
+                  <span className="font-mono text-xs text-foreground select-all">{selectedOrder.user_email || "N/A"}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-xs">ফোন নম্বর:</span>
+                  <span className="font-mono text-xs font-bold text-primary select-all">
+                    {selectedOrder.user_phone || selectedOrder.sender_number ? (
+                      <a href={`tel:${selectedOrder.user_phone || selectedOrder.sender_number}`} className="hover:underline">
+                        {selectedOrder.user_phone || selectedOrder.sender_number}
+                      </a>
+                    ) : (
+                      "N/A"
+                    )}
+                  </span>
+                </div>
+              </div>
+
+              {/* Order & Course Info Section */}
+              <div className="bg-muted/40 rounded-xl p-3.5 space-y-2 border border-border">
+                <div className="text-xs font-bold text-primary uppercase tracking-wider">কোর্স ও পেমেন্ট বিবরণ</div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-xs">কোর্স:</span>
+                  <span className="font-semibold text-foreground">{selectedOrder.course_title}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-xs">মূল্য:</span>
+                  <span className="font-bold text-primary">{taka(selectedOrder.amount)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-xs">পেমেন্ট মেথড:</span>
+                  <span className="font-semibold text-xs">{getPaymentLabel(selectedOrder)}</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground text-xs">Transaction / Order ID:</span>
+                  <span className="font-mono text-xs select-all bg-background px-2 py-0.5 rounded border border-border">
+                    {selectedOrder.transaction_id || "N/A"}
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-muted-foreground">স্ট্যাটাস</span>
-                  <Badge color={selectedOrder.status === "approved" ? "green" : selectedOrder.status === "pending" ? "amber" : "red"}>
-                    {selectedOrder.status}
-                  </Badge>
+                  <span className="text-muted-foreground text-xs">বর্তমান স্টেটাস:</span>
+                  <span>{renderStatusBadge(selectedOrder.status)}</span>
                 </div>
               </div>
 
-              {/* User Personal Details */}
-              <div className="border border-border rounded-xl p-4 space-y-3 bg-background">
-                <h4 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">গ্রাহকের ব্যক্তিগত তথ্য</h4>
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
-                      <User className="h-3.5 w-3.5 text-primary" /> পূর্ণ নাম:
-                    </span>
-                    <span className="font-semibold text-foreground text-right">{selectedOrder.user_name || "N/A"}</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
-                      <Phone className="h-3.5 w-3.5 text-primary" /> মোবাইল নম্বর:
-                    </span>
-                    <span className="font-bold text-primary font-mono text-right">
-                      {selectedOrder.user_phone || selectedOrder.sender_number ? (
-                        <a href={`tel:${selectedOrder.user_phone || selectedOrder.sender_number}`} className="hover:underline">
-                          {selectedOrder.user_phone || selectedOrder.sender_number}
-                        </a>
-                      ) : (
-                        "ফোন নম্বর পাওয়া যায়নি"
-                      )}
-                    </span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
-                      <Mail className="h-3.5 w-3.5 text-primary" /> ইমেইল ঠিকানা:
-                    </span>
-                    <span className="font-medium text-foreground text-right font-mono text-xs">{selectedOrder.user_email || "N/A"}</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2 pt-1 border-t border-border/50">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
-                      <MapPin className="h-3.5 w-3.5 text-primary" /> সম্পূর্ণ ঠিকানা / নোট:
-                    </span>
-                    <span className="font-medium text-foreground text-right text-xs">
-                      {selectedOrder.note || "ঠিকানা দেওয়া হয়নি"}
-                    </span>
-                  </div>
+              {/* User Note / Address / Remarks */}
+              {selectedOrder.note && (
+                <div className="bg-muted/40 rounded-xl p-3.5 space-y-1 border border-border">
+                  <div className="text-xs font-bold text-primary uppercase tracking-wider">ঠিকানা / অতিরিক্ত নোট</div>
+                  <p className="text-xs text-foreground/90 leading-relaxed whitespace-pre-wrap">{selectedOrder.note}</p>
                 </div>
-              </div>
-
-              {/* Order & Payment Details */}
-              <div className="border border-border rounded-xl p-4 space-y-3 bg-background">
-                <h4 className="font-semibold text-xs text-muted-foreground uppercase tracking-wider">পেমেন্ট ও কোর্সের তথ্য</h4>
-                <div className="space-y-2">
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
-                      <FileText className="h-3.5 w-3.5 text-primary" /> কোর্সের নাম:
-                    </span>
-                    <span className="font-semibold text-foreground text-right">{selectedOrder.course_title}</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
-                      <CreditCard className="h-3.5 w-3.5 text-primary" /> পেমেন্ট মেথড:
-                    </span>
-                    <span className="font-semibold text-primary">{getPaymentLabel(selectedOrder)}</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
-                      # Transaction ID:
-                    </span>
-                    <span className="font-mono font-semibold text-foreground">{selectedOrder.transaction_id || "N/A"}</span>
-                  </div>
-                  <div className="flex items-start justify-between gap-2 pt-1 border-t border-border/50">
-                    <span className="text-xs text-muted-foreground">মোট পরিশোধিত টাকা:</span>
-                    <span className="font-bold text-base text-primary">{taka(selectedOrder.amount)}</span>
-                  </div>
-                </div>
-              </div>
+              )}
             </div>
 
-            <div className="flex justify-end gap-2 pt-2 border-t border-border">
-              {selectedOrder.status !== "approved" && (
-                <Button size="sm" variant="primary" onClick={() => { setStatusFor(selectedOrder.id, "approved"); setSelectedOrder(null); }}>
-                  <Check className="h-3.5 w-3.5" /> Approve
-                </Button>
-              )}
-              {selectedOrder.status !== "rejected" && (
-                <Button size="sm" variant="secondary" onClick={() => { setStatusFor(selectedOrder.id, "rejected"); setSelectedOrder(null); }}>
-                  <X className="h-3.5 w-3.5" /> Reject
-                </Button>
-              )}
-              <Button size="sm" variant="secondary" onClick={() => setSelectedOrder(null)}>
+            <div className="pt-2 text-right">
+              <Button variant="secondary" onClick={() => setSelectedOrder(null)}>
                 বন্ধ করুন
               </Button>
             </div>
@@ -357,8 +431,12 @@ function OrdersAdmin() {
         open={confirmId !== null}
         onClose={() => setConfirmId(null)}
         onConfirm={async () => {
-          try { await remove(confirmId); toast.show("ডিলিট হয়েছে"); }
-          catch (e: any) { toast.show(e?.message || "ডিলিট ব্যর্থ"); }
+          try {
+            await remove(confirmId);
+            toast.show("অর্ডার ডিলিট হয়েছে");
+          } catch (e: any) {
+            toast.show(e?.message || "ডিলিট ব্যর্থ");
+          }
         }}
       />
       {toast.node}
