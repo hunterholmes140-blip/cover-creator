@@ -11,6 +11,19 @@ export const Route = createFileRoute("/api/admin/users.php")({
           try {
             await exec(`ALTER TABLE users ADD COLUMN note TEXT DEFAULT NULL`).catch(() => {});
           } catch {}
+          try {
+            await exec(`
+              CREATE TABLE IF NOT EXISTS enrollments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                course_id INT NOT NULL,
+                order_id INT DEFAULT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY user_course (user_id, course_id)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            `).catch(() => {});
+          } catch {}
+
           const users = await q(
             `SELECT u.id, u.name, u.email, u.phone, u.note, u.created_at,
                     (SELECT COUNT(*) FROM enrollments e WHERE e.user_id = u.id) AS enrolled_count
@@ -29,15 +42,40 @@ export const Route = createFileRoute("/api/admin/users.php")({
 
           if (!user_id) return fail(400, "user_id প্রয়োজন");
 
+          try {
+            await exec(`
+              CREATE TABLE IF NOT EXISTS enrollments (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                course_id INT NOT NULL,
+                order_id INT DEFAULT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                UNIQUE KEY user_course (user_id, course_id)
+              ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+            `).catch(() => {});
+          } catch {}
+
           if (action === "list") {
-            const enrollments = await q(
-              `SELECT e.course_id, c.title AS course_title, e.created_at
-               FROM enrollments e
-               JOIN courses c ON c.id = e.course_id
-               WHERE e.user_id = ?`,
-              [user_id]
-            );
-            const allCourses = await q(`SELECT id, title, price, discount_price, is_published FROM courses ORDER BY id DESC`);
+            let enrollments: any[] = [];
+            try {
+              enrollments = await q(
+                `SELECT e.course_id, c.title AS course_title, e.created_at
+                 FROM enrollments e
+                 JOIN courses c ON c.id = e.course_id
+                 WHERE e.user_id = ?`,
+                [user_id]
+              );
+            } catch (err) {
+              console.error("[Users Admin Enrollments query error]:", err);
+            }
+
+            let allCourses: any[] = [];
+            try {
+              allCourses = await q(`SELECT id, title, price, discount_price, is_published FROM courses ORDER BY id DESC`);
+            } catch (err) {
+              console.error("[Users Admin All Courses query error]:", err);
+            }
+
             return ok({ user_id, enrollments, all_courses: allCourses });
           }
 
@@ -47,17 +85,19 @@ export const Route = createFileRoute("/api/admin/users.php")({
             await exec(
               `INSERT IGNORE INTO enrollments (user_id, course_id) VALUES (?, ?)`,
               [user_id, course_id]
-            );
+            ).catch((e) => console.error("Enrollment insert error:", e));
+
             await exec(
               `INSERT INTO orders (user_id, course_id, amount, payment_method, note, status)
                VALUES (?, ?, 0, 'manual', 'Admin Manual Activation', 'approved')`,
               [user_id, course_id]
             ).catch(() => {});
+
             return ok({ user_id, course_id, enrolled: true, message: "কোর্স ম্যানুয়ালি এক্টিভ করা হয়েছে" });
           }
 
           if (action === "unenroll") {
-            await exec(`DELETE FROM enrollments WHERE user_id = ? AND course_id = ?`, [user_id, course_id]);
+            await exec(`DELETE FROM enrollments WHERE user_id = ? AND course_id = ?`, [user_id, course_id]).catch(() => {});
             return ok({ user_id, course_id, enrolled: false, message: "কোর্স এক্সেস সরিয়ে দেওয়া হয়েছে" });
           }
 

@@ -68,11 +68,32 @@ function UsersAdmin() {
         method: "POST",
         body: { user_id: user.id, action: "list" },
         auth: true,
-      });
-      setUserEnrollments(res?.enrollments || []);
-      setAllCourses(res?.all_courses || []);
+      }).catch(() => null);
+
+      let fetchedEnrollments = res?.enrollments || [];
+      let fetchedCourses = res?.all_courses || [];
+
+      // Fallback: If all_courses is empty, fetch from admin/courses.php
+      if (!fetchedCourses || fetchedCourses.length === 0) {
+        const coursesRes = await api("admin/courses.php", { auth: true }).catch(() => null);
+        if (coursesRes?.courses && coursesRes.courses.length > 0) {
+          fetchedCourses = coursesRes.courses;
+        } else {
+          const publicRes = await api("courses/list.php").catch(() => null);
+          if (publicRes?.courses) fetchedCourses = publicRes.courses;
+        }
+      }
+
+      setUserEnrollments(fetchedEnrollments);
+      setAllCourses(fetchedCourses);
     } catch (err: any) {
-      toast.show("কোর্স তালিকা লোড করতে সমস্যা হয়েছে");
+      console.error("Course list error:", err);
+      const fallbackRes = await api("admin/courses.php", { auth: true }).catch(() => null);
+      if (fallbackRes?.courses) {
+        setAllCourses(fallbackRes.courses);
+      } else {
+        toast.show("কোর্স তালিকা লোড করতে সমস্যা হয়েছে");
+      }
     } finally {
       setLoadingModalData(false);
     }
@@ -83,17 +104,17 @@ function UsersAdmin() {
     setActionInProgress(courseId);
     try {
       const action = isCurrentlyEnrolled ? "unenroll" : "enroll";
-      const res = await api("admin/users.php", {
+      await api("admin/users.php", {
         method: "POST",
         body: { user_id: activeModalUser.id, course_id: courseId, action },
         auth: true,
       });
 
       if (isCurrentlyEnrolled) {
-        setUserEnrollments((prev) => prev.filter((e) => e.course_id !== courseId));
+        setUserEnrollments((prev) => prev.filter((e) => Number(e.course_id) !== Number(courseId)));
         toast.show("কোর্স এক্সেস রিমুভ করা হয়েছে ❌");
       } else {
-        const c = allCourses.find((item) => item.id === courseId);
+        const c = allCourses.find((item) => Number(item.id) === Number(courseId));
         setUserEnrollments((prev) => [...prev, { course_id: courseId, course_title: c?.title || "" }]);
         toast.show("কোর্স ম্যানুয়ালি এক্টিভ করা হয়েছে 🚀");
       }
