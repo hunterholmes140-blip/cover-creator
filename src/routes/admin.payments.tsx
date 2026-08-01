@@ -1,6 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { usePayments } from "@/lib/admin-store";
-import { PageHeader, Card, Field, Input, Textarea, Button, useToast } from "@/components/admin/ui";
+import { PageHeader, Card, Field, Input, Button, useToast } from "@/components/admin/ui";
 import { useState, useEffect } from "react";
 import { getEpsConfig, saveEpsConfig, type EpsConfig } from "@/lib/eps-client";
 import { ShieldCheck, Zap } from "lucide-react";
@@ -12,9 +11,7 @@ export const Route = createFileRoute("/admin/payments")({
 });
 
 function PaymentsAdmin() {
-  const { items, update } = usePayments();
   const toast = useToast();
-  const [drafts, setDrafts] = useState<Record<string, any>>({});
   const [epsForm, setEpsForm] = useState<EpsConfig>(getEpsConfig());
   const [epsSaving, setEpsSaving] = useState(false);
   const [epsSaved, setEpsSaved] = useState(false);
@@ -30,19 +27,6 @@ function PaymentsAdmin() {
       })
       .catch(() => {});
   }, []);
-
-  const getVal = (m: any, k: string) => drafts[m.id]?.[k] ?? m[k];
-  const setVal = (m: any, k: string, v: any) =>
-    setDrafts((d) => ({ ...d, [m.id]: { ...d[m.id], [k]: v } }));
-
-  const save = (m: any) => {
-    update(m.id, drafts[m.id] ?? {});
-    setDrafts((d) => {
-      const { [m.id]: _, ...rest } = d;
-      return rest;
-    });
-    toast.show(`${m.label} আপডেট হয়েছে`);
-  };
 
   const handleSaveEps = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,8 +46,8 @@ function PaymentsAdmin() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <PageHeader
-        title="পেমেন্ট মেথড ও অটোমেটিক গেটওয়ে"
-        subtitle="EPS অটোমেটিক পেমেন্ট গেটওয়ে ক্রেডেনশিয়াল এবং bKash, Nagad, Rocket-এর ম্যানুয়াল নাম্বার এখান থেকে নিয়ন্ত্রণ করুন।"
+        title="অটোমেটিক পেমেন্ট গেটওয়ে (EPS Easy Payment System)"
+        subtitle="bKash, Nagad, Rocket, Visa & Mastercard দিয়ে অটোমেটিক পেমেন্ট রিসিভ করার অফিশিয়াল EPS API সেটআপ।"
       />
 
       {/* ⚡ EPS Automated Gateway Config Card */}
@@ -75,11 +59,11 @@ function PaymentsAdmin() {
                 <Zap className="h-5 w-5 fill-primary text-primary animate-pulse" /> ⚡ EPS Easy Payment System (অটোমেটিক গেটওয়ে)
               </div>
               <p className="text-xs text-muted-foreground mt-0.5">
-                bKash, Nagad, Rocket, Visa & Mastercard দিয়ে অটোমেটিক ইন্সট্যান্ট পেমেন্ট রিসিভ করার অফিশিয়াল API সেটআপ।
+                bKash, Nagad, Rocket, Visa & Mastercard দিয়ে অটোমেটিক ইন্সট্যান্ট পেমেন্ট রিসিভ করার অফিশিয়াল API সেটআপ।
               </p>
             </div>
             <div className="flex items-center gap-4">
-              <label className="inline-flex items-center gap-2 text-xs font-semibold">
+              <label className="inline-flex items-center gap-2 text-xs font-semibold cursor-pointer">
                 <input
                   type="checkbox"
                   checked={!!epsForm.is_sandbox}
@@ -87,7 +71,7 @@ function PaymentsAdmin() {
                 />
                 Sandbox Test Mode
               </label>
-              <label className="inline-flex items-center gap-2 text-sm font-bold text-primary">
+              <label className="inline-flex items-center gap-2 text-sm font-bold text-primary cursor-pointer">
                 <input
                   type="checkbox"
                   checked={!!epsForm.enabled}
@@ -155,50 +139,13 @@ function PaymentsAdmin() {
           </div>
 
           <div className="pt-2 flex items-center justify-between">
-            <Button type="submit">EPS ক্রেডেনশিয়াল সেভ করুন</Button>
+            <Button type="submit" disabled={epsSaving}>
+              {epsSaving ? "সেভ হচ্ছে..." : "EPS ক্রেডেনশিয়াল সেভ করুন"}
+            </Button>
             <span className="text-xs text-muted-foreground">API Version 0.5 (Easy Payment System)</span>
           </div>
         </form>
       </Card>
-
-      {/* Manual Payment Methods (bKash, Nagad, Rocket) */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-bold text-foreground">ম্যানুয়াল সেন্ড মানি মেথড</h3>
-        {items.map((m: any) => (
-          <Card key={m.id}>
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <div className="font-semibold">{m.label}</div>
-                <div className="text-xs text-muted-foreground">{m.type}</div>
-              </div>
-              <label className="inline-flex items-center gap-2 text-sm">
-                <input
-                  type="checkbox"
-                  checked={!!getVal(m, "enabled")}
-                  onChange={(e) => setVal(m, "enabled", e.target.checked ? 1 : 0)}
-                />
-                সক্রিয়
-              </label>
-            </div>
-            <div className="grid gap-4 md:grid-cols-2">
-              <Field label="নাম্বার">
-                <Input value={getVal(m, "number")} onChange={(e) => setVal(m, "number", e.target.value)} />
-              </Field>
-              <Field label="লেবেল">
-                <Input value={getVal(m, "label")} onChange={(e) => setVal(m, "label", e.target.value)} />
-              </Field>
-              <div className="md:col-span-2">
-                <Field label="Instructions">
-                  <Textarea rows={2} value={getVal(m, "instructions")} onChange={(e) => setVal(m, "instructions", e.target.value)} />
-                </Field>
-              </div>
-            </div>
-            <div className="mt-4">
-              <Button onClick={() => save(m)}>সেভ করুন</Button>
-            </div>
-          </Card>
-        ))}
-      </div>
       {toast.node}
     </div>
   );
