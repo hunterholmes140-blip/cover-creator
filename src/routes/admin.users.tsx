@@ -47,6 +47,7 @@ function UsersAdmin() {
         await api("admin/users.php", {
           method: "PUT",
           body: { id, note: noteText },
+          auth: true,
         });
       }
       setSavedId(id);
@@ -66,6 +67,7 @@ function UsersAdmin() {
       const res = await api("admin/users.php", {
         method: "POST",
         body: { user_id: user.id, action: "list" },
+        auth: true,
       });
       setUserEnrollments(res?.enrollments || []);
       setAllCourses(res?.all_courses || []);
@@ -84,6 +86,7 @@ function UsersAdmin() {
       const res = await api("admin/users.php", {
         method: "POST",
         body: { user_id: activeModalUser.id, course_id: courseId, action },
+        auth: true,
       });
 
       if (isCurrentlyEnrolled) {

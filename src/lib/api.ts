@@ -99,8 +99,8 @@ export async function api<T = any>(path: string, opts: ApiOpts = {}): Promise<T>
     if (qs) url += (url.includes("?") ? "&" : "?") + qs;
   }
 
-  const headers: Record<string, string> = { "Content-Type": "application/json" };
-  if (auth) {
+  const shouldAuth = auth || path.startsWith("admin/") || path.includes("admin");
+  if (shouldAuth) {
     const t = getToken();
     if (t) headers.Authorization = `Bearer ${t}`;
   }
