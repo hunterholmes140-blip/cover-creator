@@ -11,6 +11,19 @@ export const Route = createFileRoute("/admin/orders")({
 
 const STATUSES = ["all", "pending", "approved", "rejected"] as const;
 
+function getPaymentLabel(o: any) {
+  const pm = String(o.payment_method || "").toLowerCase();
+  const note = String(o.note || "");
+  const tx = String(o.transaction_id || "");
+  if (pm === "eps_online" || pm === "eps" || note.includes("EPS") || tx.startsWith("TXN") || pm === "manual") {
+    return "EPS Online Payment";
+  }
+  if (pm === "bkash") return "bKash";
+  if (pm === "nagad") return "Nagad";
+  if (pm === "rocket") return "Rocket";
+  return "EPS Online Gateway";
+}
+
 function OrdersAdmin() {
   const { items, update, remove, loading, error } = useLiveOrders();
   const toast = useToast();
@@ -25,13 +38,15 @@ function OrdersAdmin() {
       if (status !== "all" && o.status !== status) return false;
       if (!s) return true;
       const phone = o.user_phone || o.sender_number || "";
+      const label = getPaymentLabel(o).toLowerCase();
       return (
         o.user_name?.toLowerCase().includes(s) ||
         o.user_email?.toLowerCase().includes(s) ||
         phone.toLowerCase().includes(s) ||
         o.note?.toLowerCase().includes(s) ||
         o.course_title?.toLowerCase().includes(s) ||
-        o.transaction_id?.toLowerCase().includes(s)
+        o.transaction_id?.toLowerCase().includes(s) ||
+        label.includes(s)
       );
     });
   }, [items, q, status]);
@@ -88,7 +103,7 @@ function OrdersAdmin() {
                   <th className="p-3 font-medium">অর্ডার</th>
                   <th className="p-3 font-medium">ইউজার তথ্য (User Details)</th>
                   <th className="p-3 font-medium">কোর্স</th>
-                  <th className="p-3 font-medium">পেমেন্ট</th>
+                  <th className="p-3 font-medium">পেমেন্ট মেথড</th>
                   <th className="p-3 font-medium">দাম</th>
                   <th className="p-3 font-medium">স্ট্যাটাস</th>
                   <th className="p-3 font-medium text-right">অ্যাকশন</th>
@@ -129,8 +144,10 @@ function OrdersAdmin() {
                       </td>
                       <td className="p-3 font-medium text-foreground">{o.course_title}</td>
                       <td className="p-3">
-                        <div className="font-medium capitalize">{o.payment_method}</div>
-                        <div className="text-xs font-mono text-muted-foreground">{o.transaction_id || "-"}</div>
+                        <span className="font-semibold text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded inline-block">
+                          {getPaymentLabel(o)}
+                        </span>
+                        <div className="text-xs font-mono text-muted-foreground mt-1">{o.transaction_id || "-"}</div>
                       </td>
                       <td className="p-3 font-bold text-foreground">{taka(o.amount)}</td>
                       <td className="p-3">
@@ -259,7 +276,7 @@ function OrdersAdmin() {
                     <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
                       <CreditCard className="h-3.5 w-3.5 text-primary" /> পেমেন্ট মেথড:
                     </span>
-                    <span className="font-semibold capitalize text-foreground">{selectedOrder.payment_method}</span>
+                    <span className="font-semibold text-primary">{getPaymentLabel(selectedOrder)}</span>
                   </div>
                   <div className="flex items-start justify-between gap-2">
                     <span className="text-xs text-muted-foreground flex items-center gap-1.5 shrink-0">
