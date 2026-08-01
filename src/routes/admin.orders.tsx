@@ -300,7 +300,17 @@ export function OrdersAdmin() {
                         <span className="font-semibold text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded inline-block">
                           {getPaymentLabel(o)}
                         </span>
-                        <div className="text-xs font-mono text-muted-foreground mt-1">{o.transaction_id || "-"}</div>
+                        <div className="text-xs font-mono mt-1">
+                          {o.status === "approved" ? (
+                            <span className="text-green-600 font-bold flex items-center gap-1" title="ইপিএস / ব্যাংক দ্বারা ভেরিফাইড ট্রানজেকশন আইডি">
+                              <Check className="h-3 w-3 inline shrink-0" /> TrxID: {o.transaction_id || "-"}
+                            </span>
+                          ) : (
+                            <span className="text-muted-foreground text-[11px]" title="পেমেন্ট অসম্পূর্ণ থাকায় এটি ওয়েবসাইট মার্চেন্ট রেফারেন্স আইডি">
+                              Ref ID: {o.transaction_id || "-"}
+                            </span>
+                          )}
+                        </div>
                       </td>
                       <td className="p-3 font-bold text-foreground">{taka(o.amount)}</td>
                       <td className="p-3">

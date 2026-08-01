@@ -112,6 +112,7 @@ export const Route = createFileRoute("/api/payment/eps-verify.php")({
           // Step 2: Check Transaction Status
           let epsStatus = "UNKNOWN";
           let isSuccess = false;
+          let officialEpsTxId = targetTxId;
 
           try {
             const statusHash = await hmacSha512Base64(hash_key, targetTxId);
@@ -144,13 +145,17 @@ export const Route = createFileRoute("/api/payment/eps-verify.php")({
             ) {
               isSuccess = true;
             }
+
+            if (statusJson?.EpsTransactionId || statusJson?.epsTransactionId) {
+              officialEpsTxId = statusJson.EpsTransactionId || statusJson.epsTransactionId;
+            }
           } catch (err: any) {
             console.error("[EPS Verify] Verification call failed:", err);
           }
 
           if (isSuccess) {
-            // Update order status to approved
-            await exec(`UPDATE orders SET status = 'approved' WHERE id = ?`, [order.id]);
+            // Update order status to approved with official EPS transaction ID
+            await exec(`UPDATE orders SET transaction_id = ?, status = 'approved' WHERE id = ?`, [officialEpsTxId, order.id]);
 
             // Auto-enroll student
             await exec(
