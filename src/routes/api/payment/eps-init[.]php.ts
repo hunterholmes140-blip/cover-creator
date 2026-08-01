@@ -33,6 +33,7 @@ export const Route = createFileRoute("/api/payment/eps-init.php")({
     handlers: {
       POST: async ({ request }) =>
         handle(async () => {
+          const body = await request.json().catch(() => ({}));
           let authUser = bearerFrom(request);
 
           const email = String(body.customerEmail || body.email || (authUser ? authUser.email : "")).trim().toLowerCase();
