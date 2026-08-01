@@ -9,7 +9,7 @@ export const Route = createFileRoute("/api/admin/orders.php")({
         handle(async () => {
           requireAdmin(request);
           const orders = await q(
-            `SELECT o.*, u.name AS user_name, u.email AS user_email, c.title AS course_title
+            `SELECT o.*, u.name AS user_name, u.email AS user_email, u.phone AS user_phone, c.title AS course_title
              FROM orders o
              JOIN users u ON u.id = o.user_id
              JOIN courses c ON c.id = o.course_id
