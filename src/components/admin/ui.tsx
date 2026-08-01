@@ -95,7 +95,7 @@ export function Button({
   return (
     <button
       {...props}
-      className={`inline-flex items-center gap-1.5 rounded-md font-medium transition-colors ${styles[variant]} ${sizes[size]} ${className}`}
+      className={`inline-flex items-center gap-1.5 rounded-md font-medium transition-colors cursor-pointer ${styles[variant]} ${sizes[size]} ${className}`}
     />
   );
 }
