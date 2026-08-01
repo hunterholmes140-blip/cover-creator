@@ -54,7 +54,7 @@ export const Route = createFileRoute("/api/orders/create.php")({
           if (!course) return fail(404, "কোর্স পাওয়া যায়নি");
           const amount = course.discount_price ?? course.price;
 
-          const status = isEps ? "approved" : "pending";
+          const status = "pending";
 
           const res = await exec(
             `INSERT INTO orders (user_id, course_id, amount, payment_method, sender_number, transaction_id, note, status)
@@ -62,35 +62,16 @@ export const Route = createFileRoute("/api/orders/create.php")({
             [user.id, course_id, amount, payment_method, sender_number, transaction_id, note, status],
           );
 
-          if (isEps) {
-            // Auto-enroll user for EPS online payments
-            await exec(
-              `INSERT IGNORE INTO enrollments (user_id, course_id, order_id) VALUES (?, ?, ?)`,
-              [user.id, course_id, res.insertId],
-            );
-          }
-
           if (user.email) {
             const { sendTemplatedEmail } = await import("@/lib/email.server");
-            if (isEps) {
-              sendTemplatedEmail("payment_success", user.email, {
-                user_name: user.name || "Student",
-                user_email: user.email,
-                course_title: course.title,
-                amount,
-                transaction_id: transaction_id || `ORD-${res.insertId}`,
-                dashboard_url: "https://vencon.com.bd/dashboard",
-              }).catch(() => {});
-            } else {
-              sendTemplatedEmail("order_pending", user.email, {
-                user_name: user.name || "Student",
-                user_email: user.email,
-                course_title: course.title,
-                amount,
-                transaction_id: transaction_id || `ORD-${res.insertId}`,
-                dashboard_url: "https://vencon.com.bd/dashboard",
-              }).catch(() => {});
-            }
+            sendTemplatedEmail("order_pending", user.email, {
+              user_name: user.name || "Student",
+              user_email: user.email,
+              course_title: course.title,
+              amount,
+              transaction_id: transaction_id || `ORD-${res.insertId}`,
+              dashboard_url: "https://vencon.com.bd/dashboard",
+            }).catch(() => {});
           }
 
           return ok({

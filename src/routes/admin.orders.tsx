@@ -1,9 +1,10 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
-import { Check, X, Trash2, Search, Eye, Phone, Mail, MapPin, User, FileText, Calendar, CreditCard } from "lucide-react";
+import { Check, X, Trash2, Search, Eye, Phone, Mail, MapPin, User, FileText, Calendar, CreditCard, Zap } from "lucide-react";
 import { useLiveOrders } from "@/lib/live-store";
 import { taka } from "@/lib/format";
 import { PageHeader, Card, Input, Button, Badge, ConfirmDialog, useToast, Empty } from "@/components/admin/ui";
+import { api } from "@/lib/api";
 
 export const Route = createFileRoute("/admin/orders")({
   component: OrdersAdmin,
@@ -31,6 +32,7 @@ function OrdersAdmin() {
   const [status, setStatus] = useState<(typeof STATUSES)[number]>("all");
   const [confirmId, setConfirmId] = useState<any>(null);
   const [selectedOrder, setSelectedOrder] = useState<any>(null);
+  const [verifyingId, setVerifyingId] = useState<number | null>(null);
 
   const filtered = useMemo(() => {
     const s = q.toLowerCase().trim();
@@ -57,6 +59,31 @@ function OrdersAdmin() {
       toast.show(`অর্ডার ${s}`);
     } catch (e: any) {
       toast.show(e?.message || "আপডেট ব্যর্থ");
+    }
+  };
+
+  const handleVerifyEps = async (o: any) => {
+    if (!o.transaction_id) {
+      toast.show("ট্রানজেকশন আইডি পাওয়া যায়নি");
+      return;
+    }
+    setVerifyingId(o.id);
+    try {
+      const res = await api<{ verified: boolean; message?: string }>("payment/eps-verify.php", {
+        method: "POST",
+        body: { transaction_id: o.transaction_id, order_id: o.id },
+      });
+      if (res?.verified) {
+        toast.show("⚡ EPS পেমেন্ট সফল ও ভেরিফাইড! অর্ডার এপ্রুভ হয়েছে।");
+        await update(o.id, { status: "approved" });
+      } else {
+        toast.show(`❌ ${res?.message || "EPS পেমেন্ট সম্পন্ন হয়নি বা বাতিল হয়েছে।"}`);
+        await update(o.id, { status: "rejected" });
+      }
+    } catch (err: any) {
+      toast.show("ভেরিফিকেশনে সমস্যা: " + (err.message || "ত্রুটি"));
+    } finally {
+      setVerifyingId(null);
     }
   };
 
@@ -156,10 +183,25 @@ function OrdersAdmin() {
                         </Badge>
                       </td>
                       <td className="p-3">
-                        <div className="flex gap-1 justify-end items-center">
+                        <div className="flex gap-1 justify-end items-center flex-wrap">
                           <Button size="sm" variant="secondary" onClick={() => setSelectedOrder(o)} title="সকল ইউজার তথ্য দেখুন">
                             <Eye className="h-3.5 w-3.5" /> ইউজার তথ্য
                           </Button>
+
+                          {o.transaction_id && (
+                            <Button
+                              size="sm"
+                              variant="secondary"
+                              onClick={() => handleVerifyEps(o)}
+                              disabled={verifyingId === o.id}
+                              title="EPS সার্ভার থেকে রিয়েল-টাইম পেমেন্ট স্টেটাস যাচাই করুন"
+                              className="border-primary/40 text-primary hover:bg-primary/10"
+                            >
+                              <Zap className="h-3.5 w-3.5 fill-primary" />
+                              {verifyingId === o.id ? "যাচাই হচ্ছে..." : "EPS ভেরিফাই"}
+                            </Button>
+                          )}
+
                           {o.status !== "approved" && (
                             <Button size="sm" variant="primary" onClick={() => setStatusFor(o.id, "approved")}>
                               <Check className="h-3 w-3" /> Approve

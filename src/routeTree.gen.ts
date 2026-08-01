@@ -89,6 +89,7 @@ import { Route as ApiMarketingCapiDotphpRouteImport } from './routes/api/marketi
 import { Route as ApiOrdersCreateDotphpRouteImport } from './routes/api/orders/create[.]php'
 import { Route as ApiOrdersMyOrdersDotphpRouteImport } from './routes/api/orders/my-orders[.]php'
 import { Route as ApiPaymentEpsInitDotphpRouteImport } from './routes/api/payment/eps-init[.]php'
+import { Route as ApiPaymentEpsVerifyDotphpRouteImport } from './routes/api/payment/eps-verify[.]php'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -498,6 +499,12 @@ const ApiPaymentEpsInitDotphpRoute = ApiPaymentEpsInitDotphpRouteImport.update({
   path: '/api/payment/eps-init.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPaymentEpsVerifyDotphpRoute =
+  ApiPaymentEpsVerifyDotphpRouteImport.update({
+    id: '/api/payment/eps-verify.php',
+    path: '/api/payment/eps-verify.php',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -577,6 +584,7 @@ export interface FileRoutesByFullPath {
   '/api/orders/create.php': typeof ApiOrdersCreateDotphpRoute
   '/api/orders/my-orders.php': typeof ApiOrdersMyOrdersDotphpRoute
   '/api/payment/eps-init.php': typeof ApiPaymentEpsInitDotphpRoute
+  '/api/payment/eps-verify.php': typeof ApiPaymentEpsVerifyDotphpRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
   '/admin/trainers/': typeof AdminTrainersIndexRoute
@@ -656,6 +664,7 @@ export interface FileRoutesByTo {
   '/api/orders/create.php': typeof ApiOrdersCreateDotphpRoute
   '/api/orders/my-orders.php': typeof ApiOrdersMyOrdersDotphpRoute
   '/api/payment/eps-init.php': typeof ApiPaymentEpsInitDotphpRoute
+  '/api/payment/eps-verify.php': typeof ApiPaymentEpsVerifyDotphpRoute
   '/admin/blog': typeof AdminBlogIndexRoute
   '/admin/courses': typeof AdminCoursesIndexRoute
   '/admin/trainers': typeof AdminTrainersIndexRoute
@@ -739,6 +748,7 @@ export interface FileRoutesById {
   '/api/orders/create.php': typeof ApiOrdersCreateDotphpRoute
   '/api/orders/my-orders.php': typeof ApiOrdersMyOrdersDotphpRoute
   '/api/payment/eps-init.php': typeof ApiPaymentEpsInitDotphpRoute
+  '/api/payment/eps-verify.php': typeof ApiPaymentEpsVerifyDotphpRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
   '/admin/trainers/': typeof AdminTrainersIndexRoute
@@ -823,6 +833,7 @@ export interface FileRouteTypes {
     | '/api/orders/create.php'
     | '/api/orders/my-orders.php'
     | '/api/payment/eps-init.php'
+    | '/api/payment/eps-verify.php'
     | '/admin/blog/'
     | '/admin/courses/'
     | '/admin/trainers/'
@@ -902,6 +913,7 @@ export interface FileRouteTypes {
     | '/api/orders/create.php'
     | '/api/orders/my-orders.php'
     | '/api/payment/eps-init.php'
+    | '/api/payment/eps-verify.php'
     | '/admin/blog'
     | '/admin/courses'
     | '/admin/trainers'
@@ -984,6 +996,7 @@ export interface FileRouteTypes {
     | '/api/orders/create.php'
     | '/api/orders/my-orders.php'
     | '/api/payment/eps-init.php'
+    | '/api/payment/eps-verify.php'
     | '/admin/blog/'
     | '/admin/courses/'
     | '/admin/trainers/'
@@ -1039,6 +1052,7 @@ export interface RootRouteChildren {
   ApiOrdersCreateDotphpRoute: typeof ApiOrdersCreateDotphpRoute
   ApiOrdersMyOrdersDotphpRoute: typeof ApiOrdersMyOrdersDotphpRoute
   ApiPaymentEpsInitDotphpRoute: typeof ApiPaymentEpsInitDotphpRoute
+  ApiPaymentEpsVerifyDotphpRoute: typeof ApiPaymentEpsVerifyDotphpRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1603,6 +1617,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPaymentEpsInitDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/payment/eps-verify.php': {
+      id: '/api/payment/eps-verify.php'
+      path: '/api/payment/eps-verify.php'
+      fullPath: '/api/payment/eps-verify.php'
+      preLoaderRoute: typeof ApiPaymentEpsVerifyDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -1744,6 +1765,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiOrdersCreateDotphpRoute: ApiOrdersCreateDotphpRoute,
   ApiOrdersMyOrdersDotphpRoute: ApiOrdersMyOrdersDotphpRoute,
   ApiPaymentEpsInitDotphpRoute: ApiPaymentEpsInitDotphpRoute,
+  ApiPaymentEpsVerifyDotphpRoute: ApiPaymentEpsVerifyDotphpRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

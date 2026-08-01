@@ -374,6 +374,7 @@ function DashboardPage() {
   const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
+  const [verifyNotice, setVerifyNotice] = useState<{ type: "success" | "error"; text: string } | null>(null);
 
   useEffect(() => {
     const u = getStoredUser();
@@ -382,14 +383,65 @@ function DashboardPage() {
       return;
     }
     setUser(u);
-    Promise.all([
-      api<{ courses: any[] }>("courses/my-courses.php", { auth: true }).catch(() => ({ courses: [] })),
-      api<{ orders: any[] }>("orders/my-orders.php", { auth: true }).catch(() => ({ orders: [] })),
-    ]).then(([c, o]) => {
-      setCourses(c.courses);
-      setOrders(o.orders);
-      setLoading(false);
-    });
+
+    const loadData = async () => {
+      try {
+        const [c, o] = await Promise.all([
+          api<{ courses: any[] }>("courses/my-courses.php", { auth: true }).catch(() => ({ courses: [] })),
+          api<{ orders: any[] }>("orders/my-orders.php", { auth: true }).catch(() => ({ orders: [] })),
+        ]);
+
+        const fetchedOrders = o.orders || [];
+        const fetchedCourses = c.courses || [];
+
+        // Auto verify any pending EPS order directly with EPS API
+        const pendingOrder = fetchedOrders.find((ord: any) => ord.status === "pending" && ord.transaction_id);
+        if (pendingOrder) {
+          try {
+            const vRes = await api<{ verified: boolean; message?: string }>("payment/eps-verify.php", {
+              method: "POST",
+              body: { transaction_id: pendingOrder.transaction_id, order_id: pendingOrder.id },
+            });
+
+            if (vRes?.verified) {
+              setVerifyNotice({
+                type: "success",
+                text: "🎉 পেমেন্ট সফলভাবে ভেরিফাইড হয়েছে! আপনার কোর্স এক্সেস চালু হয়েছে।",
+              });
+              const [freshC, freshO] = await Promise.all([
+                api<{ courses: any[] }>("courses/my-courses.php", { auth: true }).catch(() => ({ courses: [] })),
+                api<{ orders: any[] }>("orders/my-orders.php", { auth: true }).catch(() => ({ orders: [] })),
+              ]);
+              setCourses(freshC.courses || []);
+              setOrders(freshO.orders || []);
+            } else if (vRes && vRes.verified === false) {
+              setVerifyNotice({
+                type: "error",
+                text: "❌ পেমেন্ট সম্পন্ন হয়নি বা বাতিল করা হয়েছে (Payment Failed / Canceled)।",
+              });
+              setOrders(fetchedOrders.map((ord: any) => ord.id === pendingOrder.id ? { ...ord, status: "rejected" } : ord));
+              setCourses(fetchedCourses);
+            } else {
+              setCourses(fetchedCourses);
+              setOrders(fetchedOrders);
+            }
+          } catch {
+            setCourses(fetchedCourses);
+            setOrders(fetchedOrders);
+          }
+        } else {
+          setCourses(fetchedCourses);
+          setOrders(fetchedOrders);
+        }
+      } catch {
+        setCourses([]);
+        setOrders([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadData();
   }, [nav]);
 
   if (!user) return null;
@@ -404,6 +456,21 @@ function DashboardPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-6">
+        {verifyNotice && (
+          <div
+            className={`mb-6 rounded-xl border p-4 text-sm font-semibold flex items-center justify-between gap-3 shadow-sm ${
+              verifyNotice.type === "success"
+                ? "border-green-500/30 bg-green-500/10 text-green-700 dark:text-green-400"
+                : "border-destructive/30 bg-destructive/10 text-destructive"
+            }`}
+          >
+            <span>{verifyNotice.text}</span>
+            <button onClick={() => setVerifyNotice(null)} className="text-xs font-bold px-2 py-1 hover:bg-black/10 rounded">
+              ✕ বন্ধ করুন
+            </button>
+          </div>
+        )}
+
         <div className="flex gap-2 border-b border-border">
           <TabBtn active={tab === "courses"} onClick={() => setTab("courses")} icon={BookOpen} label="আমার কোর্স" />
           <TabBtn active={tab === "orders"} onClick={() => setTab("orders")} icon={ShoppingBag} label="অর্ডার হিস্ট্রি" />

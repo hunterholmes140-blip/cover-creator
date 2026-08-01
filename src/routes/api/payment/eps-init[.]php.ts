@@ -199,19 +199,13 @@ export const Route = createFileRoute("/api/payment/eps-init.php")({
             return fail(500, `EPS ইনিশিয়ালাইজেশন ব্যর্থ হয়েছে: ${e.message}`);
           }
 
-          // Safe insert into DB without breaking enum, set approved status & auto-enroll
+          // Create pending order record (No course enrollment until EPS verifies actual payment)
           try {
-            const res = await exec(
+            await exec(
               `INSERT INTO orders (user_id, course_id, amount, payment_method, transaction_id, note, status)
-               VALUES (?, ?, ?, 'manual', ?, ?, 'approved')`,
+               VALUES (?, ?, ?, 'manual', ?, ?, 'pending')`,
               [user.id, course_id, amount, txId, `EPS Order #${orderNo}`]
             );
-            if (res?.insertId) {
-              await exec(
-                `INSERT IGNORE INTO enrollments (user_id, course_id, order_id) VALUES (?, ?, ?)`,
-                [user.id, course_id, res.insertId]
-              );
-            }
           } catch (dbErr) {
             console.error("[EPS] DB order insert warning:", dbErr);
           }
