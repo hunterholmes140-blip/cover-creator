@@ -288,7 +288,7 @@ export function OrdersAdmin() {
                             <span className="text-muted-foreground font-normal">ফোন নম্বর নেই</span>
                           )}
                         </div>
-                        {o.note && (
+                        {o.note && !o.note.includes("EPS Order") && !o.note.includes("ORD-") && !o.note.includes("TXN") && (
                           <div className="text-[11px] text-muted-foreground flex items-center gap-1.5 truncate max-w-[200px]" title={o.note}>
                             <MapPin className="h-3 w-3 text-muted-foreground shrink-0" />
                             {o.note}
@@ -300,17 +300,6 @@ export function OrdersAdmin() {
                         <span className="font-semibold text-xs text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded inline-block">
                           {getPaymentLabel(o)}
                         </span>
-                        <div className="text-xs font-mono mt-1">
-                          {o.status === "approved" ? (
-                            <span className="text-green-600 font-bold flex items-center gap-1" title="ইপিএস / ব্যাংক দ্বারা ভেরিফাইড ট্রানজেকশন আইডি">
-                              <Check className="h-3 w-3 inline shrink-0" /> TrxID: {o.transaction_id || "-"}
-                            </span>
-                          ) : (
-                            <span className="text-muted-foreground text-[11px]" title="পেমেন্ট অসম্পূর্ণ থাকায় এটি ওয়েবসাইট মার্চেন্ট রেফারেন্স আইডি">
-                              Ref ID: {o.transaction_id || "-"}
-                            </span>
-                          )}
-                        </div>
                       </td>
                       <td className="p-3 font-bold text-foreground">{taka(o.amount)}</td>
                       <td className="p-3">
@@ -408,19 +397,13 @@ export function OrdersAdmin() {
                   <span className="font-semibold text-xs">{getPaymentLabel(selectedOrder)}</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground text-xs">Transaction / Order ID:</span>
-                  <span className="font-mono text-xs select-all bg-background px-2 py-0.5 rounded border border-border">
-                    {selectedOrder.transaction_id || "N/A"}
-                  </span>
-                </div>
-                <div className="flex items-center justify-between">
                   <span className="text-muted-foreground text-xs">বর্তমান স্টেটাস:</span>
                   <span>{renderStatusBadge(selectedOrder.status)}</span>
                 </div>
               </div>
 
               {/* User Note / Address / Remarks */}
-              {selectedOrder.note && (
+              {selectedOrder.note && !selectedOrder.note.includes("EPS Order") && !selectedOrder.note.includes("ORD-") && !selectedOrder.note.includes("TXN") && (
                 <div className="bg-muted/40 rounded-xl p-3.5 space-y-1 border border-border">
                   <div className="text-xs font-bold text-primary uppercase tracking-wider">ঠিকানা / অতিরিক্ত নোট</div>
                   <p className="text-xs text-foreground/90 leading-relaxed whitespace-pre-wrap">{selectedOrder.note}</p>

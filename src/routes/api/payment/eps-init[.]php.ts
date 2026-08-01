@@ -204,7 +204,7 @@ export const Route = createFileRoute("/api/payment/eps-init.php")({
             await exec(
               `INSERT INTO orders (user_id, course_id, amount, payment_method, transaction_id, note, status)
                VALUES (?, ?, ?, 'manual', ?, ?, 'pending')`,
-              [user.id, course_id, amount, txId, `EPS Order #${orderNo}`]
+              [user.id, course_id, amount, txId, null]
             );
           } catch (dbErr) {
             console.error("[EPS] DB order insert warning:", dbErr);
