@@ -74,10 +74,11 @@ export function TeamCard({ member }: { member: TeamMember }) {
             )}
           </div>
 
-          {/* Contact snippets if available */}
-          {(member.email || member.phone) && (
+          {/* Contact snippets if available & visible */}
+          {((member.visibility?.email !== false && member.email) ||
+            (member.visibility?.phone !== false && member.phone)) && (
             <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-center gap-4 text-xs text-muted-foreground">
-              {member.email && (
+              {member.visibility?.email !== false && member.email && (
                 <a
                   href={`mailto:${member.email}`}
                   className="inline-flex items-center gap-1 hover:text-primary transition-colors"
@@ -87,7 +88,7 @@ export function TeamCard({ member }: { member: TeamMember }) {
                   <span className="truncate max-w-[120px]">{member.email}</span>
                 </a>
               )}
-              {member.phone && (
+              {member.visibility?.phone !== false && member.phone && (
                 <a
                   href={`tel:${member.phone}`}
                   className="inline-flex items-center gap-1 hover:text-primary transition-colors"

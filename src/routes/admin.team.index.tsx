@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useMemo } from "react";
 import { Plus, Pencil, Trash2, QrCode, Search, Filter, ShieldCheck, X, Eye } from "lucide-react";
 import { useTeam } from "@/lib/admin-store";
-import { TEAM_DEPARTMENTS, TeamMember, getDepartmentMeta } from "@/lib/team-types";
+import { TEAM_DEPARTMENTS, TeamMember, getDepartmentMeta, getEffectiveVerificationStatus } from "@/lib/team-types";
 import { PageHeader, Card, Button, ConfirmDialog, useToast, Empty, Badge } from "@/components/admin/ui";
 import { EmployeeQrCode } from "@/components/site/EmployeeQrCode";
 
@@ -127,7 +127,7 @@ function AdminTeamList() {
                     </div>
 
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex flex-wrap items-center gap-2">
                         <h4 className="font-bold text-foreground text-sm sm:text-base">
                           {member.name}
                         </h4>
@@ -139,12 +139,21 @@ function AdminTeamList() {
                         <span className={`text-[10px] font-semibold px-2 py-0.5 rounded-full border ${deptMeta.badgeColor}`}>
                           {member.department}
                         </span>
+                        {(() => {
+                          const eff = getEffectiveVerificationStatus(member);
+                          return (
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border ${eff.badgeColor}`}>
+                              {eff.status}
+                            </span>
+                          );
+                        })()}
                       </div>
 
-                      <div className="text-xs text-muted-foreground mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-1">
-                        <span>{member.designation}</span>
+                      <div className="text-xs text-muted-foreground mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+                        <span className="font-medium text-foreground/80">{member.designation}</span>
+                        {member.id_card_number && <span className="font-mono">Card: {member.id_card_number}</span>}
+                        {member.employment_type && <span>• {member.employment_type}</span>}
                         {member.phone && <span>• {member.phone}</span>}
-                        {member.email && <span>• {member.email}</span>}
                       </div>
                     </div>
                   </div>

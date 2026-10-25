@@ -102,7 +102,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                     : "text-foreground/70 hover:text-primary"
                 }`}
               >
-                <span>Team</span>
+                <span>টিম</span>
                 <ChevronDown
                   className={`h-3.5 w-3.5 transition-transform duration-200 ${
                     teamDropdownOpen ? "rotate-180" : ""
@@ -222,7 +222,7 @@ export function SiteLayout({ children }: { children: ReactNode }) {
                     isTeamActive ? "text-primary font-bold" : "text-foreground"
                   }`}
                 >
-                  <span>Team</span>
+                  <span>টিম</span>
                   <ChevronDown
                     className={`h-4 w-4 transition-transform ${
                       mobileTeamOpen ? "rotate-180" : ""

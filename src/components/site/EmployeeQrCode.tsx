@@ -57,14 +57,15 @@ export function EmployeeQrCode({
     ctx.stroke();
 
     // Header: Company Name & Member Name
+    const company = (member as any).company_name || "Vencon";
     ctx.fillStyle = "#0f172a";
     ctx.font = "bold 16px sans-serif";
     ctx.textAlign = "center";
-    ctx.fillText(member.name || "NextScale Team Member", totalWidth / 2, padding + 18);
+    ctx.fillText(member.name || `${company} Team Member`, totalWidth / 2, padding + 18);
 
     ctx.fillStyle = "#64748b";
     ctx.font = "12px sans-serif";
-    const idLabel = member.employee_id ? `ID: ${member.employee_id}` : (member.designation || "NextScale Academy");
+    const idLabel = member.employee_id ? `ID: ${member.employee_id} • ${company}` : (member.designation || company);
     ctx.fillText(idLabel, totalWidth / 2, padding + 36);
 
     // Draw QR code
@@ -80,7 +81,7 @@ export function EmployeeQrCode({
     const safeName = (member.employee_id || member.name || "qr-code")
       .toLowerCase()
       .replace(/[^a-z0-9_-]/g, "_");
-    link.download = `nextscale-qr-${safeName}.png`;
+    link.download = `vencon-qr-${safeName}.png`;
     link.href = exportCanvas.toDataURL("image/png");
     link.click();
   };
@@ -98,12 +99,13 @@ export function EmployeeQrCode({
     if (!printWindow) return;
     const canvas = qrRef.current?.querySelector("canvas");
     const dataUrl = canvas ? canvas.toDataURL("image/png") : "";
+    const company = (member as any).company_name || "Vencon";
 
     printWindow.document.write(`
       <!DOCTYPE html>
       <html>
         <head>
-          <title>${member.name} - Official QR Card</title>
+          <title>${member.name} - ${company} Official QR Card</title>
           <style>
             body { font-family: system-ui, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 90vh; margin: 0; background: #f8fafc; }
             .card { background: white; border: 2px solid #cbd5e1; border-radius: 16px; padding: 28px; text-align: center; max-width: 300px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); }
@@ -117,10 +119,10 @@ export function EmployeeQrCode({
         <body>
           <div class="card">
             <h2>${member.name}</h2>
-            <p class="sub">${member.designation || member.department || ""}</p>
+            <p class="sub">${member.designation || member.department || ""} • ${company}</p>
             ${member.employee_id ? `<div class="badge">ID: ${member.employee_id}</div>` : ""}
             <img src="${dataUrl}" width="${size}" height="${size}" alt="QR Code" />
-            <div class="footer">NextScale Official Verification Card</div>
+            <div class="footer">${company} Official Verification Card</div>
           </div>
           <script>
             window.onload = function() { window.print(); window.close(); }

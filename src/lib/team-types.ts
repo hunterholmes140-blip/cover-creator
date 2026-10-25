@@ -51,21 +51,77 @@ export const TEAM_DEPARTMENTS = [
 
 export type TeamDepartment = (typeof TEAM_DEPARTMENTS)[number]["value"];
 
+export type EmploymentType = "Permanent" | "Contractual" | "Probationary";
+export type EmploymentStatus = "Active" | "Resigned" | "Suspended";
+export type VerificationStatus = "Valid" | "Expired" | "Inactive";
+
+export interface TeamMemberVisibility {
+  phone?: boolean;
+  email?: boolean;
+  joining_date?: boolean;
+  employment_type?: boolean;
+  employment_status?: boolean;
+  id_card_number?: boolean;
+  id_card_dates?: boolean;
+  remaining_validity?: boolean;
+  blood_group?: boolean;
+  location?: boolean;
+  official_contact?: boolean;
+  social?: boolean;
+  bio?: boolean;
+}
+
+export const DEFAULT_VISIBILITY: TeamMemberVisibility = {
+  phone: true,
+  email: true,
+  joining_date: true,
+  employment_type: true,
+  employment_status: true,
+  id_card_number: true,
+  id_card_dates: true,
+  remaining_validity: true,
+  blood_group: true,
+  location: true,
+  official_contact: true,
+  social: true,
+  bio: true,
+};
+
 export interface TeamMember {
   id: string | number;
-  employee_id: string; // সবার আইডি লেখার ইউনিক ইনপুট
+  company_name?: string; // Company Name: Vencon
+  employee_id: string; // Employee ID: ইউনিক আইডি
   slug: string;
-  name: string;
-  department: TeamDepartment | string;
-  designation: string;
-  avatar_url?: string;
+  name: string; // Employee Name: কর্মীর পূর্ণ নাম
+  department: TeamDepartment | string; // Department: বিভাগ
+  designation: string; // Designation: পদবি
+  avatar_url?: string; // Employee Photo: অফিসিয়াল ছবি
   email?: string;
   phone?: string;
   bio?: string;
-  joining_date?: string;
+  
+  // Employment Details
+  employment_type?: EmploymentType | string; // Permanent / Contractual / Probationary
+  joining_date?: string; // যোগদানের তারিখ
+  employment_status?: EmploymentStatus | string; // Active / Resigned / Suspended
+  
+  // ID Card & Validity Details
+  id_card_number?: string; // পরিচয়পত্র নম্বর (যেমন: VEN-ID-90823)
+  id_card_issue_date?: string; // ইস্যুর তারিখ
+  id_card_expiry_date?: string; // মেয়াদ শেষ হওয়ার তারিখ
+  validation_period?: string; // মোট বৈধতার মেয়াদ (যেমন: ৩ বছর / 3 Years)
+  verification_status?: VerificationStatus | string; // Valid / Expired / Inactive
+  last_updated?: string; // সর্বশেষ তথ্য আপডেটের তারিখ
+  official_contact?: string; // Vencon-এর অফিসিয়াল যোগাযোগ
+  
+  // Other particulars
   blood_group?: string;
   location?: string;
   status?: "active" | "inactive";
+  
+  // Public Visibility Preferences
+  visibility?: TeamMemberVisibility;
+  
   social?: {
     facebook?: string;
     linkedin?: string;
@@ -101,4 +157,98 @@ export function getProfileUrl(member: { id: any; employee_id?: string; slug?: st
     return `${window.location.origin}/team/${identifier}`;
   }
   return `/team/${identifier}`;
+}
+
+/**
+ * Calculates remaining validity days from expiry date.
+ * Returns negative if expired, 0 if expires today, positive if remaining.
+ */
+export function getRemainingValidityDays(expiryDateStr?: string): number | null {
+  if (!expiryDateStr) return null;
+  const expiry = new Date(expiryDateStr);
+  if (isNaN(expiry.getTime())) return null;
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  expiry.setHours(0, 0, 0, 0);
+  const diffTime = expiry.getTime() - now.getTime();
+  return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+}
+
+/**
+ * Formats the remaining validity for user display.
+ */
+export function formatRemainingValidity(expiryDateStr?: string): { text: string; isExpired: boolean; days: number | null } {
+  const days = getRemainingValidityDays(expiryDateStr);
+  if (days === null) {
+    return { text: "মেয়াদ নির্ধারিত নেই", isExpired: false, days: null };
+  }
+  if (days < 0) {
+    return { text: `মেয়াদ উত্তীর্ণ (${Math.abs(days)} দিন আগে)`, isExpired: true, days };
+  }
+  if (days === 0) {
+    return { text: "আজই মেয়াদ শেষ হবে", isExpired: false, days: 0 };
+  }
+  const years = Math.floor(days / 365);
+  const months = Math.floor((days % 365) / 30);
+  const remDays = days % 30;
+  
+  let parts: string[] = [];
+  if (years > 0) parts.push(`${years} বছর`);
+  if (months > 0) parts.push(`${months} মাস`);
+  if (remDays > 0 || parts.length === 0) parts.push(`${remDays} দিন`);
+  
+  return {
+    text: `${parts.join(" ")} বাকি (${days} দিন)`,
+    isExpired: false,
+    days,
+  };
+}
+
+/**
+ * Derives effective verification status considering employment status and expiration.
+ */
+export function getEffectiveVerificationStatus(member: TeamMember): {
+  status: "Valid" | "Expired" | "Inactive";
+  badgeColor: string;
+  labelBn: string;
+} {
+  const empStatus = (member.employment_status || "Active").toLowerCase();
+  if (empStatus === "resigned" || empStatus === "suspended" || member.status === "inactive") {
+    return {
+      status: "Inactive",
+      badgeColor: "bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800",
+      labelBn: "নিষ্ক্রিয় (Inactive)",
+    };
+  }
+
+  const days = getRemainingValidityDays(member.id_card_expiry_date);
+  if (days !== null && days < 0) {
+    return {
+      status: "Expired",
+      badgeColor: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800",
+      labelBn: "মেয়াদ উত্তীর্ণ (Expired)",
+    };
+  }
+
+  if (member.verification_status === "Expired") {
+    return {
+      status: "Expired",
+      badgeColor: "bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800",
+      labelBn: "মেয়াদ উত্তীর্ণ (Expired)",
+    };
+  }
+
+  if (member.verification_status === "Inactive") {
+    return {
+      status: "Inactive",
+      badgeColor: "bg-rose-100 text-rose-700 border-rose-200 dark:bg-rose-950/40 dark:text-rose-400 dark:border-rose-800",
+      labelBn: "নিষ্ক্রিয় (Inactive)",
+    };
+  }
+
+  return {
+    status: "Valid",
+    badgeColor: "bg-emerald-100 text-emerald-700 border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800",
+    labelBn: "বৈধ ও অনুমোদিত (Valid)",
+  };
 }

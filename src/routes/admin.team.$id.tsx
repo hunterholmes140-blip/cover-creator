@@ -35,6 +35,7 @@ function AdminEditTeamMember() {
   }
 
   const initialVal: TeamFormValue = {
+    company_name: member.company_name || "Vencon",
     employee_id: member.employee_id || "",
     name: member.name || "",
     slug: member.slug || "",
@@ -44,10 +45,34 @@ function AdminEditTeamMember() {
     email: member.email || "",
     phone: member.phone || "",
     bio: member.bio || "",
+    employment_type: member.employment_type || "Permanent",
     joining_date: member.joining_date || "",
+    employment_status: member.employment_status || "Active",
+    id_card_number: member.id_card_number || "",
+    id_card_issue_date: member.id_card_issue_date || "",
+    id_card_expiry_date: member.id_card_expiry_date || "",
+    validation_period: member.validation_period || "৩ বছর (3 Years)",
+    verification_status: member.verification_status || "Valid",
+    last_updated: member.last_updated || new Date().toISOString().split("T")[0],
+    official_contact: member.official_contact || "Vencon Official: info@vencon.com.bd | +880 1700-000000 | Dhaka",
     blood_group: member.blood_group || "B+",
     location: member.location || "ঢাকা",
     status: member.status || "active",
+    visibility: member.visibility || {
+      phone: true,
+      email: true,
+      joining_date: true,
+      employment_type: true,
+      employment_status: true,
+      id_card_number: true,
+      id_card_dates: true,
+      remaining_validity: true,
+      blood_group: true,
+      location: true,
+      official_contact: true,
+      social: true,
+      bio: true,
+    },
     social: member.social || {},
   };
 
