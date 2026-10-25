@@ -6,10 +6,10 @@
 // Lovable প্রিভিউতে PHP নেই → fetch fail হলে mock data দেখাই
 // ============================================================
 
-import { MOCK_COURSES, MOCK_CATEGORIES, MOCK_SETTINGS, MOCK_TRAINERS, MOCK_TESTIMONIALS, MOCK_FAQS, MOCK_POSTS } from "./mock-data";
+import { MOCK_COURSES, MOCK_CATEGORIES, MOCK_SETTINGS, MOCK_TRAINERS, MOCK_TESTIMONIALS, MOCK_FAQS, MOCK_POSTS, MOCK_TEAM_MEMBERS } from "./mock-data";
 import {
   coursesStore, categoriesStore, trainersStore, blogStore,
-  testimonialsStore, faqsStore,
+  testimonialsStore, faqsStore, teamStore,
 } from "./admin-store";
 
 // In preview (no VITE_API_URL) we serve data from the admin-store so anything
@@ -182,6 +182,27 @@ async function mockResponse<T>(path: string, opts: any): Promise<T> {
     return { message: "অর্ডার সাবমিট হয়েছে (ডেমো)।", order_id: 999 } as any;
   }
 
+  if (p === "content/team.php") {
+    const list = fromStore(() => teamStore.getAll(), MOCK_TEAM_MEMBERS as any);
+    const slug = opts.query?.slug || opts.query?.id;
+    const dept = opts.query?.department || opts.query?.dept;
+    if (slug) {
+      const member = list.find((x: any) => 
+        String(x.slug).toLowerCase() === String(slug).toLowerCase() || 
+        String(x.id).toLowerCase() === String(slug).toLowerCase() ||
+        String(x.employee_id).toLowerCase() === String(slug).toLowerCase()
+      );
+      if (!member) throw new ApiError("টিম মেম্বার পাওয়া যায়নি", 404);
+      return { member } as T;
+    }
+    if (dept) {
+      const filtered = list.filter((x: any) => 
+        String(x.department).toLowerCase() === String(dept).toLowerCase()
+      );
+      return { team: filtered } as T;
+    }
+    return { team: list } as T;
+  }
   if (p === "content/trainers.php") {
     const list = fromStore(() => trainersStore.getAll(), MOCK_TRAINERS as any);
     const slug = opts.query?.slug;

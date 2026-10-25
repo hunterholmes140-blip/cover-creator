@@ -119,6 +119,7 @@ const GROUPS: NavGroup[] = [
       { to: "/admin/faqs", label: "FAQ", Icon: FileText },
       { to: "/admin/pages", label: "পেইজ কন্টেন্ট", Icon: FilePenLine },
       { to: "/admin/auth-pages", label: "লগইন/রেজিস্টার", Icon: Lock },
+      { to: "/admin/team", label: "টিম / এমপ্লয়ী", Icon: Users },
       { to: "/admin/footer", label: "ফুটার", Icon: FilePenLine },
     ],
   },

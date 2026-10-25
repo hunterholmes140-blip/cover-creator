@@ -1,6 +1,6 @@
-import { Link, useNavigate } from "@tanstack/react-router";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useEffect, useState, type ReactNode } from "react";
-import { Menu, X, User, LogOut, Facebook, Youtube, Instagram, Linkedin, MessageCircle } from "lucide-react";
+import { Menu, X, User, LogOut, Facebook, Youtube, Instagram, Linkedin, MessageCircle, ChevronDown } from "lucide-react";
 import { clearAuth, getStoredUser } from "@/lib/api";
 import { useSiteSettings, whatsappLink } from "@/lib/site-settings";
 import { useScrollReveal } from "@/hooks/use-scroll-reveal";
@@ -12,10 +12,22 @@ import brandLogo from "@/assets/brand-logo.png.asset.json";
 
 
 
-const NAV = [
+const TEAM_SUB_ITEMS = [
+  { label: "Author", dept: "Author", desc: "অথর ও কোর্স কনটেন্ট টিম" },
+  { label: "Management", dept: "Management", desc: "ম্যানেজমেন্ট ও প্রশাসন" },
+  { label: "Sales", dept: "Sales", desc: "সেলস ও স্টুডেন্ট কাউন্সেলিং" },
+  { label: "Logistics", dept: "Logistics", desc: "লজিস্টিকস ও ইনভেন্টরি" },
+  { label: "Logictics Support", dept: "Logictics Support", desc: "লজিস্টিকস সাপোর্ট ও সমন্বয়" },
+  { label: "Others", dept: "Others", desc: "আইটি ও সহায়ক অন্যান্য" },
+] as const;
+
+const NAV_START = [
   { to: "/", label: "হোম" },
   { to: "/courses", label: "কোর্স" },
   { to: "/trainers", label: "ট্রেনার" },
+] as const;
+
+const NAV_END = [
   { to: "/blog", label: "ব্লগ" },
   { to: "/faq", label: "FAQ" },
   { to: "/about", label: "আমাদের সম্পর্কে" },
@@ -32,12 +44,16 @@ function ThreadsIcon({ className = "h-4 w-4" }: { className?: string }) {
 
 export function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
+  const [teamDropdownOpen, setTeamDropdownOpen] = useState(false);
+  const [mobileTeamOpen, setMobileTeamOpen] = useState(false);
   const { settings } = useSiteSettings();
   const [footer] = useContent(CONTENT_KEYS.FOOTER, FOOTER_CONTENT_DEFAULTS);
   const [user, setUser] = useState<any>(null);
   useScrollReveal();
 
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const isTeamActive = pathname.startsWith("/team");
 
   useEffect(() => {
     setUser(getStoredUser());
@@ -60,13 +76,78 @@ export function SiteLayout({ children }: { children: ReactNode }) {
 
 
           <nav className="hidden md:flex items-center gap-1">
-            {NAV.map((item) => (
+            {NAV_START.map((item) => (
               <Link
                 key={item.to}
                 to={item.to}
                 className="px-3 py-2 text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
                 activeProps={{ className: "px-3 py-2 text-sm font-medium text-primary" }}
                 activeOptions={{ exact: item.to === "/" }}
+              >
+                {item.label}
+              </Link>
+            ))}
+
+            {/* Team Dropdown Menu */}
+            <div
+              className="relative"
+              onMouseEnter={() => setTeamDropdownOpen(true)}
+              onMouseLeave={() => setTeamDropdownOpen(false)}
+            >
+              <Link
+                to="/team"
+                className={`inline-flex items-center gap-1 px-3 py-2 text-sm font-medium transition-colors rounded-md ${
+                  isTeamActive
+                    ? "text-primary font-semibold"
+                    : "text-foreground/70 hover:text-primary"
+                }`}
+              >
+                <span>Team</span>
+                <ChevronDown
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    teamDropdownOpen ? "rotate-180" : ""
+                  }`}
+                />
+              </Link>
+
+              {teamDropdownOpen && (
+                <div className="absolute top-full left-0 w-64 pt-2 z-50 animate-in fade-in slide-in-from-top-1">
+                  <div className="rounded-xl border border-border bg-card/95 backdrop-blur-md shadow-xl p-2 space-y-1">
+                    <div className="px-3 py-1.5 text-[11px] font-bold text-muted-foreground uppercase tracking-wider border-b border-border/60">
+                      টিম ডিপার্টমেন্ট
+                    </div>
+                    {TEAM_SUB_ITEMS.map((sub) => (
+                      <Link
+                        key={sub.label}
+                        to="/team"
+                        search={{ dept: sub.dept }}
+                        onClick={() => setTeamDropdownOpen(false)}
+                        className="flex flex-col px-3 py-2 rounded-lg text-sm font-medium hover:bg-accent text-foreground transition-colors group"
+                      >
+                        <span className="group-hover:text-primary font-semibold">{sub.label}</span>
+                        <span className="text-[11px] text-muted-foreground font-normal">{sub.desc}</span>
+                      </Link>
+                    ))}
+                    <div className="pt-1.5 border-t border-border/60">
+                      <Link
+                        to="/team"
+                        onClick={() => setTeamDropdownOpen(false)}
+                        className="block text-center px-3 py-1.5 rounded-lg text-xs font-bold text-primary bg-primary/10 hover:bg-primary/20 transition-colors"
+                      >
+                        সকল টিম মেম্বার দেখুন →
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {NAV_END.map((item) => (
+              <Link
+                key={item.to}
+                to={item.to}
+                className="px-3 py-2 text-sm font-medium text-foreground/70 hover:text-primary transition-colors"
+                activeProps={{ className: "px-3 py-2 text-sm font-medium text-primary" }}
               >
                 {item.label}
               </Link>
@@ -121,7 +202,58 @@ export function SiteLayout({ children }: { children: ReactNode }) {
         {open && (
           <div className="md:hidden border-t border-border bg-background">
             <div className="px-4 py-3 space-y-1">
-              {NAV.map((item) => (
+              {NAV_START.map((item) => (
+                <Link
+                  key={item.to}
+                  to={item.to}
+                  onClick={() => setOpen(false)}
+                  className="block px-3 py-2 rounded-md text-sm font-medium hover:bg-accent"
+                >
+                  {item.label}
+                </Link>
+              ))}
+
+              {/* Mobile Team Accordion */}
+              <div>
+                <button
+                  type="button"
+                  onClick={() => setMobileTeamOpen(!mobileTeamOpen)}
+                  className={`w-full flex items-center justify-between px-3 py-2 rounded-md text-sm font-medium hover:bg-accent ${
+                    isTeamActive ? "text-primary font-bold" : "text-foreground"
+                  }`}
+                >
+                  <span>Team</span>
+                  <ChevronDown
+                    className={`h-4 w-4 transition-transform ${
+                      mobileTeamOpen ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {mobileTeamOpen && (
+                  <div className="pl-4 pr-2 py-1 space-y-1 bg-muted/30 rounded-lg mt-1 border-l-2 border-primary/40 ml-2">
+                    <Link
+                      to="/team"
+                      onClick={() => setOpen(false)}
+                      className="block px-3 py-1.5 rounded-md text-xs font-bold text-primary hover:bg-accent"
+                    >
+                      সকল টিম মেম্বার (All Members)
+                    </Link>
+                    {TEAM_SUB_ITEMS.map((sub) => (
+                      <Link
+                        key={sub.label}
+                        to="/team"
+                        search={{ dept: sub.dept }}
+                        onClick={() => setOpen(false)}
+                        className="block px-3 py-1.5 rounded-md text-xs font-medium text-foreground/80 hover:text-primary hover:bg-accent"
+                      >
+                        {sub.label}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {NAV_END.map((item) => (
                 <Link
                   key={item.to}
                   to={item.to}

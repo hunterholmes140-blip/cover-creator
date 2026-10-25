@@ -22,6 +22,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as PrivacyPolicyRouteImport } from './routes/privacy-policy'
 import { Route as RefundPolicyRouteImport } from './routes/refund-policy'
 import { Route as RegisterRouteImport } from './routes/register'
+import { Route as TeamRouteImport } from './routes/team'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as TrainersRouteImport } from './routes/trainers'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -48,6 +49,8 @@ import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as CheckoutSlugRouteImport } from './routes/checkout.$slug'
 import { Route as CoursesIndexRouteImport } from './routes/courses.index'
 import { Route as CoursesSlugRouteImport } from './routes/courses.$slug'
+import { Route as TeamIndexRouteImport } from './routes/team.index'
+import { Route as TeamIdRouteImport } from './routes/team.$id'
 import { Route as TrainersIndexRouteImport } from './routes/trainers.index'
 import { Route as TrainersSlugRouteImport } from './routes/trainers.$slug'
 import { Route as AdminBlogIndexRouteImport } from './routes/admin.blog.index'
@@ -56,6 +59,9 @@ import { Route as AdminBlogNewRouteImport } from './routes/admin.blog.new'
 import { Route as AdminCoursesIndexRouteImport } from './routes/admin.courses.index'
 import { Route as AdminCoursesSlugRouteImport } from './routes/admin.courses.$slug'
 import { Route as AdminCoursesNewRouteImport } from './routes/admin.courses.new'
+import { Route as AdminTeamIndexRouteImport } from './routes/admin.team.index'
+import { Route as AdminTeamIdRouteImport } from './routes/admin.team.$id'
+import { Route as AdminTeamNewRouteImport } from './routes/admin.team.new'
 import { Route as AdminTrainersIndexRouteImport } from './routes/admin.trainers.index'
 import { Route as AdminTrainersSlugRouteImport } from './routes/admin.trainers.$slug'
 import { Route as AdminTrainersNewRouteImport } from './routes/admin.trainers.new'
@@ -80,6 +86,7 @@ import { Route as ApiAuthRegisterDotphpRouteImport } from './routes/api/auth/reg
 import { Route as ApiAuthResetPasswordDotphpRouteImport } from './routes/api/auth/reset-password[.]php'
 import { Route as ApiContentFaqsDotphpRouteImport } from './routes/api/content/faqs[.]php'
 import { Route as ApiContentPostsDotphpRouteImport } from './routes/api/content/posts[.]php'
+import { Route as ApiContentTeamDotphpRouteImport } from './routes/api/content/team[.]php'
 import { Route as ApiContentTestimonialsDotphpRouteImport } from './routes/api/content/testimonials[.]php'
 import { Route as ApiContentTrainersDotphpRouteImport } from './routes/api/content/trainers[.]php'
 import { Route as ApiCouponsValidateDotphpRouteImport } from './routes/api/coupons/validate[.]php'
@@ -156,6 +163,11 @@ const RefundPolicyRoute = RefundPolicyRouteImport.update({
 const RegisterRoute = RegisterRouteImport.update({
   id: '/register',
   path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/team',
+  path: '/team',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -288,6 +300,16 @@ const CoursesSlugRoute = CoursesSlugRouteImport.update({
   path: '/courses/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TeamIndexRoute = TeamIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => TeamRoute,
+} as any)
+const TeamIdRoute = TeamIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => TeamRoute,
+} as any)
 const TrainersIndexRoute = TrainersIndexRouteImport.update({
   id: '/',
   path: '/',
@@ -326,6 +348,21 @@ const AdminCoursesSlugRoute = AdminCoursesSlugRouteImport.update({
 const AdminCoursesNewRoute = AdminCoursesNewRouteImport.update({
   id: '/courses/new',
   path: '/courses/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTeamIndexRoute = AdminTeamIndexRouteImport.update({
+  id: '/team/',
+  path: '/team/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTeamIdRoute = AdminTeamIdRouteImport.update({
+  id: '/team/$id',
+  path: '/team/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminTeamNewRoute = AdminTeamNewRouteImport.update({
+  id: '/team/new',
+  path: '/team/new',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminTrainersIndexRoute = AdminTrainersIndexRouteImport.update({
@@ -453,6 +490,11 @@ const ApiContentPostsDotphpRoute = ApiContentPostsDotphpRouteImport.update({
   path: '/api/content/posts.php',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiContentTeamDotphpRoute = ApiContentTeamDotphpRouteImport.update({
+  id: '/api/content/team.php',
+  path: '/api/content/team.php',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiContentTestimonialsDotphpRoute =
   ApiContentTestimonialsDotphpRouteImport.update({
     id: '/api/content/testimonials.php',
@@ -534,6 +576,7 @@ export interface FileRoutesByFullPath {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/team': typeof TeamRouteWithChildren
   '/terms': typeof TermsRoute
   '/trainers': typeof TrainersRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -557,15 +600,19 @@ export interface FileRoutesByFullPath {
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/team/$id': typeof TeamIdRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/courses/': typeof CoursesIndexRoute
+  '/team/': typeof TeamIndexRoute
   '/trainers/': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/courses/$slug': typeof AdminCoursesSlugRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
+  '/admin/team/$id': typeof AdminTeamIdRoute
+  '/admin/team/new': typeof AdminTeamNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
   '/api/admin/analytics.php': typeof ApiAdminAnalyticsDotphpRoute
@@ -589,6 +636,7 @@ export interface FileRoutesByFullPath {
   '/api/auth/reset-password.php': typeof ApiAuthResetPasswordDotphpRoute
   '/api/content/faqs.php': typeof ApiContentFaqsDotphpRoute
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
+  '/api/content/team.php': typeof ApiContentTeamDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
   '/api/content/trainers.php': typeof ApiContentTrainersDotphpRoute
   '/api/coupons/validate.php': typeof ApiCouponsValidateDotphpRoute
@@ -603,6 +651,7 @@ export interface FileRoutesByFullPath {
   '/api/payment/eps-verify.php': typeof ApiPaymentEpsVerifyDotphpRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
+  '/admin/team/': typeof AdminTeamIndexRoute
   '/admin/trainers/': typeof AdminTrainersIndexRoute
 }
 export interface FileRoutesByTo {
@@ -639,15 +688,19 @@ export interface FileRoutesByTo {
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/team/$id': typeof TeamIdRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin': typeof AdminIndexRoute
   '/blog': typeof BlogIndexRoute
   '/courses': typeof CoursesIndexRoute
+  '/team': typeof TeamIndexRoute
   '/trainers': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/courses/$slug': typeof AdminCoursesSlugRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
+  '/admin/team/$id': typeof AdminTeamIdRoute
+  '/admin/team/new': typeof AdminTeamNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
   '/api/admin/analytics.php': typeof ApiAdminAnalyticsDotphpRoute
@@ -671,6 +724,7 @@ export interface FileRoutesByTo {
   '/api/auth/reset-password.php': typeof ApiAuthResetPasswordDotphpRoute
   '/api/content/faqs.php': typeof ApiContentFaqsDotphpRoute
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
+  '/api/content/team.php': typeof ApiContentTeamDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
   '/api/content/trainers.php': typeof ApiContentTrainersDotphpRoute
   '/api/coupons/validate.php': typeof ApiCouponsValidateDotphpRoute
@@ -685,6 +739,7 @@ export interface FileRoutesByTo {
   '/api/payment/eps-verify.php': typeof ApiPaymentEpsVerifyDotphpRoute
   '/admin/blog': typeof AdminBlogIndexRoute
   '/admin/courses': typeof AdminCoursesIndexRoute
+  '/admin/team': typeof AdminTeamIndexRoute
   '/admin/trainers': typeof AdminTrainersIndexRoute
 }
 export interface FileRoutesById {
@@ -702,6 +757,7 @@ export interface FileRoutesById {
   '/privacy-policy': typeof PrivacyPolicyRoute
   '/refund-policy': typeof RefundPolicyRoute
   '/register': typeof RegisterRoute
+  '/team': typeof TeamRouteWithChildren
   '/terms': typeof TermsRoute
   '/trainers': typeof TrainersRouteWithChildren
   '/admin/analytics': typeof AdminAnalyticsRoute
@@ -725,15 +781,19 @@ export interface FileRoutesById {
   '/blog/$slug': typeof BlogSlugRoute
   '/checkout/$slug': typeof CheckoutSlugRoute
   '/courses/$slug': typeof CoursesSlugRoute
+  '/team/$id': typeof TeamIdRoute
   '/trainers/$slug': typeof TrainersSlugRoute
   '/admin/': typeof AdminIndexRoute
   '/blog/': typeof BlogIndexRoute
   '/courses/': typeof CoursesIndexRoute
+  '/team/': typeof TeamIndexRoute
   '/trainers/': typeof TrainersIndexRoute
   '/admin/blog/$slug': typeof AdminBlogSlugRoute
   '/admin/blog/new': typeof AdminBlogNewRoute
   '/admin/courses/$slug': typeof AdminCoursesSlugRoute
   '/admin/courses/new': typeof AdminCoursesNewRoute
+  '/admin/team/$id': typeof AdminTeamIdRoute
+  '/admin/team/new': typeof AdminTeamNewRoute
   '/admin/trainers/$slug': typeof AdminTrainersSlugRoute
   '/admin/trainers/new': typeof AdminTrainersNewRoute
   '/api/admin/analytics.php': typeof ApiAdminAnalyticsDotphpRoute
@@ -757,6 +817,7 @@ export interface FileRoutesById {
   '/api/auth/reset-password.php': typeof ApiAuthResetPasswordDotphpRoute
   '/api/content/faqs.php': typeof ApiContentFaqsDotphpRoute
   '/api/content/posts.php': typeof ApiContentPostsDotphpRoute
+  '/api/content/team.php': typeof ApiContentTeamDotphpRoute
   '/api/content/testimonials.php': typeof ApiContentTestimonialsDotphpRoute
   '/api/content/trainers.php': typeof ApiContentTrainersDotphpRoute
   '/api/coupons/validate.php': typeof ApiCouponsValidateDotphpRoute
@@ -771,6 +832,7 @@ export interface FileRoutesById {
   '/api/payment/eps-verify.php': typeof ApiPaymentEpsVerifyDotphpRoute
   '/admin/blog/': typeof AdminBlogIndexRoute
   '/admin/courses/': typeof AdminCoursesIndexRoute
+  '/admin/team/': typeof AdminTeamIndexRoute
   '/admin/trainers/': typeof AdminTrainersIndexRoute
 }
 export interface FileRouteTypes {
@@ -789,6 +851,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/refund-policy'
     | '/register'
+    | '/team'
     | '/terms'
     | '/trainers'
     | '/admin/analytics'
@@ -812,15 +875,19 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
+    | '/team/$id'
     | '/trainers/$slug'
     | '/admin/'
     | '/blog/'
     | '/courses/'
+    | '/team/'
     | '/trainers/'
     | '/admin/blog/$slug'
     | '/admin/blog/new'
     | '/admin/courses/$slug'
     | '/admin/courses/new'
+    | '/admin/team/$id'
+    | '/admin/team/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
     | '/api/admin/analytics.php'
@@ -844,6 +911,7 @@ export interface FileRouteTypes {
     | '/api/auth/reset-password.php'
     | '/api/content/faqs.php'
     | '/api/content/posts.php'
+    | '/api/content/team.php'
     | '/api/content/testimonials.php'
     | '/api/content/trainers.php'
     | '/api/coupons/validate.php'
@@ -858,6 +926,7 @@ export interface FileRouteTypes {
     | '/api/payment/eps-verify.php'
     | '/admin/blog/'
     | '/admin/courses/'
+    | '/admin/team/'
     | '/admin/trainers/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -894,15 +963,19 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
+    | '/team/$id'
     | '/trainers/$slug'
     | '/admin'
     | '/blog'
     | '/courses'
+    | '/team'
     | '/trainers'
     | '/admin/blog/$slug'
     | '/admin/blog/new'
     | '/admin/courses/$slug'
     | '/admin/courses/new'
+    | '/admin/team/$id'
+    | '/admin/team/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
     | '/api/admin/analytics.php'
@@ -926,6 +999,7 @@ export interface FileRouteTypes {
     | '/api/auth/reset-password.php'
     | '/api/content/faqs.php'
     | '/api/content/posts.php'
+    | '/api/content/team.php'
     | '/api/content/testimonials.php'
     | '/api/content/trainers.php'
     | '/api/coupons/validate.php'
@@ -940,6 +1014,7 @@ export interface FileRouteTypes {
     | '/api/payment/eps-verify.php'
     | '/admin/blog'
     | '/admin/courses'
+    | '/admin/team'
     | '/admin/trainers'
   id:
     | '__root__'
@@ -956,6 +1031,7 @@ export interface FileRouteTypes {
     | '/privacy-policy'
     | '/refund-policy'
     | '/register'
+    | '/team'
     | '/terms'
     | '/trainers'
     | '/admin/analytics'
@@ -979,15 +1055,19 @@ export interface FileRouteTypes {
     | '/blog/$slug'
     | '/checkout/$slug'
     | '/courses/$slug'
+    | '/team/$id'
     | '/trainers/$slug'
     | '/admin/'
     | '/blog/'
     | '/courses/'
+    | '/team/'
     | '/trainers/'
     | '/admin/blog/$slug'
     | '/admin/blog/new'
     | '/admin/courses/$slug'
     | '/admin/courses/new'
+    | '/admin/team/$id'
+    | '/admin/team/new'
     | '/admin/trainers/$slug'
     | '/admin/trainers/new'
     | '/api/admin/analytics.php'
@@ -1011,6 +1091,7 @@ export interface FileRouteTypes {
     | '/api/auth/reset-password.php'
     | '/api/content/faqs.php'
     | '/api/content/posts.php'
+    | '/api/content/team.php'
     | '/api/content/testimonials.php'
     | '/api/content/trainers.php'
     | '/api/coupons/validate.php'
@@ -1025,6 +1106,7 @@ export interface FileRouteTypes {
     | '/api/payment/eps-verify.php'
     | '/admin/blog/'
     | '/admin/courses/'
+    | '/admin/team/'
     | '/admin/trainers/'
   fileRoutesById: FileRoutesById
 }
@@ -1042,6 +1124,7 @@ export interface RootRouteChildren {
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   RegisterRoute: typeof RegisterRoute
+  TeamRoute: typeof TeamRouteWithChildren
   TermsRoute: typeof TermsRoute
   TrainersRoute: typeof TrainersRouteWithChildren
   ApiContentDotphpRoute: typeof ApiContentDotphpRoute
@@ -1069,6 +1152,7 @@ export interface RootRouteChildren {
   ApiAuthResetPasswordDotphpRoute: typeof ApiAuthResetPasswordDotphpRoute
   ApiContentFaqsDotphpRoute: typeof ApiContentFaqsDotphpRoute
   ApiContentPostsDotphpRoute: typeof ApiContentPostsDotphpRoute
+  ApiContentTeamDotphpRoute: typeof ApiContentTeamDotphpRoute
   ApiContentTestimonialsDotphpRoute: typeof ApiContentTestimonialsDotphpRoute
   ApiContentTrainersDotphpRoute: typeof ApiContentTrainersDotphpRoute
   ApiCouponsValidateDotphpRoute: typeof ApiCouponsValidateDotphpRoute
@@ -1174,6 +1258,13 @@ declare module '@tanstack/react-router' {
       path: '/register'
       fullPath: '/register'
       preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/team': {
+      id: '/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -1358,6 +1449,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CoursesSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/team/': {
+      id: '/team/'
+      path: '/'
+      fullPath: '/team/'
+      preLoaderRoute: typeof TeamIndexRouteImport
+      parentRoute: typeof TeamRoute
+    }
+    '/team/$id': {
+      id: '/team/$id'
+      path: '/$id'
+      fullPath: '/team/$id'
+      preLoaderRoute: typeof TeamIdRouteImport
+      parentRoute: typeof TeamRoute
+    }
     '/trainers/': {
       id: '/trainers/'
       path: '/'
@@ -1412,6 +1517,27 @@ declare module '@tanstack/react-router' {
       path: '/courses/new'
       fullPath: '/admin/courses/new'
       preLoaderRoute: typeof AdminCoursesNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/team/': {
+      id: '/admin/team/'
+      path: '/team'
+      fullPath: '/admin/team/'
+      preLoaderRoute: typeof AdminTeamIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/team/$id': {
+      id: '/admin/team/$id'
+      path: '/team/$id'
+      fullPath: '/admin/team/$id'
+      preLoaderRoute: typeof AdminTeamIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/team/new': {
+      id: '/admin/team/new'
+      path: '/team/new'
+      fullPath: '/admin/team/new'
+      preLoaderRoute: typeof AdminTeamNewRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/trainers/': {
@@ -1582,6 +1708,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiContentPostsDotphpRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/content/team.php': {
+      id: '/api/content/team.php'
+      path: '/api/content/team.php'
+      fullPath: '/api/content/team.php'
+      preLoaderRoute: typeof ApiContentTeamDotphpRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/content/testimonials.php': {
       id: '/api/content/testimonials.php'
       path: '/api/content/testimonials.php'
@@ -1692,10 +1825,13 @@ interface AdminRouteChildren {
   AdminBlogNewRoute: typeof AdminBlogNewRoute
   AdminCoursesSlugRoute: typeof AdminCoursesSlugRoute
   AdminCoursesNewRoute: typeof AdminCoursesNewRoute
+  AdminTeamIdRoute: typeof AdminTeamIdRoute
+  AdminTeamNewRoute: typeof AdminTeamNewRoute
   AdminTrainersSlugRoute: typeof AdminTrainersSlugRoute
   AdminTrainersNewRoute: typeof AdminTrainersNewRoute
   AdminBlogIndexRoute: typeof AdminBlogIndexRoute
   AdminCoursesIndexRoute: typeof AdminCoursesIndexRoute
+  AdminTeamIndexRoute: typeof AdminTeamIndexRoute
   AdminTrainersIndexRoute: typeof AdminTrainersIndexRoute
 }
 
@@ -1722,10 +1858,13 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminBlogNewRoute: AdminBlogNewRoute,
   AdminCoursesSlugRoute: AdminCoursesSlugRoute,
   AdminCoursesNewRoute: AdminCoursesNewRoute,
+  AdminTeamIdRoute: AdminTeamIdRoute,
+  AdminTeamNewRoute: AdminTeamNewRoute,
   AdminTrainersSlugRoute: AdminTrainersSlugRoute,
   AdminTrainersNewRoute: AdminTrainersNewRoute,
   AdminBlogIndexRoute: AdminBlogIndexRoute,
   AdminCoursesIndexRoute: AdminCoursesIndexRoute,
+  AdminTeamIndexRoute: AdminTeamIndexRoute,
   AdminTrainersIndexRoute: AdminTrainersIndexRoute,
 }
 
@@ -1742,6 +1881,18 @@ const BlogRouteChildren: BlogRouteChildren = {
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
+interface TeamRouteChildren {
+  TeamIdRoute: typeof TeamIdRoute
+  TeamIndexRoute: typeof TeamIndexRoute
+}
+
+const TeamRouteChildren: TeamRouteChildren = {
+  TeamIdRoute: TeamIdRoute,
+  TeamIndexRoute: TeamIndexRoute,
+}
+
+const TeamRouteWithChildren = TeamRoute._addFileChildren(TeamRouteChildren)
 
 interface TrainersRouteChildren {
   TrainersSlugRoute: typeof TrainersSlugRoute
@@ -1771,6 +1922,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   RegisterRoute: RegisterRoute,
+  TeamRoute: TeamRouteWithChildren,
   TermsRoute: TermsRoute,
   TrainersRoute: TrainersRouteWithChildren,
   ApiContentDotphpRoute: ApiContentDotphpRoute,
@@ -1798,6 +1950,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiAuthResetPasswordDotphpRoute: ApiAuthResetPasswordDotphpRoute,
   ApiContentFaqsDotphpRoute: ApiContentFaqsDotphpRoute,
   ApiContentPostsDotphpRoute: ApiContentPostsDotphpRoute,
+  ApiContentTeamDotphpRoute: ApiContentTeamDotphpRoute,
   ApiContentTestimonialsDotphpRoute: ApiContentTestimonialsDotphpRoute,
   ApiContentTrainersDotphpRoute: ApiContentTrainersDotphpRoute,
   ApiCouponsValidateDotphpRoute: ApiCouponsValidateDotphpRoute,

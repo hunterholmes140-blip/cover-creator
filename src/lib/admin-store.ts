@@ -12,6 +12,7 @@ import {
   MOCK_VIDEO_GALLERY,
   MOCK_TESTIMONIALS,
   MOCK_FAQS,
+  MOCK_TEAM_MEMBERS,
 } from "./mock-data";
 
 type Listener = () => void;
@@ -182,6 +183,7 @@ export const faqsStore = new Collection<any>(
   (MOCK_FAQS as any).map((f: any, i: number) => ({ id: i + 1, ...f })),
   "faqs",
 );
+export const teamStore = new Collection<any>("ns.team.v1", MOCK_TEAM_MEMBERS as any, "team");
 
 export const ordersStore = new Collection<any>("ns.orders.v1", [
   {
@@ -239,6 +241,7 @@ export const useHero = () => useCollection(heroStore);
 export const useVideos = () => useCollection(videosStore);
 export const useTestimonials = () => useCollection(testimonialsStore);
 export const useFaqs = () => useCollection(faqsStore);
+export const useTeam = () => useCollection(teamStore);
 export const useOrders = () => useCollection(ordersStore);
 export const useUsers = () => useCollection(usersStore);
 export const usePages = () => useCollection(pagesStore);
